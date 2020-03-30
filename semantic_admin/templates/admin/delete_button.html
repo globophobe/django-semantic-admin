@@ -1,0 +1,5 @@
+{% load i18n admin_urls %}
+{% if show_delete_link %}
+{% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
+    <a class="ui fluid red button" href="{% add_preserved_filters delete_url %}">{% trans "Delete" %}</a>
+{% endif %}

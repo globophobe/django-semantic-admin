@@ -1,0 +1,144 @@
+{% load admin_urlname admin_urlquote from admin_urls %}
+{% load i18n nested_admin %}
+{% with inline_admin_formset.formset.is_nested as is_nested %}
+
+{% with inline_admin_formset.opts as inline_opts %}
+<div class="inline-group group djn-group djn-tabular{% if is_nested %} djn-group-nested{% else %} djn-group-root{% endif %}{% if inline_opts.suit_classes %} {{ inline_opts.suit_classes }}{% endif %}"
+    id="{{ inline_admin_formset.formset.prefix }}-group"
+    data-inline-type="stacked"
+    data-inline-formset="{{ inline_admin_formset.inline_formset_data }}"
+    data-inline-model="{{ inline_admin_formset.inline_model_id }}">
+    <div class="tabular inline-related">
+    <fieldset class="module {{ inline_admin_formset.classes }}">
+
+    <h2>
+        {% if inline_admin_formset.opts.title %}{{ inline_admin_formset.opts.title }}{% else %}{{ inline_admin_formset.opts.verbose_name_plural|capfirst }}{% endif %}
+    </h2>
+
+    {{ inline_admin_formset.formset.management_form }}
+    {{ inline_admin_formset.formset.non_form_errors }}
+
+    <table class="djn-items inline-related djn-table{% ifsuit %} table table-bordered table-condensed table-striped{% else %} tabular{% endifsuit %}">
+      <thead class="djn-module djn-thead djn-item">
+          <tr>
+              {% if "1.10"|django_version_gte %}<th class="original"></th>{% endif %}
+              {% for field in inline_admin_formset.fields %}
+                  {% if not field.widget.is_hidden %}
+                      <th{% if forloop.first %}{% if "1.10"|django_version_lt %} colspan="2"{% endif %}{% endif %} class="djn-th {{ field.label|lower|slugify }}{% if field.required %} required{% endif %}">{{ field.label|capfirst }}
+                      {% if field.help_text %}&nbsp;<img src="{% if "1.10"|django_version_gte %}{% static "admin/img/icon-unknown.gif" %}{% else %}{% static "admin/img/icon-unknown.gif" %}{% endif %}" class="help help-tooltip" width="10" height="10" alt="({{ field.help_text|striptags }})" title="{{ field.help_text|striptags }}" />{% endif %}
+                      </th>
+                  {% endif %}
+              {% endfor %}
+              {% if inline_admin_formset.formset.can_delete %}<th class="djn-th">Delete?</th>{% endif %}
+          </tr>
+      </thead>
+
+        {% with inline_admin_formset.opts.sortable_field_name|default:"" as sortable_field_name %}
+        {% for inline_admin_form in inline_admin_formset|formsetsort:sortable_field_name %}
+            <tbody class="djn-tbody{% if not forloop.last %} djn-item{% endif %} djn-inline-form{% if inline_admin_formset.opts.classes %} {{ inline_admin_formset.opts.classes|join:" " }}{% endif %}{% if inline_admin_form.original or inline_admin_form.show_url %} has_original{% endif %}{% if forloop.last %} djn-empty-form empty-form{% endif %}{% if inline_admin_form.form.inlines %} djn-has-inlines{% endif %}"
+                {% if inline_admin_form.pk_field.field %}
+                data-is-initial="{% if inline_admin_form.pk_field.field.value %}true{% else %}false{% endif %}"
+                {% endif %}
+                id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last %}empty{% else %}{%if is_nested %}{% endif %}{{ inline_admin_form.form|form_index }}{% endif %}">
+
+            {% if inline_admin_form.form.non_field_errors %}
+            <tr><td class="djn-td" colspan="{{ inline_admin_form|cell_count }}">
+                {% ifsuit %}
+                <div class="control-group error"><div class="help-block">{{ inline_admin_form.form.non_field_errors }}</div></div>
+                {% else %}
+                <ul class="errorlist">
+                    <li>{{ inline_admin_form.form.non_field_errors }}</li>
+                </ul>
+                {% endifsuit %}
+            </td></tr>
+            {% endif %}
+            <tr class="djn-tr form-row{% if inline_admin_form.original or inline_admin_form.show_url %} has_original{% endif %}">
+
+                <td class="original{% if inline_admin_formset.opts.sortable_field_name %} is-sortable{% endif %}">
+                {% if inline_admin_form.original or inline_admin_form.show_url %}<p>
+                {% if inline_admin_form.original %}
+                {% ifnotsuit %}{{ inline_admin_form.original }}{% endifnotsuit %}
+                {% if inline_admin_form.model_admin.show_change_link and inline_admin_form.model_admin.has_registered_model %}<a href="{% url inline_admin_form.model_admin.opts|admin_urlname:'change' inline_admin_form.original.pk|admin_urlquote %}" class="inlinechangelink">{% trans "Change" %}</a>{% endif %}
+                {% endif %}
+                {% if inline_admin_form.show_url %}<a href="{{ inline_admin_form.absolute_url }}">{% trans "View on site" %}</a>{% endif %}
+                  </p>{% endif %}
+                {% if inline_admin_formset.opts.sortable_field_name %}
+                <span class="djn-drag-handler"></span>
+                {% endif %}
+                {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+                {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
+                {% spaceless %}
+                {% for fieldset in inline_admin_form %}
+                    {% for line in fieldset %}
+                        {% for field in line %}
+                            {% if field.field.is_hidden %} {{ field.field }} {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+                {% endspaceless %}
+                </td>
+
+                {% for fieldset in inline_admin_form %}
+                    {% for line in fieldset %}
+                        {% for field in line %}
+                            {% if not field.field.is_hidden %}
+                                <td class="djn-td field-{{ field.field.name }}{% ifsuit %}{% if field.field.errors %} control-group error{% endif %}{% endifsuit %}">
+                                    {% if field.is_readonly %}
+                                        <p>{{ field.contents }}</p>
+                                    {% else %}
+                                        {% if field.field.errors %}
+                                        {% ifsuit %}
+                                            <div class="help-block">{{ field.field.errors.as_ul }}</div>
+                                        {% else %}
+                                            {{ field.field.errors.as_ul }}
+                                        {% endifsuit %}
+                                        {% endif %}
+                                        {{ field.field }}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+                {% if inline_admin_formset.formset.can_delete %}
+                    {% if inline_admin_form.original %}
+                    <td class="delete djn-delete-handler {{ inline_admin_formset.handler_classes|join:" " }}">{{ inline_admin_form.deletion_field.field }}</td>
+                    {% else %}
+                    <td class="delete">
+                        <div><a class="inline-deletelink djn-remove-handler {{ inline_admin_formset.handler_classes|join:" " }}" href="javascript:void(0)">Remove</a></div>
+                    </td>
+                    {% endif %}
+                {% endif %}
+
+            </tr>
+
+            {% if inline_admin_form.form.inlines %}
+                <tr class="djn-tr"><td class="djn-td" colspan="{{ inline_admin_form|cell_count }}">
+                {% for nested in inline_admin_form.form.inlines %}
+                    {% include nested.opts.template with inline_admin_formset=nested %}
+                {% endfor %}
+                </td></tr>
+            {% endif %}
+
+            </tbody>
+            {% if forloop.last %}
+                <tbody>
+                    <tr class="add-row">
+                        <td colspan="{{ inline_admin_form|cell_count }}" class="djn-add-item">
+                            <a href="javascript://" class="add-handler djn-add-handler {{ inline_admin_formset.handler_classes|join:" " }}">{% blocktrans with inline_admin_formset.opts.verbose_name|strip_parent_name:inline_opts.verbose_name|title as verbose_name %}Add another {{ verbose_name }}{% endblocktrans %}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            {% endif %}
+        {% endfor %}
+        {% endwith %}
+
+    </table>
+
+    </fieldset>
+    </div>
+
+</div>
+{% endwith %}{# ends with inline_admin_formset.opts as inline_opts #}
+
+{% endwith %}{# ends {% with inline_admin_formset.formset.is_nested as is_nested %} #}

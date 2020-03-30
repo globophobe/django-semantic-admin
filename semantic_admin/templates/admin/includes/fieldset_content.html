@@ -1,0 +1,47 @@
+{% comment %}
+Semantic opinions about fieldset and legend tags https://github.com/Semantic-Org/Semantic-UI/issues/596 However, class="ui segment" seems to do the same thing.
+{% endcomment %}
+{% if fieldset.name %}<h2>{{ fieldset.name }}</h2>{% endif %}
+{% if fieldset.description %}
+<div class="description">{{ fieldset.description|safe }}</div>
+{% endif %}
+
+{% for line in fieldset %}
+{% if line.has_visible_field %}
+<div class="equal width fields">
+{% endif %}
+
+    {% for field in line %}
+    <div class="field{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% if not field.is_readonly and field.errors %} error{% endif %}{% if field.field.is_hidden %} hidden{% endif %}">
+      {% if field.is_checkbox %}
+      <div class="inline fields">
+      <div class="ui checkbox">
+      {% endif %}
+          {% if not field.is_checkbox and not field.is_hidden %}
+              {{ field.label_tag }}
+          {% endif %}
+          {% if field.is_readonly %}
+              {{ field.contents }}
+          {% else %}
+              {{ field.field }}
+          {% endif %}
+
+          {% if field.is_checkbox %}
+          {{ field.label_tag }}
+          {% endif %}
+          {% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}
+          {% if field.field.help_text %}
+              <span class="help">{{ field.field.help_text|safe }}</span>
+          {% endif %}
+          {% if line.fields|length_is:'1' %}{{ line.errors }}{% endif %}
+      {% if field.is_checkbox %}
+      </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+{% if line.has_visible_field %}
+</div>
+{% endif%}
+{% endfor %}

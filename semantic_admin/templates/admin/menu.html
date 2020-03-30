@@ -1,0 +1,73 @@
+{% load i18n semantic_utils %}
+
+{% block brandingbox %}
+<div>
+  <div class="ui large header">
+    {% block branding %}
+      <a class="item" href="{% url 'admin:index' %}">
+        {{ site_header|default:_('Django administration') }}
+      </a>
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}
+
+{% admin_apps as app_list %}
+{% if app_list %}
+  <div class="ui inverted accordion">
+    {% for app in app_list %}
+      <div class="item">
+          <div class="title{% if app.is_current %} active{% endif %}" href="{{ app.app_url }}" title="{% blocktrans with name=app.name %}Models in the {{ app.name }} application{% endblocktrans %}"><i class="small dropdown icon"></i> {{ app.name|title }}</div>
+          <div class="content{% if app.is_current %} active{% endif %}">
+            {% for model in app.models %}
+              {% if model.admin_url %}
+                <a class="item" href="{{ model.admin_url }}">{{ model.name }}</a>
+              {% else %}
+                {{ model.name }}
+              {% endif %}
+            {% endfor %}
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <div class="menu">
+    <p class="item">{% trans "You don't have permission to edit anything." %}</p>
+  </div>
+{% endif %}
+
+{% block usertools %}
+  {% if has_permission %}
+    <div id="user-tools" class="item">
+
+      <div class="header">
+      {% block welcome-msg %}
+        {% trans 'Welcome,' %} <strong>{% firstof user.get_short_name user.get_username %}</strong>
+      {% endblock %}
+      </div>
+    
+      {% block userlinks %}
+      <div class="menu">
+        {% if site_url %}
+          <a class="item" href="{{ site_url }}">{% trans 'View site' %}</a>
+        {% endif %}
+
+        {% if user.is_active and user.is_staff %}
+          {% url 'django-admindocs-docroot' as docsroot %}
+          {% if docsroot %}
+              <a class="item" href="{{ docsroot }}">{% trans 'Documentation' %}</a>
+          {% endif %}
+          {% endif %}
+          {% if user.has_usable_password %}
+            <a class="item" href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a>
+          {% endif %}
+            <a class="item" href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+      </div>
+      {% endblock %}
+
+    </div>
+  {% endif %}
+
+{% endblock %}
+{% block nav-global %}{% endblock %} 

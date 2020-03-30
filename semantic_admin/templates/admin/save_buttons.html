@@ -1,0 +1,31 @@
+{% load i18n admin_urls %}
+
+{% if show_save_as_new %}
+<div class="field">
+    <button type="submit" class="ui fluid button" value="{% trans 'Save as new' %}" name="_saveasnew" />{% trans 'Save as new' %}</button>
+</div>
+{% endif %}
+
+{% if show_save_and_add_another and not hide_save_and_add_another %}
+<div class="field">
+    <button type="submit" class="ui fluid button" value="{% trans 'Save and add another' %}" name="_addanother" />{% trans 'Save and add another' %}</button>
+</div>
+{% endif %}
+
+{% if show_save_and_continue %}
+<div class="field">
+    <button type="submit" class="ui fluid button" value="{% trans 'Save and continue editing' %}" name="_continue" />{% trans 'Save and continue editing' %}</button>
+</div>
+{% endif %}
+
+{% if show_save %}
+<div class="field">
+    <button type="submit" class="ui fluid blue button" value="{% trans 'Save' %}" class="default" name="_save" />{% trans 'Save' %}</button>
+</div>
+{% endif %}
+
+{% comment %}
+{% if show_close %}
+<a class="ui fluid button" href="{% url opts|admin_urlname:'changelist' %}" class="closelink">{% trans 'Close' %}</a>
+{% endif %}
+{% endcomment %}

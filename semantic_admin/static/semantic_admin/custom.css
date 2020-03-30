@@ -1,0 +1,53 @@
+@media only screen {
+  /* Sidebar Layout */
+  #app-main > .pusher > .full.height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    min-height: 100vh;
+  }
+}
+
+/* Container Layout */
+#app-main .container {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-width: 0px;
+}
+
+/* Hide Top Bar */
+@media only screen and (min-width: 1145px) {
+  #app-main .full.height {
+    min-height: 100%;
+  }
+  #app-main .fixed.main.menu {
+    display: none;
+  }
+}
+
+/* Remove Fixed Sidebar /  Show Top Bar */
+@media only screen and (max-width: 1144px) {
+  /* Hide Fixed Sidebar */
+  #app-main .full.height > .computer-menu {
+    display: none;
+  }
+  #app-main #app-content {
+    margin-top: 3em;
+  }
+}
+
+@media print {
+  .page-break {
+    page-break-inside: avoid;
+  }
+}
+
+div.empty-form {
+  display: none;
+}

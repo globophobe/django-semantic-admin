@@ -1,0 +1,3 @@
+{# Semantic has no wrapped labels https://semantic-ui.com/modules/checkbox.html#/usage #}
+{% if wrap_label %}<label{% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}>{{ widget.label }}</label>{% endif %}
+{% include "django/forms/widgets/input.html" %}

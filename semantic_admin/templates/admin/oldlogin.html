@@ -1,0 +1,34 @@
+{% block title %}- {% trans "Login" %}{% endblock %}
+
+{% block page %}
+<div id="login-box" class="center collapsible-padding">
+<form class="pure-form pure-form-stacked" method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+    <h4>{% trans "Log in with your email account" %}</h4>
+
+    {% if next %}
+      {% if user.is_authenticated %}
+      <p>{% trans "Your account doesn't have access to this page. To proceed, please login with an account that has access." %}</p>
+      {% else %}
+      <p>{% trans "Please login to see this page." %}</p>
+      {% endif %}
+    {% endif %}
+
+    {% for error in form.non_field_errors %}
+      <p class="red">{{ error }}</p>
+    {% endfor %}
+
+    <div><label for="id_username">{% trans "Email" %}:</div>
+    <div><input id="id_username" class="pure-input-1" maxlength="254" name="username" type="text" /></div>
+
+    <div>{{ form.password.label_tag }}</div>
+    <div><input id="id_password" class="pure-input-1" name="password" type="password" /></div>
+    <input type="hidden" name="next" value="{{ next }}" />
+
+    {# Assumes you setup the password_reset view in your URLconf #}
+    <p><a class="default-link" href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a></p>
+
+    <button type="submit" class="pure-button pure-button-primary">{% trans "Log in" %}</button>
+</form>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+/* Also note: https://github.com/Semantic-Org/Semantic-UI/issues/1114 */
+
+html,
+body,
+#app-menu,
+.ui.sidebar {
+  min-height: 100%;
+}
+
+.red {
+  color: #db2828;
+}
+
+.green {
+  color: #21ba45;
+}
+
+.hidden, .empty-form {
+  display: none;
+}
+
+.no-horizontal-padding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Helper class rescued from previous pure.css admin */
+@media (min-width: 48em) {
+  .text-align-right-md {
+    text-align: right;
+  }
+}
+
+/* ACTION CHECKBOX */
+
+#changelist th.action-checkbox-column,
+#changelist td.action-checkbox {
+  width: 1em;
+  text-align: center !important;
+}
+
+/* END ACTION CHECKBOX */
+
+/* CHANGELIST ACTIONS */
+
+#changelist .actions span.question {
+  display: none;
+}
+/* END CHANGELIST ACTIONS */
+
+@media print {
+  .noprint {
+    display: none !important;
+    height: 0 !important;
+    border: 0 none !important;
+    opacity: 0 !important;
+  }
+}

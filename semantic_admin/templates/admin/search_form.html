@@ -1,0 +1,29 @@
+{% load i18n admin_urls admin_static semantic_utils %}
+
+{% if cl.search_fields or cl.model_admin.filterset.form.fields %}
+<div class="ui secondary segment">
+<div class="ui form">
+<form action="" method="get">
+{% if cl.search_fields %}
+{% for pair in cl.params.items %}
+    {% if pair.0 != search_var %}<input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}"/>{% endif %}
+{% endfor %}
+{% endif %}
+
+{% search_fields cl %}
+
+{% if show_result_count %}
+  {% blocktrans count counter=cl.result_count %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktrans %} (<a href="?{% if cl.is_popup %}_popup=1{% endif %}">{% if cl.show_full_result_count %}{% blocktrans with full_result_count=cl.full_result_count %}{{ full_result_count }} total{% endblocktrans %}{% else %}{% trans "Show all" %}{% endif %}</a>)
+{% endif %}
+
+</form>
+</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#searchbar').focus();
+});
+</script>
+
+{% endif %}

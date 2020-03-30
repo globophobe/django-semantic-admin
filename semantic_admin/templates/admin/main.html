@@ -1,0 +1,60 @@
+<!-- Container -->
+{% block breadbox %}
+<div class="ui segment noprint">
+    {% block breadcrumbs %}{% endblock %}
+</div>
+{% endblock %}
+   
+{% if not is_popup %}
+  {% block messages %}
+    {% if messages %}
+      {% for message in messages %}
+        <div{% if message.tags %} class="ui message 
+            {% for tag in message.tags %}
+              {% if tag == 'debug' %}
+              {% elif tag == 'info' %}info
+              {% elif tag == 'success' %}success
+              {% elif tag == 'warning' %}warning
+              {% elif tag == 'error' %}negative
+              {% endif %}
+              {% endfor %}">
+            {{ message|capfirst }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endblock messages %}
+{% endif %}
+
+<!-- Content -->
+<div id="content" class="{% block coltype %}colM{% endblock %}">
+  <div class="ui basic segment">
+  <div class="ui stackable padded grid noprint">
+    
+    <div class="eight wide column">
+      {% block pretitle %}{% endblock %}
+      {% block content_title %}
+        {% if title %}
+          <div class="column">
+            <h1 class="ui header">{{ title }}</h1>
+          </div>
+        {% endif %}
+      {% endblock %}
+    </div>
+
+    <div class="eight wide column">
+    {% block object-tools %}{% endblock %}
+    </div>
+
+  </div>
+    {% block content %}
+    {{ content }}
+    {% endblock %}
+    {% block sidebar %}{% endblock %}
+  </div>
+</div> 
+<!-- END Content -->
+
+{% block footer %}
+  <div id="footer"></div>
+{% endblock %}

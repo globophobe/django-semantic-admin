@@ -89,6 +89,26 @@
     django.jQuery(document).on('formset:added', formsetAdded) 
 
     function formsetAdded(event, $row, formsetName) {
+        // Streamfield
+        
+        // Remove existing container.
+        $row.find('.c-sf-container').remove()
+
+        // Get init script.
+        $row.find('script').each(function() {
+            var attr = $row[0].id;
+            var regex = /^.*\-(\d+)$/;
+            var m = attr.match(regex);
+            if (m.length) {
+                var id = m[1]
+                var script = $(this).text();
+                // Wagtail has modelcluster, not regular inlines. Set id.
+                var s = script.replace('__prefix__', id);
+                // Reinitialize.
+                eval(s)
+            }
+        });
+
         // Autocompletes
         $row.find('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
             var url = $(this).data('ajax-url') + '?term={query}'
@@ -108,6 +128,8 @@
                 'forceSelection': false,  
                 'saveRemoteData': false
             });
+            // b/c not idempotent.
+            $(this).addClass('initialized')
         });
 
         // Dropdowns
@@ -116,6 +138,8 @@
                 'fullTextSearch': true,
                 'forceSelection': false,  // https://github.com/Semantic-Org/Semantic-UI/issues/4506
             });
+            // b/c not idempotent.
+            $(this).addClass('initialized')
         });
 
         // Checkboxes

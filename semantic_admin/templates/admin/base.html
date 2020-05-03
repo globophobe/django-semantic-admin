@@ -168,7 +168,7 @@ launches the offscreen menu.
   $('.ui.accordion').accordion({ duration: 250 });
 
   // Autocompletes
-  $('.admin-autocomplete').not('[name*=__prefix__]').each(function(){
+  $('.admin-autocomplete').not('.initialized').not('[name*=__prefix__]').each(function(){
       var url = $(this).data('ajax-url') + '?term={query}'
       $(this).dropdown({
           apiSettings: { 
@@ -186,15 +186,19 @@ launches the offscreen menu.
           'forceSelection': false,
           'saveRemoteData': false
       });
+      // b/c not idempotent.
+      $(this).addClass('initialized')
   });
 
   // Dropdowns
-  $('.ui.dropdown select').not('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
+  $('.ui.dropdown select').not('.initialized').not('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
       $(this).dropdown({
           'clearable': true,
           'fullTextSearch': true,
           'forceSelection': false,  // https://github.com/Semantic-Org/Semantic-UI/issues/4506
       });
+      // b/c not idempotent.
+      $(this).addClass('initialized')
   });
 
   // Checkboxes

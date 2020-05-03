@@ -15,6 +15,10 @@ body,
   color: #21ba45;
 }
 
+.c-sf-add-button {
+  color: #333333 !important;
+}
+
 .hidden, .empty-form {
   display: none;
 }

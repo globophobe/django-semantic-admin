@@ -30,6 +30,10 @@ class SemanticAutocompleteSelect(SemanticAutocompleteMixin, forms.Select):
     pass
 
 
+class SemanticAutocompleteChooser(SemanticAutocompleteMixin, forms.HiddenInput):
+    template_name = "django/forms/widgets/chooser.html"
+
+
 class SemanticAutocompleteSelectMultiple(
     SemanticAutocompleteMixin, forms.SelectMultiple
 ):

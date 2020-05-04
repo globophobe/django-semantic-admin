@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django_react_streamfield.blocks import ChoiceBlock, ChooserBlock
 
-from semantic_admin.widgets import SemanticAutocompleteSelect
+from semantic_admin.widgets import SemanticAutocompleteChooser
 
 
 class SemanticBlockMixin:
@@ -35,11 +35,12 @@ class SemanticAutocompleteBlock(SemanticBlockMixin, ChooserBlock):
                 self.model = model
 
         admin_autocomplete = AdminAutocomplete(self.admin, self.target_model)
-        return SemanticAutocompleteSelect(admin_autocomplete, admin_autocomplete)
+        chooser = SemanticAutocompleteChooser(admin_autocomplete, admin_autocomplete)
+        return chooser
 
     def render_form(self, *args, **kwargs):
         string = super().render_form(*args, **kwargs)
-        return string + "<script>semanticAutocomplete()</script>"
+        return string + "<script>semanticChooser()</script>"
 
 
 class SemanticChoiceBlock(SemanticBlockMixin, ChoiceBlock):

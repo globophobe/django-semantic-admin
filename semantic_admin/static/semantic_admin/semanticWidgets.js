@@ -1,8 +1,27 @@
-function semanticAutocomplete(prefix) {
+function semanticChooser() {
   $(".admin-autocomplete")
     .not(".initialized")
     .not("[name*=__prefix__]")
     .each(function() {
+      // Reverse lookup id from hidden input, if any.
+      var id = $(this).attr("id");
+      var optionValue = $(`#${id}-value`).val();
+      if (optionValue) {
+        var url = $(this).data("ajax-url");
+        var u =
+          url.substring(0, url.length - 1) + `-reverse/?id=${optionValue}`;
+        fetch(u)
+          .then(response => response.json())
+          .then(data => {
+            var { results } = data;
+            if (results && results.length) {
+              results.forEach(({ id, text }) => {
+                $(this).append(new Option(text, id));
+              });
+            }
+          });
+      }
+      // Initialize dropdown.
       var url = $(this).data("ajax-url") + "?term={query}";
       $(this).dropdown({
         apiSettings: {
@@ -28,7 +47,7 @@ function semanticAutocomplete(prefix) {
     });
 }
 
-function semanticDropdown(prefix) {
+function semanticDropdown() {
   $(".ui.dropdown select")
     .not(".initialized")
     .not(".admin-autocomplete")

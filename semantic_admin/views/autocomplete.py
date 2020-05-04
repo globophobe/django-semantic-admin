@@ -13,7 +13,7 @@ class SemanticAutocompleteJsonView(AutocompleteJsonView):
         """
         # BEGIN CUSTOMIZATION #
         if require_search_fields and not self.model_admin.get_search_fields(request):
-        # END CUSTOMIZATION #
+            # END CUSTOMIZATION #
             raise Http404(
                 "%s must have search_fields for the autocomplete_view."
                 % type(self.model_admin).__name__

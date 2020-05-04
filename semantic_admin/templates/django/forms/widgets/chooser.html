@@ -1,0 +1,7 @@
+<div class="ui fluid selection search dropdown{% if widget.attrs.multiple%} multiple{% endif %}">
+  <input id="{{ widget.attrs.id|stringformat:'s' }}-value" type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}>
+  <i class="dropdown icon"></i>
+      <div class="default text">{{ widget.attrs.placeholder }}</div>
+      <select name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+    </select>
+</div>

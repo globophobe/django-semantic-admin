@@ -16,10 +16,15 @@ body,
 }
 
 .c-sf-add-button {
-  color: #333333 !important;
+  color: #333 !important;
 }
 
-.hidden, .empty-form {
+button.c-sf-button:hover {
+  background-color: #808080 !important;
+}
+
+.hidden,
+.empty-form {
   display: none;
 }
 

@@ -61,3 +61,13 @@ function semanticDropdown() {
       $(this).addClass("initialized");
     });
 }
+
+function semanticCheckbox() {
+  $(".ui.checkbox")
+    .not(".initialized")
+    .not("[name*=__prefix__]")
+    .each(function() {
+      $(this).checkbox();
+      $(this).addClass("initialized");
+    });
+}

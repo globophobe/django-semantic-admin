@@ -38,3 +38,7 @@ class SemanticAutocompleteSelectMultiple(
     SemanticAutocompleteMixin, forms.SelectMultiple
 ):
     pass
+
+
+class SemanticCheckboxInput(forms.CheckboxInput):
+    template_name = "semantic_admin/forms/widgets/checkbox.html"

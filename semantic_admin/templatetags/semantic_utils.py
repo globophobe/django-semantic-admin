@@ -1,6 +1,6 @@
 import datetime
 
-from django import template
+from django import forms, template
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
@@ -126,16 +126,25 @@ def search_fields(context, cl):
             <label for="{field_id}">{label}: </label>
             {field}{errors}
         """
-        for field in cl.model_admin.filterset.form:
+        filterset = cl.model_admin.filterset
+        form = filterset.form
+        for field in filterset.form:
             # WTF
-            label = _(field.label.lower())
-            format_dict = dict(
-                field_id=field.id_for_label,
-                label=label,
-                field=field,
-                errors=field.errors,
-            )
-            f = filter_field.format(**format_dict)
+            label = _(field.label.lower()).capitalize()
+            if isinstance(form.fields[field.name].widget, forms.HiddenInput):
+                f = f"""
+                    <label for="{field.id_for_label}">{label}: </label>
+                    <strong>{filterset.email}</strong>
+                    {field}{field.errors}
+                """
+            else:
+                format_dict = dict(
+                    field_id=field.id_for_label,
+                    label=label,
+                    field=field,
+                    errors=field.errors,
+                )
+                f = filter_field.format(**format_dict)
             f = FIELD.format(f)
             fields.append(f)
         if isinstance(cl.model_admin.filterset, ExcludeAllFilterSet):

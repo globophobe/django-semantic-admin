@@ -2,6 +2,7 @@ from django_filters import Filter, FilterSet
 from django_filters.filters import (
     AllValuesMultipleFilter,
     ChoiceFilter,
+    ModelChoiceFilter,
     ModelMultipleChoiceFilter,
     MultipleChoiceFilter,
     TypedMultipleChoiceFilter,
@@ -17,6 +18,7 @@ class ExcludeAllFilterSet(FilterSet):
 
     def __init__(self, *args, **kwargs):
         self.exclude = kwargs.pop("exclude", False)
+        self.passed_validation = kwargs.pop("passed_validation", False)
         super().__init__(*args, **kwargs)
         if self.exclude:
             for f in self.filters:
@@ -46,6 +48,10 @@ class SemanticTypedMultipleChoiceFilter(
 
 
 class SemanticMultipleAllValuesFilter(FilterOrExcludeMixin, AllValuesMultipleFilter):
+    pass
+
+
+class SemanticModelChoiceFilter(FilterOrExcludeMixin, ModelChoiceFilter):
     pass
 
 

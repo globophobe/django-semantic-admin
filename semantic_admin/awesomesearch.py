@@ -122,7 +122,8 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
 
     def get_filterset_params(self, request):
         if hasattr(self, "filter_class"):
-            filter_class = self.filter_class()
+            # Does this matter?
+            filter_class = self.filter_class(request=request)
             if hasattr(filter_class, "get_initial"):
                 self.filterset_params = filter_class.get_initial()
             else:
@@ -214,8 +215,9 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
                 filterset = self.filter_class(
                     self.filterset_params,
                     request=request,
-                    exclude=self.filterset_exclude,
                     queryset=qs,
+                    exclude=self.filterset_exclude,
+                    passed_validation=True,
                 )
             except Exception:
                 pass

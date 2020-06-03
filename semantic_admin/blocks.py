@@ -7,7 +7,6 @@ from django_react_streamfield.blocks import (
     ChooserBlock,
     FieldBlock,
 )
-
 from semantic_admin.widgets import SemanticAutocompleteChooser, SemanticCheckboxInput
 
 
@@ -28,7 +27,7 @@ class SemanticAutocompleteBlock(SemanticMediaMixin, ChooserBlock):
         target = self._target_model
         if isinstance(target, str):
             app_label, model = target.split(".")
-            ctype = ContentType.objects.get(app_label, model)
+            ctype = ContentType.objects.get(app_label=app_label, model=model.lower())
             target = ctype.model_class()
         return target
 
@@ -42,6 +41,11 @@ class SemanticAutocompleteBlock(SemanticMediaMixin, ChooserBlock):
         admin_autocomplete = AdminAutocomplete(self.admin, self.target_model)
         chooser = SemanticAutocompleteChooser(admin_autocomplete, admin_autocomplete)
         return chooser
+
+    def value_from_form(self, value):
+        if value == "":
+            return None
+        return super().value_from_form(value)
 
     def render_form(self, *args, **kwargs):
         string = super().render_form(*args, **kwargs)

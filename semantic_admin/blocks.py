@@ -28,7 +28,7 @@ class SemanticAutocompleteBlock(SemanticMediaMixin, ChooserBlock):
         target = self._target_model
         if isinstance(target, str):
             app_label, model = target.split(".")
-            ctype = ContentType.objects.get(app_label, model)
+            ctype = ContentType.objects.get(app_label=app_label, model=model.lower())
             target = ctype.model_class()
         return target
 

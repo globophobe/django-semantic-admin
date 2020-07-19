@@ -43,6 +43,11 @@ class SemanticAutocompleteBlock(SemanticMediaMixin, ChooserBlock):
         chooser = SemanticAutocompleteChooser(admin_autocomplete, admin_autocomplete)
         return chooser
 
+    def value_from_form(self, value):
+        if value == "":
+            return None
+        return value
+
     def render_form(self, *args, **kwargs):
         string = super().render_form(*args, **kwargs)
         return string + "<script>semanticChooser();</script>"

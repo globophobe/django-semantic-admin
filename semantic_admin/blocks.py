@@ -46,7 +46,7 @@ class SemanticAutocompleteBlock(SemanticMediaMixin, ChooserBlock):
     def value_from_form(self, value):
         if value == "":
             return None
-        return value
+        return super().value_from_form(value)
 
     def render_form(self, *args, **kwargs):
         string = super().render_form(*args, **kwargs)

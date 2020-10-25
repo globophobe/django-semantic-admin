@@ -7,7 +7,6 @@ from django_react_streamfield.blocks import (
     ChooserBlock,
     FieldBlock,
 )
-
 from semantic_admin.widgets import SemanticAutocompleteChooser, SemanticCheckboxInput
 
 

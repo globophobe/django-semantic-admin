@@ -11,6 +11,10 @@ body,
   color: #db2828;
 }
 
+.error-red {
+  color: #9f3a38;
+}
+
 .green {
   color: #21ba45;
 }

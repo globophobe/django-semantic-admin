@@ -19,6 +19,10 @@ body,
   color: #21ba45;
 }
 
+.help {
+  padding-top: 0.5em;
+}
+
 .c-sf-add-button {
   color: #333 !important;
 }

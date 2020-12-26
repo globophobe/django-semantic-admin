@@ -27,7 +27,7 @@ Semantic opinions about fieldset and legend tags https://github.com/Semantic-Org
           {% endif %}
 
           {% if field.is_checkbox %}
-              <p>&nbsp;</p>
+              <!-- <p>&nbsp;</p> -->
               {{ field.label_tag }}
           {% endif %}
           {% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}

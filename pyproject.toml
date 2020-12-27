@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "django-semantic-admin"
+version = "0.1.0"
+description = "Django Semantic UI Admin theme"
+authors = ["Alex <globophobe@gmail.com>"]
+license = "MIT"
+homepage = "https://github.com/globophobe/django-semantic-admin"
+repository = "https://github.com/globophobe/django-semantic-admin"
+keywords = ["django", "admin", "theme"]
+classifiers = [
+    "Framework :: Django",
+    "Operating System :: OS Independent",
+]
+packages = [{ include = "semantic_admin" }]
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+django = ">=3.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

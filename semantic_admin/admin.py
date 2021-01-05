@@ -1,4 +1,5 @@
-from django import forms
+import copy
+
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import (
     BaseModelAdmin,
@@ -6,21 +7,90 @@ from django.contrib.admin.options import (
     TabularInline,
     get_ul_class,
 )
-from django.forms.widgets import CheckboxSelectMultiple, SelectMultiple
-from django.utils.html import mark_safe
-from django.utils.text import format_lazy
+from django.db import models
+from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
+from semantic_admin.widgets import (
+    SemanticActionCheckboxInput,
+    SemanticAutocompleteSelect,
+    SemanticAutocompleteSelectMultiple,
+    SemanticCheckboxInput,
+    SemanticDateInput,
+    SemanticDateTimeInput,
+    SemanticEmailInput,
+    SemanticFileInput,
+    SemanticImageInput,
+    SemanticNumberInput,
+    SemanticRadioSelect,
+    SemanticSelect,
+    SemanticSelectMultiple,
+    SemanticTextarea,
+    SemanticTextInput,
+    SemanticTimeInput,
+    SemanticURLInput,
+)
+
 from .awesomesearch import AwesomeSearchModelAdmin
+from .helpers import SemanticActionForm
 from .views.autocomplete import SemanticAutocompleteJsonView
-from .widgets import SemanticAutocompleteSelect, SemanticAutocompleteSelectMultiple
+
+SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS = {
+    models.DateTimeField: {"widget": SemanticDateTimeInput},
+    models.DateField: {"widget": SemanticDateInput},
+    models.TimeField: {"widget": SemanticTimeInput},
+    models.TextField: {"widget": SemanticTextarea},
+    models.URLField: {"widget": SemanticURLInput},
+    # TODO
+    models.IntegerField: {"widget": SemanticNumberInput},
+    models.BigIntegerField: {"widget": SemanticNumberInput},
+    # END TODO
+    models.CharField: {"widget": SemanticTextInput},
+    models.ImageField: {"widget": SemanticImageInput},
+    models.FileField: {"widget": SemanticFileInput},
+    models.EmailField: {"widget": SemanticEmailInput},
+    models.UUIDField: {"widget": SemanticTextInput},
+}
 
 
-class SemanticCheckboxInput(forms.CheckboxInput):
-    template_name = "django/forms/widgets/changelist_checkbox.html"
+class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Simply overwrite
+        overrides = copy.deepcopy(SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS)
+        for k, v in overrides.items():
+            self.formfield_overrides.setdefault(k, {}).update(v)
+        self.formfield_overrides = overrides
 
+    def formfield_for_choice_field(self, db_field, request, **kwargs):
+        """
+        Get a form Field for a database Field that has declared choices.
+        """
+        # If the field is named as a radio_field, use a RadioSelect
+        if db_field.name in self.radio_fields:
+            # Avoid stomping on custom widget/choices arguments.
+            if "widget" not in kwargs:
 
-class SemanticAutocompleteBase(BaseModelAdmin):
+                # BEGIN CUSTOMIZATION
+                kwargs["widget"] = SemanticRadioSelect(
+                    attrs={
+                        "class": get_ul_class(self.radio_fields[db_field.name]),
+                    }
+                )
+                # END CUSTOMIZATION
+
+            if "choices" not in kwargs:
+                kwargs["choices"] = db_field.get_choices(
+                    include_blank=db_field.blank, blank_choice=[("", _("None"))]
+                )
+
+        # BEGIN CUSTOMIZATION
+        if "widget" not in kwargs:
+            kwargs["widget"] = SemanticSelect()
+        # END CUSTOMIZATION
+
+        return db_field.formfield(**kwargs)
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """
         Get a form Field for a ForeignKey.
@@ -28,7 +98,6 @@ class SemanticAutocompleteBase(BaseModelAdmin):
         db = kwargs.get("using")
 
         if db_field.name in self.get_autocomplete_fields(request):
-
             # BEGIN CUSTOMIZATION
             kwargs["widget"] = SemanticAutocompleteSelect(
                 db_field.remote_field, self.admin_site, using=db
@@ -36,11 +105,12 @@ class SemanticAutocompleteBase(BaseModelAdmin):
             # END CUSTOMIZATION
 
         elif db_field.name in self.raw_id_fields:
+            # TODO
             kwargs["widget"] = widgets.ForeignKeyRawIdWidget(
                 db_field.remote_field, self.admin_site, using=db
             )
         elif db_field.name in self.radio_fields:
-            kwargs["widget"] = widgets.AdminRadioSelect(
+            kwargs["widget"] = SemanticRadioSelect(
                 attrs={"class": get_ul_class(self.radio_fields[db_field.name])}
             )
             kwargs["empty_label"] = _("None") if db_field.blank else None
@@ -49,6 +119,11 @@ class SemanticAutocompleteBase(BaseModelAdmin):
             queryset = self.get_field_queryset(db, db_field, request)
             if queryset is not None:
                 kwargs["queryset"] = queryset
+
+        # BEGIN CUSTOMIZATION
+        if "widget" not in kwargs:
+            kwargs["widget"] = SemanticSelect()
+        # END CUSTOMIZATION
 
         return db_field.formfield(**kwargs)
 
@@ -62,68 +137,88 @@ class SemanticAutocompleteBase(BaseModelAdmin):
             return None
         db = kwargs.get("using")
 
-        autocomplete_fields = self.get_autocomplete_fields(request)
-        if db_field.name in autocomplete_fields:
+        if "widget" not in kwargs:
+            autocomplete_fields = self.get_autocomplete_fields(request)
+            if db_field.name in autocomplete_fields:
+                # BEGIN CUSTOMIZATION
+                kwargs["widget"] = SemanticAutocompleteSelectMultiple(
+                    db_field.remote_field,
+                    self.admin_site,
+                    using=db,
+                )
+                # END CUSTOMIZATION
 
-            # BEGIN CUSTOMIZATION
-            kwargs["widget"] = SemanticAutocompleteSelectMultiple(
-                db_field.remote_field, self.admin_site, using=db
-            )
-            # END CUSTOMIZATION
-
-        elif db_field.name in self.raw_id_fields:
-            kwargs["widget"] = widgets.ManyToManyRawIdWidget(
-                db_field.remote_field, self.admin_site, using=db
-            )
-        elif db_field.name in list(self.filter_vertical) + list(self.filter_horizontal):
-            kwargs["widget"] = widgets.FilteredSelectMultiple(
-                db_field.verbose_name, db_field.name in self.filter_vertical
-            )
-
+            elif db_field.name in self.raw_id_fields:
+                # TODO
+                kwargs["widget"] = widgets.ManyToManyRawIdWidget(
+                    db_field.remote_field,
+                    db_field.remote_field,
+                    self.admin_site,
+                    using=db,
+                )
+            elif db_field.name in [*self.filter_vertical, *self.filter_horizontal]:
+                # TODO
+                kwargs["widget"] = widgets.FilteredSelectMultiple(
+                    db_field.verbose_name, db_field.name in self.filter_vertical
+                )
         if "queryset" not in kwargs:
             queryset = self.get_field_queryset(db, db_field, request)
             if queryset is not None:
                 kwargs["queryset"] = queryset
 
+        # BEGIN CUSTOMIZATION
+        if "widget" not in kwargs:
+            kwargs["widget"] = SemanticSelectMultiple()
+        # END CUSTOMIZATION
+
         form_field = db_field.formfield(**kwargs)
 
         # BEGIN CUSTOMIZATION
-        if isinstance(form_field.widget, SelectMultiple) and not isinstance(
-            form_field.widget,
-            (CheckboxSelectMultiple, SemanticAutocompleteSelectMultiple),
-        ):
-            msg = _(
-                'Hold down "Control", or "Command" on a Mac, to select more than one.'
-            )
-            # END CUSTOMIZATION
-            help_text = form_field.help_text
-            form_field.help_text = (
-                format_lazy("{} {}", help_text, msg) if help_text else msg
-            )
+        # if isinstance(form_field.widget, SemanticSelectMultiple) and not isinstance(
+        #     form_field.widget,
+        #     (SemanticCheckboxSelectMultiple, SemanticAutocompleteSelectMultiple),
+        # ):
+        #     msg = _(
+        #         "Hold down “Control”, or “Command” on a Mac, to select more than one."
+        #     )
+        #     help_text = form_field.help_text
+        #     form_field.help_text = (
+        #         format_lazy("{} {}", help_text, msg) if help_text else msg
+        #     )
+        # END CUSTOMIZATION
+
         return form_field
 
 
-class SemanticModelAdmin(SemanticAutocompleteBase, AwesomeSearchModelAdmin):
+class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):
+    action_form = SemanticActionForm
+
     def action_checkbox(self, obj):
         """
         A list_display column containing a checkbox widget.
         """
-        semantic_checkbox = SemanticCheckboxInput(
+        semantic_checkbox = SemanticActionCheckboxInput(
             {"class": "action-select"}, lambda value: False
         )
         return semantic_checkbox.render(helpers.ACTION_CHECKBOX_NAME, str(obj.pk))
 
-    action_checkbox.short_description = mark_safe(
-        '<div id="action-toggle" class="ui checkbox"><label></label><input type="checkbox" ></div>'
+    action_checkbox.short_description = format_html(  # type: ignore
+        format_html(
+            """
+            <div id="action-toggle" class="ui checkbox">
+                <label></label><input type="checkbox">
+            </div>
+            """
+        )
     )
 
     def autocomplete_view(self, request):
         return SemanticAutocompleteJsonView.as_view(model_admin=self)(request)
 
 
-class SemanticStackedInline(SemanticAutocompleteBase, StackedInline):
+class SemanticStackedInline(SemanticBaseModelAdmin, StackedInline):
     pass
 
 
-class SemanticTabularInline(SemanticAutocompleteBase, TabularInline):
+class SemanticTabularInline(SemanticBaseModelAdmin, TabularInline):
     pass

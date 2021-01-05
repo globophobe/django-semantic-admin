@@ -1,3 +1,9 @@
 *.pyc
+env_file
+db.sqlite3
+secrets.py
 .mypy_cache
 /dist
+/demo/static
+/demo/media
+/demo/coffee

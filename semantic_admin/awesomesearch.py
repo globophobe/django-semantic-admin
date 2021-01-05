@@ -9,6 +9,8 @@ from django.forms import ModelMultipleChoiceField
 from django.forms.fields import MultipleChoiceField
 from django.utils.http import urlencode
 
+from .filters import SemanticExcludeAllFilterSet
+
 
 class AwesomeSearchChangeList(ChangeList):
     def __init__(self, *args, **kwargs):
@@ -210,15 +212,13 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         # BEGIN CUSTOMIZATION #
         else:
             qs = queryset
-        if hasattr(self, "filter_class"):
+        if hasattr(self, "filter_class") and hasattr(self, "filterset_params"):
+            kwargs = {"request": request, "queryset": qs, "passed_validation": True}
+            if issubclass(self.filter_class, SemanticExcludeAllFilterSet):
+                kwargs["exclude"] = self.filterset_exclude
+            filterset = self.filter_class(self.filterset_params, **kwargs)
             try:
-                filterset = self.filter_class(
-                    self.filterset_params,
-                    request=request,
-                    queryset=qs,
-                    exclude=self.filterset_exclude,
-                    passed_validation=True,
-                )
+                filterset = self.filter_class(self.filterset_params, **kwargs)
             except Exception:
                 pass
             else:

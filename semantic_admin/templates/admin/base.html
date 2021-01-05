@@ -6,8 +6,11 @@
 <title>{% block title %}{% endblock %}</title>
 
 <!-- Style -->
-<link rel="stylesheet" href="{% static "semantic_admin/semantic.min.css" %}" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+<!-- 
+<link rel="stylesheet" href="{% static "semantic_admin/semantic.min.css" %}" /> 
 <link rel="stylesheet" href="{% static "semantic_admin/calendar.min.css" %}" />
+-->
 <link rel="stylesheet" href="{% static "semantic_admin/custom.css" %}" />
 <link rel="stylesheet" href="{% static "semantic_admin/unsemantic.css" %}" />
 {% block extrastyle %}{% endblock %}
@@ -22,8 +25,11 @@
 <!-- Script -->
 {% block extrahead %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
+<!--
 <script type="text/javascript" src="{% static "semantic_admin/semantic.min.js" %}"></script>
 <script type="text/javascript" src="{% static "semantic_admin/calendar.min.js" %}"></script>
+-->
 {% endblock %}
 <!-- END Script -->
 

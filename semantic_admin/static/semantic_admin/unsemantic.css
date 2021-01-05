@@ -7,6 +7,11 @@ body,
   min-height: 100%;
 }
 
+/* TODO: Fix this */
+.ui.radio.checkbox {
+  margin-top: 0 !important;
+}
+
 .red {
   color: #db2828;
 }
@@ -48,12 +53,22 @@ button.c-sf-button:hover {
   }
 }
 
+/* CHECKBOX */
+
+div.ui.checkbox {
+  margin-bottom: 0.69em;
+}
+
 /* ACTION CHECKBOX */
 
-#changelist th.action-checkbox-column,
-#changelist td.action-checkbox {
-  width: 1em;
+th.action-checkbox-column,
+td.action-checkbox {
   text-align: center !important;
+}
+
+th.action-checkbox-column div.ui.checkbox,
+td.action-checkbox div.ui.checkbox {
+  max-width: 1.175em;
 }
 
 /* END ACTION CHECKBOX */

@@ -1,11 +1,13 @@
-{% load i18n semantic_utils %}
+{% load i18n static semantic_sidebar semantic_utils %}
 
 {% block brandingbox %}
 <div>
   <div class="ui large header">
     {% block branding %}
-      <a class="item" href="{% url 'admin:index' %}">
-        {{ site_header|default:_('Django administration') }}
+      <a class="item" style="text-align: center;" href="{% url 'admin:index' %}">
+        <img style="width: 80%; margin: auto auto 0.1em;" src="{% static "semantic_admin/django-white.svg" %}" alt="{{ site_header|default:_('Django administration') }}" />
+        {% trans "administration" %}
+      </a>
       </a>
     {% endblock %}
   </div>

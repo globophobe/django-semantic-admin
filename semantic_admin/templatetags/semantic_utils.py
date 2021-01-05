@@ -1,176 +1,29 @@
 import datetime
 
-from django import forms, template
-from django.conf import settings
-from django.contrib import admin
-from django.contrib.admin import AdminSite
+from django import template
 from django.contrib.admin.templatetags.admin_list import (
     DOT,
     ResultList,
     _coerce_field_name,
-    label_for_field,
     result_hidden_fields,
 )
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.contrib.admin.utils import (
     display_for_field,
     display_for_value,
+    label_for_field,
     lookup_field,
 )
 from django.contrib.admin.views.main import ORDER_VAR, PAGE_VAR
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.urls import NoReverseMatch, resolve, reverse
-from django.utils.html import format_html, mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.urls import NoReverseMatch
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
-try:
-    from semantic_admin.filters import ExcludeAllFilterSet
-except ImportError:
-
-    class ExcludeAllFilterSet:
-        pass
-
+from .semantic_admin_list import semantic_results
 
 register = template.Library()
-
-BLANK_LABEL = "<label>&nbsp;</label>"
-FIELD = '<div class="field">{}</div>'
-COMPUTER_FIELD = '<div class="computer only field"></div>'
-
-
-@register.simple_tag(takes_context=True)
-def debug(context):
-    if settings.DEBUG:
-        import pdb
-
-        pdb.set_trace()
-
-
-def format_fields(cl, fields):
-    html = ""
-    row = '<div class="equal width fields">{}</div>'
-    r = []
-    for index, field in enumerate(fields):
-        r.append(field)
-        i = index + 1
-        is_divisible_by_4 = not i % 4
-        if is_divisible_by_4:
-            html += row.format("".join(r))
-            r = []
-    # Remaining fields.
-    while len(r) < 3:
-        r.append(COMPUTER_FIELD)
-    search_button = format_search_button(cl)
-    r.append(search_button)
-    html += row.format("".join(r))
-    return html
-
-
-def format_search_button(cl):
-    html = ""
-    search_label = _("Search")
-    search_button = f"""
-        <button class="ui fluid blue button" type="submit">
-            <i class="search icon"></i> {search_label}
-        </button>
-    """
-    if hasattr(cl.model_admin, "filterset"):
-        html = f"""
-            <div class="field">
-                {BLANK_LABEL}{search_button}
-            </div>
-        """
-    else:
-        html = FIELD.format(search_button)
-    return html
-
-
-def format_search_field(context, cl):
-    field = ""
-    if len(cl.search_fields):
-        label = _("Search")
-        search_var = context["search_var"]
-        search_label = f'<label for="searchbar">{label}: </label>'
-        search_input = f"""
-            <input
-                id="searchbar"
-                type="text"
-                name="{search_var}"
-                value="{cl.query}"
-            />
-        """
-        if hasattr(cl.model_admin, "filterset"):
-            field = f"{search_label}{search_input}"
-        else:
-            field = f"""
-                <div class="ui action input">
-                    {search_input}
-                    <button class="ui blue button" type="submit">
-                        <i class="search icon"></i>{label}
-                    </button>
-                </div>
-            """
-        return FIELD.format(field)
-    else:
-        return ""
-
-
-@register.simple_tag(takes_context=True)
-def search_fields(context, cl):
-    html = ""
-    search_field = format_search_field(context, cl)
-    if hasattr(cl.model_admin, "filterset"):
-        fields = [search_field]
-        filter_field = """
-            <label for="{field_id}">{label}: </label>
-            {field}{errors}
-        """
-        filterset = cl.model_admin.filterset
-        form = filterset.form
-        for field in filterset.form:
-            # WTF
-            label = _(field.label.lower()).capitalize()
-            if isinstance(form.fields[field.name].widget, forms.HiddenInput):
-                f = f"""
-                    <label for="{field.id_for_label}">{label}: </label>
-                    <strong>{filterset.email}</strong>
-                    {field}{field.errors}
-                """
-            else:
-                format_dict = dict(
-                    field_id=field.id_for_label,
-                    label=label,
-                    field=field,
-                    errors=field.errors,
-                )
-                f = filter_field.format(**format_dict)
-            f = FIELD.format(f)
-            fields.append(f)
-        if isinstance(cl.model_admin.filterset, ExcludeAllFilterSet):
-            exclude_label = _("Exclude")
-            checked = cl.model_admin.filterset_exclude
-            exclude_checkbox = f"""
-                {BLANK_LABEL}
-                <div class="ui checkbox">
-                    <input
-                        id="exclude"
-                        type="checkbox"
-                        tabindex="0"
-                        class="hidden"
-                        name="_exclude"
-                        value="true"
-                        {checked}
-                    >
-                    <label for="exclude">{exclude_label}</label>
-                </div>
-            """
-            f = FIELD.format(exclude_checkbox)
-            fields.append(f)
-        html += format_fields(cl, fields)
-    else:
-        html = search_field
-    return mark_safe(html)
 
 
 def items_for_result(cl, result, form):
@@ -283,15 +136,6 @@ def items_for_result(cl, result, form):
             yield format_html("<td{}>{}</td>", row_class, result_repr)
     if form and not form[cl.model._meta.pk.name].is_hidden:
         yield format_html("<td>{}</td>", form[cl.model._meta.pk.name])
-
-
-def results(cl):
-    if cl.formset:
-        for res, form in zip(cl.result_list, cl.formset.forms):
-            yield ResultList(form, items_for_result(cl, res, form))
-    else:
-        for res in cl.result_list:
-            yield ResultList(None, items_for_result(cl, res, None))
 
 
 def has_action_checkbox(cl):
@@ -411,7 +255,7 @@ def semantic_result_list(cl):
         "result_hidden_fields": list(result_hidden_fields(cl)),
         "result_headers": headers,
         "num_sorted_fields": num_sorted_fields,
-        "results": list(results(cl)),
+        "results": list(semantic_results(cl)),
     }
 
 
@@ -431,66 +275,3 @@ def semantic_paginator_number(cl, i):
             mark_safe(" end" if i == cl.paginator.num_pages - 1 else ""),
             i + 1,
         )
-
-
-def get_semantic_sidebar(app_list, current_app):
-    semantic_sidebar = getattr(settings, "SEMANTIC_SIDEBAR", None)
-    if semantic_sidebar:
-        ordered = []
-        for app_label in semantic_sidebar:
-            for app in app_list:
-                is_current = app["app_label"] == current_app
-                app["is_current"] = is_current
-                if app_label == app["app_label"]:
-                    ordered.append(app)
-        app_list = ordered
-    return app_list
-
-
-def get_app_label(resolver_match):
-    if "app_label" in resolver_match.kwargs:
-        return resolver_match.kwargs.get("app_label")
-    else:
-        # Reconstruct from url_name.
-        url_name = resolver_match.url_name
-        # Exclude model and action.
-        parts = url_name.split("_")[:-2]
-        # Return parts.
-        return "_".join(parts)
-
-
-@register.simple_tag(takes_context=True)
-def get_app_list(context):
-    request = context["request"]
-    resolver_match = resolve(request.path_info)
-    admin_name = resolver_match.namespace
-    current_app = get_app_label(resolver_match)
-    admin_site = get_admin_site(admin_name)
-    app_list = admin_site.get_app_list(request)
-    return get_semantic_sidebar(app_list, current_app)
-
-
-def get_admin_site(current_app):
-    try:
-        resolver_match = resolve(reverse("%s:index" % current_app))
-        for func_closure in resolver_match.func.func_closure:
-            if isinstance(func_closure.cell_contents, AdminSite):
-                return func_closure.cell_contents
-    except Exception:
-        pass
-    return admin.site
-
-
-def get_admin_url(request, admin_site):
-    try:
-        url = "{}:index".format(admin_site)
-        url = reverse(url)
-    except Exception:
-        pass
-    else:
-        return url
-
-
-@register.simple_tag(takes_context=True)
-def admin_apps(context):
-    return get_app_list(context)

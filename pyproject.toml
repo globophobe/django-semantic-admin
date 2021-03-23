@@ -18,6 +18,7 @@ packages = [{ include = "semantic_admin" }]
 python = ">=3.6,<4.0"
 django = ">=3.0"
 django-taggit = "^1.3.0"
+django-filter = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"
@@ -26,7 +27,6 @@ isort = "^5.7.0"
 Pillow = "^8.1.0"
 django-stubs = "^1.7.0"
 mypy = "^0.790"
-django-filter = "^2.4.0"
 invoke = "^1.5.0"
 factory-boy = "^3.2.0"
 Faker = "^5.3.0"

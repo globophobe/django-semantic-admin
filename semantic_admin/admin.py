@@ -1,5 +1,7 @@
 import copy
+from functools import partial
 
+from django import forms
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import (
     BaseModelAdmin,
@@ -8,6 +10,11 @@ from django.contrib.admin.options import (
     get_ul_class,
 )
 from django.db import models
+from django.forms.models import (
+    modelform_defines_fields,
+    modelform_factory,
+    modelformset_factory,
+)
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
@@ -15,6 +22,7 @@ from semantic_admin.widgets import (
     SemanticActionCheckboxInput,
     SemanticAutocompleteSelect,
     SemanticAutocompleteSelectMultiple,
+    SemanticChangelistCheckboxInput,
     SemanticCheckboxInput,
     SemanticDateInput,
     SemanticDateTimeInput,
@@ -50,6 +58,7 @@ SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.FileField: {"widget": SemanticFileInput},
     models.EmailField: {"widget": SemanticEmailInput},
     models.UUIDField: {"widget": SemanticTextInput},
+    models.BooleanField: {"widget": SemanticCheckboxInput},
 }
 
 
@@ -188,6 +197,61 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
         # END CUSTOMIZATION
 
         return form_field
+
+    def get_changelist_form(self, request, **kwargs):
+        """
+        Return a Form class for use in the Formset on the changelist page.
+        """
+        # BEGIN CUSTOMIZATION
+        defaults = {
+            "formfield_callback": partial(
+                # Override formfield_callback so checkboxes render correctly
+                self.changelist_formfield_for_dbfield,
+                request=request,
+            ),
+            **kwargs,
+        }
+        # END CUSTOMIZATION
+        if defaults.get("fields") is None and not modelform_defines_fields(
+            defaults.get("form")
+        ):
+            defaults["fields"] = forms.ALL_FIELDS
+        return modelform_factory(self.model, **defaults)
+
+    def get_changelist_formset(self, request, **kwargs):
+        """
+        Return a FormSet class for use on the changelist page if list_editable
+        is used.
+        """
+        # BEGIN CUSTOMIZATION
+        defaults = {
+            # Override formfield_callback so checkboxes render correctly
+            "formfield_callback": partial(
+                self.changelist_formfield_for_dbfield, request=request
+            ),
+            **kwargs,
+        }
+        # END CUSTOMIZATION
+        return modelformset_factory(
+            self.model,
+            self.get_changelist_form(request),
+            extra=0,
+            fields=self.list_editable,
+            **defaults
+        )
+
+    def changelist_formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if formfield and isinstance(formfield.widget, SemanticCheckboxInput):
+            formfield.widget = SemanticChangelistCheckboxInput()
+        return formfield
+
+    def get_exclude(self, request, obj=None):
+        # TODO: Verify and delete this method
+        """
+        Hook for specifying exclude.
+        """
+        return self.exclude
 
 
 class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):

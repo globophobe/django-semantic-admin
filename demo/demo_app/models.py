@@ -11,7 +11,7 @@ from taggit.managers import TaggableManager
 
 class Person(models.Model):
     friends = models.ManyToManyField(
-        "self", related_name="friends_with", help_text="Helpful text"
+        "self", related_name="friends_with", help_text="Helpful text", blank=True
     )
     name = models.CharField(_("name"), max_length=256, help_text="Helpful text")
     slug = models.SlugField(_("slug"), help_text="Helpful text")

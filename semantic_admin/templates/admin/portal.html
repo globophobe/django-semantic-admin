@@ -1,0 +1,37 @@
+{% load i18n static semantic_utils %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+<meta charset="utf-8">
+<title>{% block title %}{% endblock %}</title>
+
+<!-- Style -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+<!-- 
+-->
+<link rel="stylesheet" href="{% static "semantic_admin/custom.css" %}" />
+<link rel="stylesheet" href="{% static "semantic_admin/unsemantic.css" %}" />
+{% block extrastyle %}{% endblock %}
+{% block responsive %}
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  {% if LANGUAGE_BIDI %}
+    <link rel="stylesheet" type="text/css" href="{% static "semantic_admin/rtl.css" %}" />
+  {% endif %}
+{% endblock %}
+<!-- END Style -->
+
+<!-- Script -->
+{% block extrahead %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
+{% endblock %}
+<!-- END Script -->
+
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+</head>
+
+<body id="app-main" class="{% block bodyclass %}{% endblock %}" data-admin-utc-offset="{% now "Z" %}">
+  {% block content %}{% endblock %}
+  {% block extrascript %}{% endblock %}
+</body>
+</html>

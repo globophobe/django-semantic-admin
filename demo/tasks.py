@@ -1,6 +1,7 @@
 import os
+from pathlib import Path
 
-from invoke import run, task
+from invoke import task
 
 
 @task
@@ -26,8 +27,8 @@ def build(ctx):
 
 @task
 def create_database(ctx):
-    run("python manage.py makemigrations")
-    run("python manage.py migrate")
+    ctx.run("python manage.py makemigrations")
+    ctx.run("python manage.py migrate")
 
 
 @task
@@ -63,7 +64,7 @@ def populate_database(ctx):
     coffees = [c for c in os.listdir(COFFEE_DIR) if os.path.splitext(c)[1] == ".jpeg"]
 
     people = []
-    for index in range(int(len(coffees) / 2)):
+    for index in range(int(len(coffees) / 5)):
         first_name = fake.first_name()
         last_name = fake.first_name()
         name = f"{first_name} {last_name}"
@@ -75,26 +76,26 @@ def populate_database(ctx):
         people.append(person)
 
     for person in people:
-        total_friends = int(random.random() * 5)
+        total_friends = int(random.random() * 3)
         can_be_friends = [p for p in people if person != p]
         friends = random.sample(can_be_friends, total_friends)
         person.friends.add(*friends)
 
     pictures = []
     random.shuffle(coffees)
-    for coffee in coffees:
+    coffee_people = people + random.choices(people, k=len(coffees) - len(people))
+    for coffee, coffee_person in zip(coffees, coffee_people):
+        date_and_time = fake.past_datetime().replace(tzinfo=datetime.timezone.utc)
+        picture = Picture(person=coffee_person, date_and_time=date_and_time)
         path = COFFEE_DIR / coffee
-        coffee_person = random.choice(people)
         with open(path, "rb") as f:
-            date_and_time = fake.past_datetime().replace(tzinfo=datetime.timezone.utc)
-            picture = Picture(person=coffee_person, date_and_time=date_and_time)
             picture.picture.save(coffee, File(f))
-            tags = fake.bs().split(" ")
-            picture.tags.add(*tags)
-            pictures.append(picture)
+        tags = fake.bs().split(" ")
+        picture.tags.add(*tags)
+        pictures.append(picture)
 
     for person in people:
-        total_favorites = 1 + int(random.random() * 5)
+        total_favorites = 1 + int(random.random() * 10)
         for index in range(total_favorites):
             picture = random.choice(pictures)
             Favorite.objects.get_or_create(person=person, picture=picture)
@@ -108,7 +109,7 @@ def delete_database(ctx):
 
     db = settings.BASE_DIR / "db.sqlite3"
     if db.exists():
-        run(f"rm {db}")
+        ctx.run(f"rm {db}")
 
 
 @task
@@ -118,7 +119,7 @@ def delete_media(ctx):
     from django.conf import settings
 
     if settings.MEDIA_ROOT.exists():
-        run(f"rm -r {settings.MEDIA_ROOT}")
+        ctx.run(f"rm -r {settings.MEDIA_ROOT}")
 
 
 @task
@@ -137,19 +138,34 @@ def delete_migrations(ctx):
     ]
 
     for migration in migrations:
-        run(f"rm {migration}")
+        ctx.run(f"rm {migration}")
 
 
 @task
-def push_container(ctx, hostname="asia.gcr.io"):
-    django_settings(ctx)
-    from django.conf import settings
+def get_container_name(ctx, hostname="asia.gcr.io"):
+    project_id = ctx.run("gcloud config get-value project").stdout.strip()
+    return f"{hostname}/{project_id}/django-semantic-admin"
 
-    project_id = run("gcloud config get-value project").stdout.strip()
-    name = f"{hostname}/{project_id}/django-semantic-admin"
+
+def docker_secrets():
+    directory = Path(__file__).resolve().parent
+    with open(directory / "demo/settings/secrets.py", "r") as secrets:
+        build_args = []
+        for line in secrets:
+            key, value = line.split(" = ")
+            v = value.strip()
+            build_args.append(f"{key}={v}")
+        return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
+
+
+@task
+def build_container(ctx, hostname="asia.gcr.io"):
+    ctx.run("echo yes | python manage.py collectstatic")
+    name = get_container_name(ctx, hostname=hostname)
     # Requirements
     requirements = [
         "gunicorn",
+        "django",
         "django-filter",
         "django-taggit",
         "pillow",
@@ -159,20 +175,21 @@ def push_container(ctx, hostname="asia.gcr.io"):
     reqs = "\\ ".join(
         [
             req
-            for req in run("poetry export --dev --without-hashes").stdout.split("\n")
+            for req in ctx.run("poetry export --dev --without-hashes").stdout.split(
+                "\n"
+            )
             if req.split("==")[0] in requirements
         ]
     )
     # Build
-    build_args = (
-        f"--build-arg POETRY_EXPORT={reqs} "
-        f"--build-arg SECRET_KEY='{settings.SECRET_KEY}'"
-    )
+    build_args = f"--build-arg POETRY_EXPORT={reqs} " + docker_secrets()
     cmd = f"docker build {build_args} --file=Dockerfile --tag={name} ."
     ctx.run(cmd)
-    import pdb
 
-    pdb.set_trace()
+
+@task
+def push_container(ctx, hostname="asia.gcr.io"):
+    name = get_container_name(ctx, hostname=hostname)
     # Push
     cmd = f"docker push {name}"
     ctx.run(cmd)

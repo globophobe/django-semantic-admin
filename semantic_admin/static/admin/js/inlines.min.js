@@ -69,7 +69,9 @@
               options.addCssClass +
               '"><td colspan="' +
               numCols +
-              '"><a href="#">' +
+              // BEGIN CUSTOMIZATION
+              '"><a class="ui basic primary button" href="#">' +
+              // END CUSTOMIZATION
               options.addText +
               "</a></tr>"
           );
@@ -135,10 +137,11 @@
       if (row.is("tr")) {
         // If the forms are laid out in table rows, insert
         // the remove button into the last table cell:
+        // BEGIN CUSTOMIZATION
         row
           .children(":last")
           .append(
-            '<div><a class="' +
+            '<div><a class="ui small basic red outline button ' +
               options.deleteCssClass +
               '" href="#">' +
               options.deleteText +
@@ -148,7 +151,7 @@
         // If they're laid out as an ordered/unordered list,
         // insert an <li> after the last list item:
         row.append(
-          '<li><a class="' +
+          '<li><a class="ui small basic red outline button ' +
             options.deleteCssClass +
             '" href="#">' +
             options.deleteText +
@@ -160,13 +163,14 @@
         row
           .children(":first")
           .append(
-            '<span><a class="' +
+            '<span style="margin-left: 0.5rem;"><a class="ui small basic red outline button ' +
               options.deleteCssClass +
               '" href="#">' +
               options.deleteText +
               "</a></span>"
           );
       }
+      // END CUSTOMIZATION
       // Add delete handler for each row.
       row
         .find("a." + options.deleteCssClass)

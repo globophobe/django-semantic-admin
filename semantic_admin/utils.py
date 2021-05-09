@@ -10,7 +10,7 @@ from django.utils.html import format_html
 try:
     from django.contrib.postgres.fields import JSONField
 except ImportError:
-    from models import JSONField  # type: ignore
+    from django.db.models import JSONField  # type: ignore
 
 
 def semantic_display_for_field(value, field, empty_value_display):

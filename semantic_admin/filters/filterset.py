@@ -90,7 +90,7 @@ class SemanticFilterSet(FilterSet):
 
 class SemanticExcludeAllFilterSet(SemanticFilterSet):
     """
-    Debatable to have in core
+    Debatable to have this
     https://django-filter.readthedocs.io/en/master/guide/tips.html
     """
 

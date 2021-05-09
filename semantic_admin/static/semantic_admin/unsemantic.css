@@ -55,7 +55,7 @@ button.c-sf-button:hover {
 
 /* CHECKBOX */
 
-div.ui.checkbox {
+div.ui.checkbox:not(.changelist) {
   margin-bottom: 0.69em;
 }
 

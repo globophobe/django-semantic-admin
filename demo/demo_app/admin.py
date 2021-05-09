@@ -40,6 +40,7 @@ class PictureStackedInline(StackedInline):
         "tags",
         "is_color",
     )
+    show_change_link = True
     extra = 0
 
 
@@ -110,7 +111,7 @@ class PictureFavoriteTabularInline(TabularInline):
 @admin.register(Picture)
 class PictureAdmin(ModelAdmin):
     search_fields = ("tags__name",)
-    list_filter = ("tags",)
+    list_filter = ("person",)
     list_display = (
         "list_picture",
         "person",
@@ -125,21 +126,34 @@ class PictureAdmin(ModelAdmin):
     )
     fields = (
         ("date_and_time", "tags", "is_color"),
-        "picture",
+        "detail_picture",
     )
-    readonly_fields = ("list_picture", "person_changelink", "has_favorites")
+    readonly_fields = (
+        "list_picture",
+        "person_changelink",
+        "has_favorites",
+        "detail_picture",
+    )
     date_hierarchy = "date_and_time"
     list_per_page = 10
     inlines = (PictureFavoriteTabularInline,)
 
     def list_picture(self, obj):
-        name = str(obj)
-        img = obj.get_img(css="medium rounded")
-        html = f"{img}<em>{name}</em>"
-        return format_html(mark_safe(html))
+        return self._picture(obj, css="medium rounded")
 
     list_picture.short_description = _("picture").capitalize()  # type: ignore
     list_picture.admin_order_field = "date_and_time"  # type: ignore
+
+    def detail_picture(self, obj):
+        return self._picture(obj, css="large rounded")
+
+    detail_picture.short_description = _("picture").capitalize()  # type: ignore
+
+    def _picture(self, obj, css=""):
+        name = str(obj)
+        img = obj.get_img(css=css)
+        html = f"{img}<em>{name}</em>"
+        return format_html(mark_safe(html))
 
     def person_changelink(self, obj):
         url = reverse("admin:demo_app_person_change", args=(obj.pk,))
@@ -152,8 +166,12 @@ class PictureAdmin(ModelAdmin):
     def has_favorites(self, obj):
         return obj.total_favorites > 1
 
-    has_favorites.short_description = _("favorites").capitalize()  # type: ignore
+    has_favorites.short_description = _("has favorites").capitalize()  # type: ignore
+    has_favorites.admin_order_field = "total_favorites"
     has_favorites.boolean = True  # type: ignore
+
+    def has_add_permission(self, request):
+        return False
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)

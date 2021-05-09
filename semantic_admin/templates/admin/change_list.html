@@ -20,7 +20,7 @@
 {% if not is_popup %}
 {% block breadcrumbs %}
 <div class="ui large breadcrumb" style="padding-left: 1rem;">
-<a class="section" href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+<a class="section" href="{% url 'admin:index' %}">{% trans "Home" %}</a>
 <i class="right chevron icon divider"></i>
 {# &rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a> #}
 <div class="section">{{ cl.opts.verbose_name_plural|capfirst }}</div>
@@ -58,7 +58,7 @@
 
       {% block filters %}
         {% if cl.has_filters %}
-          <h2>{% trans 'Filter' %}</h2>
+          <h2 style="margin-top: 0; padding-left: 1rem;" class="ui header">{% trans 'Filter' %}</h2>
           <div id="changelist-filter" class="ui secondary segment">
             <div class="ui form">
               {% for spec in cl.filter_specs %}{% admin_list_filter cl spec %}{% endfor %}

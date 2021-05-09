@@ -1,12 +1,31 @@
 {% extends "admin/base_site.html" %}
 {% load i18n %}
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></div>{% endblock %}
+{% block breadcrumbs %}
+    <div class="ui large breadcrumb" style="padding-left: 1rem;">
+      <div class="section"></div>
+    </div>
+{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
 
 {% block content %}
 
-<p>{% trans "Thanks for spending some quality time with the Web site today." %}</p>
+<p style="margin-left: 1rem;">{% translate "Thanks for spending some quality time with the Web site today." %}</p>
 
-<p><a href="{% url 'admin:index' %}">{% trans 'Log in again' %}</a></p>
+<div class="ui basic segment" style="margin-top: 0;">
+  <div class="ui form noprint">
+    <div class="equal width fields">
+
+      <div class="field">
+        <a class="ui small basic fluid primary button" href="{% url 'admin:index' %}">{% translate 'Log in again' %}</a>
+      </div>
+      <div class="field"></div>
+      <div class="field"></div>
+      <div class="field"></div>
+
+    </div>
+  </div>
+</div>
 
 {% endblock %}

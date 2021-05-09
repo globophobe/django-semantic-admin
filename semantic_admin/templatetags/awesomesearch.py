@@ -2,7 +2,6 @@ from django import forms, template
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from semantic_admin.filters import SemanticFilterSet
 
 BLANK_LABEL = "<label>&nbsp;</label>"
 FIELD = '<div class="field">{}</div>'
@@ -111,26 +110,31 @@ def search_fields(context, cl):
                 f = filter_field.format(**format_dict)
             f = FIELD.format(f)
             fields.append(f)
-        if isinstance(cl.model_admin.filterset, SemanticFilterSet):
-            exclude_label = _("Exclude")
-            checked = cl.model_admin.filterset_exclude
-            exclude_checkbox = f"""
-                {BLANK_LABEL}
-                <div class="ui checkbox">
-                    <input
-                        id="exclude"
-                        type="checkbox"
-                        tabindex="0"
-                        class="hidden"
-                        name="_exclude"
-                        value="true"
-                        {checked}
-                    >
-                    <label for="exclude">{exclude_label}</label>
-                </div>
-            """
-            f = FIELD.format(exclude_checkbox)
-            fields.append(f)
+        try:
+            from semantic_admin.filters import SemanticExcludeAllFilterSet
+        except ImportError:
+            pass
+        else:
+            if isinstance(cl.model_admin.filterset, SemanticExcludeAllFilterSet):
+                exclude_label = _("Exclude")
+                checked = cl.model_admin.filterset_exclude
+                exclude_checkbox = f"""
+                    {BLANK_LABEL}
+                    <div class="ui checkbox">
+                        <input
+                            id="exclude"
+                            type="checkbox"
+                            tabindex="0"
+                            class="hidden"
+                            name="_exclude"
+                            value="true"
+                            {checked}
+                        >
+                        <label for="exclude">{exclude_label}</label>
+                    </div>
+                """
+                f = FIELD.format(exclude_checkbox)
+                fields.append(f)
         html += format_fields(cl, fields)
     else:
         html = search_field

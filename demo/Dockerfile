@@ -1,17 +1,20 @@
-FROM python:3.7-slim-buster
+FROM python:3.8-slim-buster
 
 ARG POETRY_EXPORT
 ARG SECRET_KEY
+ARG SENTRY_DSN
 
 ENV SECRET_KEY $SECRET_KEY
+ENV SENTRY_DSN $SENTRY_DSN
 
 ADD demo /demo/demo
 ADD demo_app /demo/demo_app
 ADD static /demo/static
 ADD media /demo/media
-ADD db.sqlite3 /demo/sqlite3
+ADD templates /demo/templates
+ADD db.sqlite3 /demo/db.sqlite3
 
-RUN pip install --no-cache-dir $POETRY_EXPORT django-semantic-admin
+RUN pip install --no-cache-dir $POETRY_EXPORT django-semantic-admin sentry-sdk
 
 # Start the server
-ENTRYPOINT ["gunicorn", "--chdir", "/demo", "demo.wsgi:application"]
+ENTRYPOINT ["gunicorn", "--chdir", "/demo", "--bind", "0.0.0.0:8080", "demo.wsgi:application"]

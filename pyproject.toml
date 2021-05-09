@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-semantic-admin"
-version = "0.1.5"
+version = "0.2.1"
 description = "Django Semantic UI Admin theme"
 authors = ["Alex <globophobe@gmail.com>"]
 readme = "README.md"
@@ -17,7 +17,6 @@ packages = [{ include = "semantic_admin" }]
 [tool.poetry.dependencies]
 python = ">=3.6,<4.0"
 django = ">=3.0"
-django-taggit = "^1.3.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"
@@ -26,6 +25,7 @@ isort = "^5.7.0"
 Pillow = "^8.1.0"
 django-stubs = "^1.7.0"
 mypy = "^0.790"
+django-taggit = "^1.3.0"
 django-filter = "^2.4.0"
 invoke = "^1.5.0"
 factory-boy = "^3.2.0"

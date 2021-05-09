@@ -1,4 +1,4 @@
-from .admin import SemanticActionCheckboxInput
+from .admin import SemanticActionCheckboxInput, SemanticChangelistCheckboxInput
 from .autocomplete import SemanticAutocompleteSelect, SemanticAutocompleteSelectMultiple
 from .widgets import (
     SemanticCheckboxInput,
@@ -26,6 +26,7 @@ __all__ = [
     "SemanticActionCheckboxInput",
     "SemanticAutocompleteSelect",
     "SemanticAutocompleteSelectMultiple",
+    "SemanticChangelistCheckboxInput",
     "SemanticCheckboxInput",
     "SemanticCheckboxSelectMultiple",
     "SemanticClearableFileInput",

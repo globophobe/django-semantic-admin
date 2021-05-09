@@ -1,0 +1,7 @@
+{% load i18n %}
+<h2 class="ui header">{% translate "Summary" %}</h2>
+<div class="ui bulleted list">
+    {% for model_name, object_count in model_count %}
+    <div class="item">{{ model_name|capfirst }}: {{ object_count }}</div>
+    {% endfor %}
+</div>

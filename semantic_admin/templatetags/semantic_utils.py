@@ -2,7 +2,6 @@ import datetime
 
 from django import template
 from django.contrib.admin.templatetags.admin_list import (
-    DOT,
     ResultList,
     _coerce_field_name,
     result_hidden_fields,
@@ -264,8 +263,9 @@ def semantic_paginator_number(cl, i):
     """
     Generate an individual page index link in a paginated list.
     """
-    if i == DOT:
-        return mark_safe('<span class="item">... </span>')
+    ellipsis = getattr(cl.paginator, "ELLIPSIS", "...")
+    if i == ellipsis:
+        return format_html("{} ", ellipsis)
     elif i == cl.page_num:
         return format_html('<span class="this-page item active">{}</span> ', i + 1)
     else:

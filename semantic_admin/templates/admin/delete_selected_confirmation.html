@@ -1,0 +1,74 @@
+{% extends "admin/base_site.html" %}
+{% load i18n l10n admin_urls semantic_filters static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {{ media }}
+    <script src="{% static 'admin/js/cancel.js' %}" async></script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation delete-selected-confirmation{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; {% translate 'Delete multiple objects' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="ui segment">
+{% if perms_lacking %}
+    <p>{% blocktranslate %}Deleting the selected {{ objects_name }} would result in deleting related objects, but your account doesn't have permission to delete the following types of objects:{% endblocktranslate %}</p>
+    <div class="ui bulleted list">
+    {% for obj in perms_lacking %}
+        <div class="item">{{ obj }}</div>
+    {% endfor %}
+    </div>
+{% elif protected %}
+    <p>{% blocktranslate %}Deleting the selected {{ objects_name }} would require deleting the following protected related objects:{% endblocktranslate %}</p>
+    <div class="ui bulleted list">
+    {% for obj in protected %}
+        <div class="item">{{ obj }}</div>
+    {% endfor %}
+    </div>
+{% else %}
+    <p>{% blocktranslate %}Are you sure you want to delete the selected {{ objects_name }}? All of the following objects and their related items will be deleted:{% endblocktranslate %}</p>
+    {% include "admin/includes/object_delete_summary.html" %}
+    <h2>{% translate "Objects" %}</h2>
+    {% for deletable_object in deletable_objects %}
+        <div class="ui bulleted list">{{ deletable_object|semantic_unordered_list }}</div>
+    {% endfor %}
+</div>
+
+    <form method="post">{% csrf_token %}
+    <div>
+    {% for obj in queryset %}
+    <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk|unlocalize }}">
+    {% endfor %}
+    <input type="hidden" name="action" value="delete_selected">
+    <input type="hidden" name="post" value="yes">
+
+    <div class="ui basic segment" style="margin-top: 0;">
+      <div class="ui form noprint">
+        <div class="equal width fields">
+
+          <div class="field">
+            <input class="ui fluid red button" type="submit" value="{% translate 'Yes, I’m sure' %}">
+          </div>
+          <div class="field">
+            <a href="#" class="ui fluid button cancel-link">{% translate "No, take me back" %}</a>
+          </div>
+          <div class="field"></div>
+          <div class="field"></div>
+
+        </div>
+      </div>
+    </div>
+
+    </div>
+    </form>
+{% endif %}
+{% endblock %}

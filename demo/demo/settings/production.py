@@ -19,7 +19,8 @@ ALLOWED_HOSTS = [
 sentry_sdk.init(
     dsn=os.environ["SENTRY_DSN"],
     integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
+    # Less transactions
+    traces_sample_rate=0.01,
 )
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"

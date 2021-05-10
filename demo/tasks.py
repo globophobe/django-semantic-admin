@@ -64,7 +64,7 @@ def populate_database(ctx):
     coffees = [c for c in os.listdir(COFFEE_DIR) if os.path.splitext(c)[1] == ".jpeg"]
 
     people = []
-    for index in range(int(len(coffees) / 5)):
+    for index in range(int(len(coffees) / 2)):
         first_name = fake.first_name()
         last_name = fake.first_name()
         name = f"{first_name} {last_name}"
@@ -95,7 +95,7 @@ def populate_database(ctx):
         pictures.append(picture)
 
     for person in people:
-        total_favorites = 1 + int(random.random() * 10)
+        total_favorites = 1 + int(random.random() * 5)
         for index in range(total_favorites):
             picture = random.choice(pictures)
             Favorite.objects.get_or_create(person=person, picture=picture)

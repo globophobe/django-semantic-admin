@@ -33,15 +33,31 @@ else:
     TabularInline = DefaultTabularInline
 
 
+def html5_picture(obj, css=""):
+    name = str(obj)
+    img = obj.get_img(css=css)
+    html = f"{img}<em>{name}</em>"
+    return format_html(mark_safe(html))
+
+
 class PictureStackedInline(StackedInline):
     model = Picture
     fields = (
-        ("date_and_time", "picture"),
-        "tags",
+        ("date_and_time", "tags"),
+        "inline_picture",
         "is_color",
     )
+    readonly_fields = ("inline_picture",)
     show_change_link = True
     extra = 0
+
+    def inline_picture(self, obj):
+        return html5_picture(obj, css="large rounded")
+
+    inline_picture.short_description = _("picture").capitalize()  # type: ignore
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 class PersonFavoriteTabularInline(TabularInline):
@@ -139,21 +155,15 @@ class PictureAdmin(ModelAdmin):
     inlines = (PictureFavoriteTabularInline,)
 
     def list_picture(self, obj):
-        return self._picture(obj, css="medium rounded")
+        return html5_picture(obj, css="medium rounded")
 
     list_picture.short_description = _("picture").capitalize()  # type: ignore
     list_picture.admin_order_field = "date_and_time"  # type: ignore
 
     def detail_picture(self, obj):
-        return self._picture(obj, css="large rounded")
+        return html5_picture(obj, css="large rounded")
 
     detail_picture.short_description = _("picture").capitalize()  # type: ignore
-
-    def _picture(self, obj, css=""):
-        name = str(obj)
-        img = obj.get_img(css=css)
-        html = f"{img}<em>{name}</em>"
-        return format_html(mark_safe(html))
 
     def person_changelink(self, obj):
         url = reverse("admin:demo_app_person_change", args=(obj.pk,))

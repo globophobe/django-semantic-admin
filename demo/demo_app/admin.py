@@ -110,7 +110,7 @@ class PersonAdmin(ModelAdmin):
 
     def send_friend_request(self, request, queryset):
         msg = _("You are now friends with {friends}.")
-        format_dict = {"friends": ",".join((obj.name for obj in queryset))}
+        format_dict = {"friends": ", ".join((obj.name for obj in queryset))}
         self.message_user(request, msg.format(**format_dict))
 
     def get_queryset(self, request):

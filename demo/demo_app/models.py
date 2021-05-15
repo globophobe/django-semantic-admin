@@ -23,6 +23,7 @@ class Person(models.Model):
         return self.name
 
     class Meta:
+        ordering = ("name",)
         verbose_name = _("person")
         verbose_name_plural = _("people")
 

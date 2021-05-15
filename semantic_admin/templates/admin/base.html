@@ -78,7 +78,7 @@ launches the offscreen menu.
 {% endif %}
 
     <!-- Container -->
-    <div id="app-content" class="ui container" style="margin-left: 0 !important; margin-right: 0 !important;">
+    <div id="app-content" class="ui container" style="margin-left: {% if is_popup %}1rem;{% else %}0 !important;{% endif %} margin-right: 0 !important;">
       {% if not is_popup %}
         <!-- Breadcrumbs -->
         {% block breadcrumbsbox %} 

@@ -1,16 +1,20 @@
-A Django Semantic UI Admin theme
---------------------------------
-Django [Semantic UI](https://semantic-ui.com/) Admin is a completely free (MIT) admin theme for Django. Actually, this is my 3rd admin theme for Django. The first was forgettable, and the second was with Pure CSS. Pure CSS was great, but lacked JavaScript components.
+Django Semantic UI admin theme
+------------------------------
+A completely free (MIT) [Semantic UI](https://semantic-ui.com/) admin theme for Django. Actually, this is my 3rd admin theme for Django. The first was forgettable, and the second was with [Pure CSS](https://purecss.io/). Pure CSS was great, but lacked JavaScript components.
 
 Semantic UI looks professional, and has great JavaScript components.
+
+Log in to the demo with username `demo` and password `demo`: https://semantic-admin.com
 
 Why?
 ----
 * Looks professional, with a nice sidebar.
-* Resonsive design, even [tables can stack](https://semantic-ui.com/collections/table.html#stacking) responsively on mobile.
+* Responsive design, even [tables can stack](https://semantic-ui.com/collections/table.html#stacking) responsively on mobile.
 * JavaScript datepicker and timepicker components.
 * JavaScript selects, including multiple selections, which integrate well with Django autocomplete fields.
 * Semantic UI has libraries for [React](https://react.semantic-ui.com/) and [Vue](https://semantic-ui-vue.github.io/#/), in addition to jQuery. This means this package can be used to style the admin, and custom views can be added with React or Vue components with the same style.
+
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/list-view.png" alt="django-semantic-admin"/>
 
 Install
 -------
@@ -23,11 +27,11 @@ pip install django-semantic-admin
 
 Add to `settings.py` before `django.contrib.admin`:
 
-```
+```python
 INSTALLED_APPS = [
-  "semantic_admin",
-  "django.contrib.admin",
-  ...
+    "semantic_admin",
+    "django.contrib.admin",
+    ...
 ]
 ```
 
@@ -36,31 +40,72 @@ Usage
 
 Instead of `admin.ModelAdmin`, `admin.StackedInline`, or `admin.TabularInline`:
 
-```
+```python
 class ExampleStackedInline(admin.StackedInline):
-  pass
+    pass
 
 class ExampleTabularInline(admin.TabularInline):
-  pass
+    pass
 
 class ExampleAdmin(admin.ModelAdmin):
-  inlines = (ExampleStackedInline, ExampleTabularInline)
+    inlines = (ExampleStackedInline, ExampleTabularInline)
 ```
 
 Inherit from their `Semantic` equivalents:
 
-```
+```python
 from semantic_admin import SemanticModelAdmin, SemanticStackedInline, SemanticTabularInline
 
 class ExampleStackedInline(SemanticStackedInline):
-  pass
+    pass
 
 class ExampleTabularInline(SemanticTabularInline):
-  pass
+    pass
 
 class ExampleAdmin(SemanticModelAdmin):
-  inlines = (ExampleStackedInline, ExampleTabularInline)
+    inlines = (ExampleStackedInline, ExampleTabularInline)
 ```
+
+Awesome optional features
+-------------------------
+
+1. Optional integration with [django_filter](https://github.com/carltongibson/django-filter):
+
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" />
+
+To enable this awesome feature, add `filter_class` to your Django admin:
+
+```python
+from semantic_admin.filters import SemanticFilterSet
+
+class DemoFilter(SemanticFilterSet):
+    class Meta:
+        model = Demo
+        fields = ("demo_field",)
+
+class DemoAdmin(SemanticModelAdmin):
+    filter_class = DemoFilter
+```
+
+2. HTML preview in Django `autocomplete_fields`:
+
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/html5-autocomplete.png" width="670" alt="html5-autocomplete" />
+
+To enable this awesome feature, add the `semantic_autocomplete` property to your Django model:
+
+```python
+class DemoModel(models.Model):
+    @property
+    def semantic_autocomplete(self):
+        html = self.get_img()
+        return format_html(html)
+```
+
+Contributing
+------------
+
+Install dependencies with `poetry install --dev`. The demo is built with [invoke tasks](https://github.com/globophobe/django-semantic-admin/blob/master/demo/tasks.py). For example, `invoke build`.
+
 
 Notes
 -----

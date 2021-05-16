@@ -4,7 +4,6 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 
@@ -35,10 +34,7 @@ class Picture(models.Model):
         on_delete=models.CASCADE,
         help_text="Helpful text",
     )
-    date_and_time = models.DateTimeField(
-        _("date and time"),
-        help_text="Helpful text",
-    )
+    date_and_time = models.DateTimeField(_("date and time"), help_text="Helpful text",)
     picture = models.ImageField(
         _("picture"), help_text="Helpful text", upload_to="pictures"
     )
@@ -64,7 +60,7 @@ class Picture(models.Model):
         name = str(self)
         img = self.get_img(css="small rounded right spaced")
         html = f"<p>{img}{name}</p>"
-        return format_html(mark_safe(html))
+        return format_html(html)
 
     def __str__(self):
         return ", ".join((tag.name for tag in self.tags.all()))

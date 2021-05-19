@@ -8,6 +8,8 @@ Semantic UI looks professional, and has great JavaScript components.
 
 Log in to the demo with username `demo` and password `demo`: https://semantic-admin.com
 
+Documentation is on [GitHub Pages](https://globophobe.github.io/django-semantic-admin/).
+
 Why?
 ----
 * Looks professional, with a nice sidebar.

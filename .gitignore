@@ -4,5 +4,6 @@ db.sqlite3
 secrets.py
 .mypy_cache
 /dist
+/site
 /demo/static
 /demo/media

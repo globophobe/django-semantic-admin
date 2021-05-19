@@ -14,7 +14,7 @@ Why?
 * JavaScript selects, including multiple selections, which integrate well with Django autocomplete fields.
 * Semantic UI has libraries for [React](https://react.semantic-ui.com/) and [Vue](https://semantic-ui-vue.github.io/#/), in addition to jQuery. This means this package can be used to style the admin, and custom views can be added with React or Vue components with the same style.
 
-<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/list-view.png" alt="django-semantic-admin"/>
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-list.png" alt="django-semantic-admin"/>
 
 Install
 -------
@@ -89,7 +89,7 @@ class DemoAdmin(SemanticModelAdmin):
 
 2. HTML preview in Django `autocomplete_fields`:
 
-<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/html5-autocomplete.png" width="670" alt="html5-autocomplete" />
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/html5-autocomplete.png" alt="html5-autocomplete" />
 
 To enable this awesome feature, add the `semantic_autocomplete` property to your Django model:
 
@@ -104,7 +104,7 @@ class DemoModel(models.Model):
 Contributing
 ------------
 
-Install dependencies with `poetry install --dev`. The demo is built with [invoke tasks](https://github.com/globophobe/django-semantic-admin/blob/master/demo/tasks.py). For example, `invoke build`.
+Install dependencies with `poetry install`. The demo is built with [invoke tasks](https://github.com/globophobe/django-semantic-admin/blob/master/demo/tasks.py). For example, `cd demo; invoke build`.
 
 
 Notes

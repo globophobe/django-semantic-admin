@@ -1,5 +1,7 @@
 Django Semantic UI admin theme
 ------------------------------
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-list.png" alt="django-semantic-admin"/>
+
 A completely free (MIT) [Semantic UI](https://semantic-ui.com/) admin theme for Django. Actually, this is my 3rd admin theme for Django. The first was forgettable, and the second was with [Pure CSS](https://purecss.io/). Pure CSS was great, but lacked JavaScript components.
 
 Semantic UI looks professional, and has great JavaScript components.
@@ -14,7 +16,6 @@ Why?
 * JavaScript selects, including multiple selections, which integrate well with Django autocomplete fields.
 * Semantic UI has libraries for [React](https://react.semantic-ui.com/) and [Vue](https://semantic-ui-vue.github.io/#/), in addition to jQuery. This means this package can be used to style the admin, and custom views can be added with React or Vue components with the same style.
 
-<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-list.png" alt="django-semantic-admin"/>
 
 Install
 -------
@@ -89,7 +90,7 @@ class DemoAdmin(SemanticModelAdmin):
 
 2. HTML preview in Django `autocomplete_fields`:
 
-<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/html5-autocomplete.png" alt="html5-autocomplete" />
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/html5-autocomplete.png" width="670" alt="html5-autocomplete" />
 
 To enable this awesome feature, add the `semantic_autocomplete` property to your Django model:
 

@@ -14,4 +14,4 @@ Why?
 * JavaScript selects, including multiple selections, which integrate well with Django autocomplete fields.
 * Semantic UI has libraries for [React](https://react.semantic-ui.com/) and [Vue](https://semantic-ui-vue.github.io/#/), in addition to jQuery. This means this package can be used to style the admin, and custom views can be added with React or Vue components with the same style.
 
-<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/list-view.png" alt="django-semantic-admin"/>
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-list.png" alt="django-semantic-admin"/>

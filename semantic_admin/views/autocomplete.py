@@ -1,9 +1,10 @@
 from django.contrib.admin.views.autocomplete import AutocompleteJsonView
-from django.http import Http404, JsonResponse
+from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse
 
 
 class SemanticAutocompleteJsonView(AutocompleteJsonView):
-    def get(self, request, require_search_fields=True, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
         Return a JsonResponse with search results of the form:
         {
@@ -11,18 +12,16 @@ class SemanticAutocompleteJsonView(AutocompleteJsonView):
             pagination: {more: true}
         }
         """
-        # BEGIN CUSTOMIZATION #
-        if require_search_fields and not self.model_admin.get_search_fields(request):
-            # END CUSTOMIZATION #
-            raise Http404(
-                "%s must have search_fields for the autocomplete_view."
-                % type(self.model_admin).__name__
-            )
-        if not self.has_perm(request):
-            return JsonResponse({"error": "403 Forbidden"}, status=403)
+        (
+            self.term,
+            self.model_admin,
+            self.source_field,
+            to_field_name,
+        ) = self.process_request(request)
 
-        self.term = request.GET.get("term", "")
-        self.paginator_class = self.model_admin.paginator
+        if not self.has_perm(request):
+            raise PermissionDenied
+
         self.object_list = self.get_queryset()
         context = self.get_context_data()
         return JsonResponse(
@@ -30,7 +29,7 @@ class SemanticAutocompleteJsonView(AutocompleteJsonView):
                 # BEGIN CUSTOMIZATION #
                 "results": [
                     {
-                        "id": str(obj.pk),
+                        "id": str(getattr(obj, to_field_name)),
                         "name": getattr(obj, "semantic_autocomplete", str(obj)),
                         "text": str(obj),
                     }

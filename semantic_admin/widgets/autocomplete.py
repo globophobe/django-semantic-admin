@@ -17,6 +17,9 @@ class SemanticAutocompleteMixin(AutocompleteMixin):
         attrs.update(
             {
                 "data-ajax-url": self.get_url(),
+                "data-app-label": self.field.model._meta.app_label,
+                "data-model-name": self.field.model._meta.model_name,
+                "data-field-name": self.field.name,
                 "class": attrs["class"] + (" " if attrs["class"] else ""),
             }
         )

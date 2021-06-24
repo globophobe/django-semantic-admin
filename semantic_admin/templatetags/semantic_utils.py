@@ -263,18 +263,16 @@ def semantic_paginator_number(cl, i):
     """
     Generate an individual page index link in a paginated list.
     """
-    # TODO: Use ellipsis instead of DOT
-    # However, it seems to be a breaking change in Django
-    # ellipsis = getattr(cl.paginator, "ELLIPSIS", "...")
     DOT = "."
-    if i == DOT:
-        return mark_safe('<span class="item">... </span>')
+    ELLIPSIS = getattr(cl.paginator, "ELLIPSIS", None)
+    if i == DOT or i == ELLIPSIS:
+        return format_html('<span class="item">... </span>')
     elif i == cl.page_num:
-        return format_html('<span class="this-page item active">{}</span> ', i + 1)
+        return format_html('<span class="this-page item active">{}</span> ', i)
     else:
         return format_html(
             '<a href="{}" class="item{}">{}</a> ',
             cl.get_query_string({PAGE_VAR: i}),
-            mark_safe(" end" if i == cl.paginator.num_pages - 1 else ""),
-            i + 1,
+            mark_safe(" end" if i == cl.paginator.num_pages else ""),
+            i,
         )

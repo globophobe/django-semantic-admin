@@ -1,7 +1,7 @@
 import copy
 from functools import partial
 
-from django import VERSION, forms
+from django import forms
 from django.contrib.admin import helpers, widgets
 from django.contrib.admin.options import (
     BaseModelAdmin,
@@ -42,8 +42,6 @@ from semantic_admin.widgets import (
 from .awesomesearch import AwesomeSearchModelAdmin
 from .helpers import SemanticActionForm
 from .views.autocomplete import SemanticAutocompleteJsonView
-
-MAJOR_VERSION, MINOR_VERSION, *rest = VERSION
 
 SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateTimeField: {"widget": SemanticDateTimeInput},
@@ -111,13 +109,8 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
         if db_field.name in self.get_autocomplete_fields(request):
             # BEGIN CUSTOMIZATION
 
-            # There was a change in Django 3.2
-            if MAJOR_VERSION >= 3 and MINOR_VERSION >= 2:
-                field = db_field
-            else:
-                field = db_field.remote_field
             kwargs["widget"] = SemanticAutocompleteSelect(
-                field, self.admin_site, using=db
+                db_field, self.admin_site, using=db
             )
 
             # END CUSTOMIZATION
@@ -158,18 +151,17 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
         if "widget" not in kwargs:
             autocomplete_fields = self.get_autocomplete_fields(request)
             if db_field.name in autocomplete_fields:
+
                 # BEGIN CUSTOMIZATION
                 kwargs["widget"] = SemanticAutocompleteSelectMultiple(
-                    db_field.remote_field,
+                    db_field,
                     self.admin_site,
                     using=db,
                 )
                 # END CUSTOMIZATION
 
             elif db_field.name in self.raw_id_fields:
-                # TODO
                 kwargs["widget"] = widgets.ManyToManyRawIdWidget(
-                    db_field.remote_field,
                     db_field.remote_field,
                     self.admin_site,
                     using=db,

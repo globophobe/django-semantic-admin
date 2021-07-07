@@ -23,6 +23,18 @@ function semanticChooser() {
       }
       // Initialize dropdown.
       var url = $(this).data("ajax-url") + "?term={query}";
+      var app_label = $(this).data('app-label');
+      if (app_label) {
+        url += '&app_label=' + app_label;
+      }
+      var model_name = $(this).data('model-name');
+      if (model_name) {
+        url += '&model_name=' + model_name;
+      }
+      var field_name = $(this).data('field-name');
+      if (field_name) {
+        url += '&field_name=' + field_name;
+      }
       $(this).dropdown({
         apiSettings: {
           url: url,

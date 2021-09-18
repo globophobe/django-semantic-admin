@@ -36,8 +36,8 @@ def create_user(ctx):
     from django.contrib.auth import get_user_model
 
     User = get_user_model()
-    user = User.objects.create(username="demo", is_superuser=True, is_staff=True)
-    user.set_password("demo")
+    user = User.objects.create(username="django", is_superuser=True, is_staff=True)
+    user.set_password("semantic-admin")
     user.save()
 
 

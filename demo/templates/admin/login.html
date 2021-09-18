@@ -6,7 +6,6 @@
 <div class="ui raised centered card">
   <div style="background: #f3f4f5;" class="content">
     <div class="header">{% trans 'Log in' %}</div>
-    <div style="margin-top: 0.5rem;" class="ui mini header">Username is <em>demo</em>. Password is <em>demo</em>.</div>
   </div>
   <div class="content">
     {% if form.errors and not form.non_field_errors %}
@@ -37,11 +36,11 @@
     <form class="ui form" action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
       <div class="field">
         {{ form.username.errors }}
-        {{ form.username.label_tag }} {{ form.username }}
+        {{ form.username.label_tag }} <div style="margin-bottom: 0.5rem"><em>django</em></div> {{ form.username }}
       </div>
       <div class="field">
         {{ form.password.errors }}
-        {{ form.password.label_tag }} {{ form.password }}
+        {{ form.password.label_tag }} <div style="margin-bottom: 0.5rem"><em>semantic-admin</em></div> {{ form.password }}
         <input type="hidden" name="next" value="{{ next }}" />
       </div>
       {% url 'admin_password_reset' as password_reset_url %}

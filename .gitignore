@@ -7,3 +7,4 @@ secrets.py
 /site
 /demo/static
 /demo/media
+/demo/demo_app/migrations

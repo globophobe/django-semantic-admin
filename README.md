@@ -6,7 +6,7 @@ A completely free (MIT) [Semantic UI](https://semantic-ui.com/) admin theme for 
 
 Semantic UI looks professional, and has great JavaScript components.
 
-Log in to the demo with username `demo` and password `demo`: https://semantic-admin.com
+Log in to the demo with username `django` and password `semantic-admin`: https://semantic-admin.com
 
 Documentation is on [GitHub Pages](https://globophobe.github.io/django-semantic-admin/).
 

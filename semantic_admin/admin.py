@@ -16,7 +16,6 @@ from django.forms.models import (
     modelformset_factory,
 )
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
 
 from semantic_admin.widgets import (
     SemanticActionCheckboxInput,
@@ -42,6 +41,11 @@ from semantic_admin.widgets import (
 from .awesomesearch import AwesomeSearchModelAdmin
 from .helpers import SemanticActionForm
 from .views.autocomplete import SemanticAutocompleteJsonView
+
+try:
+    from django.utils.translation import ugettext_lazy as _
+except ImportError:
+    from django.utils.translation import gettext_lazy as _
 
 SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateTimeField: {"widget": SemanticDateTimeInput},

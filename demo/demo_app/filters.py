@@ -1,7 +1,11 @@
-from django.utils.translation import ugettext_lazy as _
 from semantic_admin.filters import SemanticFilterSet, SemanticModelMultipleChoiceFilter
 
 from .models import Person, Picture
+
+try:
+    from django.utils.translation import gettext_lazy as _  # Django >= 4
+except ImportError:
+    from django.utils.translation import ugettext_lazy as _
 
 
 class PersonFilter(SemanticFilterSet):

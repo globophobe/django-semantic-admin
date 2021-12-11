@@ -11,20 +11,6 @@ class SemanticAutocompleteMixin(AutocompleteMixin):
 
     template_name = "semantic_ui/forms/widgets/chooser.html"
 
-    def build_attrs(self, base_attrs, extra_attrs=None):
-        attrs = super().build_attrs(base_attrs, extra_attrs=extra_attrs)
-        attrs.setdefault("class", "")
-        attrs.update(
-            {
-                "data-ajax-url": self.get_url(),
-                "data-app-label": self.field.model._meta.app_label,
-                "data-model-name": self.field.model._meta.model_name,
-                "data-field-name": self.field.name,
-                "class": attrs["class"] + (" " if attrs["class"] else ""),
-            }
-        )
-        return attrs
-
     @property
     def media(self):
         # No media.

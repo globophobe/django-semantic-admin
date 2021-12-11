@@ -47,7 +47,3 @@
     page-break-inside: avoid;
   }
 }
-
-div.empty-form {
-  display: none;
-}

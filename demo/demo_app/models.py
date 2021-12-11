@@ -4,14 +4,16 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
-from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
+
+try:
+    from django.utils.translation import gettext_lazy as _  # Django >= 4
+except ImportError:
+    from django.utils.translation import ugettext_lazy as _
 
 
 class Person(models.Model):
-    friends = models.ManyToManyField(
-        "self", related_name="friends_with", help_text="Helpful text", blank=True
-    )
+    friends = models.ManyToManyField("self", help_text="Helpful text", blank=True)
     name = models.CharField(_("name"), max_length=256, help_text="Helpful text")
     slug = models.SlugField(_("slug"), help_text="Helpful text")
     url = models.URLField(_("url"), help_text="Helpful text")
@@ -34,7 +36,10 @@ class Picture(models.Model):
         on_delete=models.CASCADE,
         help_text="Helpful text",
     )
-    date_and_time = models.DateTimeField(_("date and time"), help_text="Helpful text",)
+    date_and_time = models.DateTimeField(
+        _("date and time"),
+        help_text="Helpful text",
+    )
     picture = models.ImageField(
         _("picture"), help_text="Helpful text", upload_to="pictures"
     )

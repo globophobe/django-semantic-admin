@@ -111,10 +111,14 @@
 
         // Autocompletes
         $row.find('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
-            var url = $(this).data('ajax-url') + '?term={query}'
+            var url = $(this).data('ajax--url');
+            url += '?app_label=' + $(this).data('app-label');
+            url += '&model_name=' + $(this).data('model-name');
+            url += '&field_name=' + $(this).data('field-name');
+            url += '&term={query}';
             $(this).dropdown({
                 apiSettings: { 
-                    'url': url, 
+                    'url': url,
                     'onResponse': function(response) {
                         response.results = response.results.map(result => {
                             return Object.assign({ value: result.id, name: result.name || result.text }, result)
@@ -129,7 +133,7 @@
                 'saveRemoteData': false
             });
             // b/c not idempotent.
-            $(this).addClass('initialized')
+            $(this).addClass('initialized');
         });
 
         // Dropdowns

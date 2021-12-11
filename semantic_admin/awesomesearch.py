@@ -1,10 +1,5 @@
-import operator
-from functools import reduce
-
 from django.contrib import admin
-from django.contrib.admin.utils import lookup_needs_distinct
 from django.contrib.admin.views.main import ChangeList
-from django.db import models
 from django.forms import ModelMultipleChoiceField
 from django.forms.fields import MultipleChoiceField
 from django.utils.http import urlencode
@@ -32,11 +27,8 @@ class AwesomeSearchChangeList(ChangeList):
 
     def get_filterset_params(self):
         filterset_params = getattr(self.model_admin, "filterset_params", None)
-        exclude = getattr(self.model_admin, "filterset_exclude", None)
         params = ""
         if filterset_params:
-            if exclude:
-                filterset_params["_exclude"] = "true"
             for key in filterset_params:
                 value = filterset_params[key]
                 if isinstance(value, list):
@@ -74,10 +66,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         # To remove filterset params from request, temporarily make
         # request.GET mutable
         request.GET._mutable = True
-        self.filterset_exclude = request.GET.pop("_exclude", False)
         if hasattr(self, "filter_class"):
-            # request = self._get_preserved_filters(request)
-            # Get and delete filterset params
             # Reset filterset params every request
             self.get_filterset_params(request)
         # Restore immutability of request.GET
@@ -106,19 +95,6 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
             if preserved_filters:
                 return urlencode({"_changelist_filters": preserved_filters})
         return ""
-
-    #     def get_previous_request_from_session(self, request):
-    #         match = request.resolver_match
-    #         if self.preserve_filters and match:
-    #             view_name = match.view_name
-    #             if not request.GET:
-    #                 if view_name in request.session:
-    #                     query_string = request.session[view_name]
-    #                     request.GET = QueryDict(query_string, mutable=True)
-    #             else:
-    #                 preserved_filters = request.GET.urlencode()
-    #                 request.session[view_name] = preserved_filters
-    #         return request
 
     def get_filterset_params(self, request):
         if hasattr(self, "filter_class"):
@@ -161,100 +137,17 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         Returns a tuple containing a queryset to implement the search,
         and a boolean indicating if the results may contain duplicates.
         """
-        # BEGIN CUSTOMIZATION #
-        search_terms = self.get_search_terms(search_term)
-
-        # END CUSTOMIZATION #
-
-        # Apply keyword searches.
-        def construct_search(field_name):
-            if field_name.startswith("^"):
-                return "%s__istartswith" % field_name[1:]
-            elif field_name.startswith("="):
-                return "%s__iexact" % field_name[1:]
-            elif field_name.startswith("@"):
-                return "%s__search" % field_name[1:]
-            else:
-                return "%s__icontains" % field_name
-
-        use_distinct = False
-        search_fields = self.get_search_fields(request)
-
-        # BEGIN CUSTOMIZATION #
-        if search_terms:
-            for search_term in search_terms:
-                qs = self.model.objects.none()  # Create an empty queryset
-                # END CUSTOMIZATION #
-                if search_fields and search_term:
-                    orm_lookups = [
-                        construct_search(str(search_field))
-                        for search_field in search_fields
-                    ]
-                    for bit in search_term.split():
-                        or_queries = [
-                            models.Q(**{orm_lookup: bit}) for orm_lookup in orm_lookups
-                        ]
-
-                        # BEGIN CUSTOMIZATION #
-                        qs |= self.get_method_for_queryset(queryset)(
-                            reduce(operator.or_, or_queries)
-                        )
-                        # END CUSTOMIZATION #
-
-                    if not use_distinct:
-                        for search_spec in orm_lookups:
-                            if lookup_needs_distinct(self.opts, search_spec):
-                                use_distinct = True
-                                break
-
-        # BEGIN CUSTOMIZATION #
-        else:
-            qs = queryset
+        queryset, may_have_duplicates = super().get_search_results(
+            request, queryset, search_term
+        )
         if hasattr(self, "filter_class") and hasattr(self, "filterset_params"):
-            kwargs = {"request": request, "queryset": qs, "passed_validation": True}
-            self.get_exclude(kwargs)
-            filterset = self.filter_class(self.filterset_params, **kwargs)
-            try:
-                filterset = self.filter_class(self.filterset_params, **kwargs)
-            except Exception:
-                pass
-            else:
-                self.filterset = filterset
-                qs = filterset.qs
-        # END CUSTOMIZATION #
-        return qs, use_distinct
-
-    def get_exclude(self, kwargs):
-        try:
-            from .filters import SemanticExcludeAllFilterSet
-        except ImportError:
-            pass
-        else:
-            if issubclass(self.filter_class, SemanticExcludeAllFilterSet):
-                kwargs["exclude"] = self.filterset_exclude
-
-    def get_method_for_queryset(self, queryset):
-        exclude = getattr(self, "filterset_exclude", False)
-        if exclude:
-            queryset = queryset.exclude
-        else:
-            queryset = queryset.filter
-        return queryset
-
-    def get_search_terms(self, search_term):
-        search_terms = []
-        ascii_space_separated = search_term.split(" ")
-        jis_space_separated = search_term.split("\u3000")
-        # Search ASCII for JIS
-        for search_term in ascii_space_separated:
-            s = search_term.split("\u3000")
-            search_terms += s
-        # Search JIS for ASCII
-        for search_term in jis_space_separated:
-            s = search_term.split(" ")
-            search_terms += s
-        # Remove whitespace, and empty strings
-        search_terms = [s.strip().strip("\u3000") for s in search_terms if len(s)]
-        # Search terms should be distinct
-        search_terms = list(set(search_terms))
-        return search_terms
+            kwargs = {
+                "request": request,
+                "queryset": queryset,
+                "passed_validation": True,
+            }
+            self.filterset = filterset = self.filter_class(
+                self.filterset_params, **kwargs
+            )
+            queryset = filterset.qs
+        return queryset, may_have_duplicates

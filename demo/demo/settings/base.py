@@ -55,6 +55,8 @@ MIDDLEWARE = [
     # User uploads are not permitted
     "demo.middleware.WhiteNoiseMediaMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # For internationalization
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",

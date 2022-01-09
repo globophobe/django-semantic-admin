@@ -1,13 +1,11 @@
-import os
-
 import sentry_sdk
+from decouple import config
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *  # noqa
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-SECRET_KEY = os.environ["SECRET_KEY"]
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -17,7 +15,7 @@ ALLOWED_HOSTS = [
 ]
 
 sentry_sdk.init(
-    dsn=os.environ["SENTRY_DSN"],
+    dsn=config("SENTRY_DSN"),
     integrations=[DjangoIntegration()],
     # Less transactions
     traces_sample_rate=0.01,

@@ -1,8 +1,6 @@
 *.pyc
-env_file
+.env
 db.sqlite3
-secrets.py
-.mypy_cache
 /dist
 /site
 /demo/static

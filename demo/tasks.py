@@ -1,6 +1,6 @@
 import os
-from pathlib import Path
 
+from decouple import config
 from invoke import task
 
 
@@ -148,14 +148,10 @@ def get_container_name(ctx, hostname="asia.gcr.io"):
 
 
 def docker_secrets():
-    directory = Path(__file__).resolve().parent
-    with open(directory / "demo/settings/secrets.py", "r") as secrets:
-        build_args = []
-        for line in secrets:
-            key, value = line.split(" = ")
-            v = value.strip()
-            build_args.append(f"{key}={v}")
-        return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
+    build_args = [
+        f'{secret}="{config(secret)}"' for secret in ("SECRET_KEY", "SENTRY_DSN")
+    ]
+    return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
 
 
 @task
@@ -170,6 +166,7 @@ def build_container(ctx, hostname="asia.gcr.io"):
         "django-taggit",
         "pillow",
         "whitenoise",
+        "python-decouple",
     ]
     # Versions
     reqs = "\\ ".join(

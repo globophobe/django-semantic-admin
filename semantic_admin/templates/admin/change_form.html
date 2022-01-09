@@ -153,39 +153,17 @@
 
         // Datetime
         $row.find('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
-            $(this).calendar({
-                ampm: false,
-                formatter: {
-                    date: function (date, settings) {
-                        if (!date) return '';
-                        var year = date.getFullYear();
-                        var month = ('0' + (date.getMonth()+1)).slice(-2)
-                        var day = ('0' + date.getDate()).slice(-2)
-                        return year + '-' + month + '-' + day;
-                    }
-                },
-            });
+            $(this).calendar({ ampm: false, text: calendarI18n });
         });
 
         // Date
         $row.find('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
-            $(this).calendar({
-                type: 'date',
-                formatter: {
-                    date: function (date, settings) {
-                        if (!date) return '';
-                        var year = date.getFullYear();
-                        var month = ('0' + (date.getMonth()+1)).slice(-2)
-                        var day = ('0' + date.getDate()).slice(-2)
-                        return year + '-' + month + '-' + day;
-                    }
-                },
-            });
+            $(this).calendar({ type: 'date', text: calendarI18n });
         });
 
         // Time
         $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
-            $(this).calendar({type: 'time', ampm: false});
+            $(this).calendar({ type: 'time', ampm: false, text: calendarI18n });
         });
 
     };

@@ -2,7 +2,6 @@ import datetime
 
 from django import template
 from django.contrib.admin.templatetags.admin_list import (
-    ResultList,
     _coerce_field_name,
     result_hidden_fields,
 )

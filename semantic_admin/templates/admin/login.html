@@ -12,7 +12,7 @@
 
 {% block content %}
 <div style="padding-top: 3.5rem;" class="ui container">
-<div class="ui raised centered card">
+<div class="ui centered card" style="min-width: 25rem;">
   <div style="background: #f3f4f5;" class="content">
     <div class="header">{% trans 'Log in' %}</div>
   </div>
@@ -54,7 +54,7 @@
       </div>
       {% url 'admin_password_reset' as password_reset_url %}
       {% if password_reset_url %}
-      <div class="password-reset-link">
+      <div class="password-reset-link" style="margin-bottom: 1rem;">
         <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
       </div>
       {% endif %}

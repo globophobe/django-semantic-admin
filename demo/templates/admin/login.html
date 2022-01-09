@@ -3,7 +3,7 @@
 
 {% block content %}
 <div style="padding-top: 3.5rem;" class="ui container">
-<div class="ui raised centered card">
+<div class="ui centered card" style="min-width: 25rem;">
   <div style="background: #f3f4f5;" class="content">
     <div class="header">{% trans 'Log in' %}</div>
   </div>
@@ -43,12 +43,9 @@
         {{ form.password.label_tag }} <div style="margin-bottom: 0.5rem"><em>semantic-admin</em></div> {{ form.password }}
         <input type="hidden" name="next" value="{{ next }}" />
       </div>
-      {% url 'admin_password_reset' as password_reset_url %}
-      {% if password_reset_url %}
-      <div class="password-reset-link">
-        <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+      <div class="password-reset-link" style="margin-bottom: 1rem;">
+        <a href="#">{% trans 'Forgotten your password or username?' %}</a>
       </div>
-      {% endif %}
       <div class="submit-row">
         <label>&nbsp;</label><input class="ui primary button" type="submit" value="{% trans 'Log in' %}" />
       </div>

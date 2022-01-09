@@ -275,7 +275,7 @@ class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):
         format_html(
             """
             <div id="action-toggle" class="ui checkbox">
-                <label></label><input type="checkbox">
+                <label></label><input id="action-toggle-input" type="checkbox">
             </div>
             """
         )

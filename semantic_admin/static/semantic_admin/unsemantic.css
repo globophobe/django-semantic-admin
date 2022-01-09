@@ -78,13 +78,6 @@ td.action-checkbox div.ui.checkbox {
 
 /* END ACTION CHECKBOX */
 
-/* CHANGELIST ACTIONS */
-
-#changelist .actions span.question {
-  display: none;
-}
-/* END CHANGELIST ACTIONS */
-
 @media print {
   .noprint {
     display: none !important;

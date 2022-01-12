@@ -217,17 +217,17 @@ $( document ).ready(function() {
 
   // Datetime
   $('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
-    $(this).calendar({ ampm: false, text: calendarI18n });
+    $(this).calendar({ ampm: false, formatter: calendarFormatter, text: calendarI18n });
   });
 
   // Date
   $('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
-    $(this).calendar({ type: 'date', text: calendarI18n });
+    $(this).calendar({ type: 'date', formatter: calendarFormatter, text: calendarI18n });
   });
 
   // Time
   $('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
-    $(this).calendar({ type: 'time', ampm: false, text: calendarI18n });
+    $(this).calendar({ type: 'time', ampm: false, formatter: calendarFormatter, text: calendarI18n });
   });
 })
 </script>

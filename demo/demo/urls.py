@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic.base import RedirectView
+from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = [
     path(
@@ -23,5 +24,6 @@ urlpatterns = [
         RedirectView.as_view(url="/"),
         name="change-password-redirect",
     ),
+    path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     path("", admin.site.urls),
 ]

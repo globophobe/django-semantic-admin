@@ -54,3 +54,12 @@ const calendarI18n = {
     today: gettext('Today'),
     now: gettext('Now')
 }
+
+function dateFormatter(date, settings) {
+  if (!date) return '';
+  return new Intl.DateTimeFormat({ dateStyle: 'short', timeStyle: 'short' }).format(date);
+}
+
+const calendarFormatter = {
+  date: dateFormatter,
+}

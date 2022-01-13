@@ -180,7 +180,7 @@ def build_container(ctx, hostname="asia.gcr.io"):
     )
     # Build
     build_args = f"--build-arg POETRY_EXPORT={reqs} " + docker_secrets()
-    cmd = f"docker build {build_args} --file=Dockerfile --tag={name} ."
+    cmd = f"docker build {build_args} --no-cache --file=Dockerfile --tag={name} ."
     ctx.run(cmd)
 
 

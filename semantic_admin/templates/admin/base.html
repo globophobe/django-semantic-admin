@@ -1,4 +1,5 @@
 {% load i18n static semantic_utils %}<!DOCTYPE html>
+{% has_url 'javascript-catalog' as javascript_catalog %}
 {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
@@ -24,7 +25,9 @@
 {% block extrahead %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
-<script src="{% url 'javascript-catalog' %}"></script>
+{% if javascript_catalog %}
+  <script src="{% url 'javascript-catalog' %}"></script>
+{% endif %}
 {% endblock %}
 <!-- END Script -->
 
@@ -215,19 +218,25 @@ $( document ).ready(function() {
     $(this).checkbox();
   });
 
+  const languageCode = '{{ LANGUAGE_CODE|default:"en-us" }}';
+  const hasJavascriptCatalog = {% if javascript_catalog %}true{% else %}false{% endif %};
+  const calendarText = getCalendarText(hasJavascriptCatalog);
+  const calendarOptions = JSON.parse('{% semantic_calendar_options %}');
+
   // Datetime
   $('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
-    $(this).calendar({ ampm: false, formatter: calendarFormatter, text: calendarI18n });
+    $(this).calendar(getCalendarOptions('datetime', languageCode, calendarOptions, calendarText));
   });
 
   // Date
   $('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
-    $(this).calendar({ type: 'date', formatter: calendarFormatter, text: calendarI18n });
+    $(this).calendar(getCalendarOptions('date', languageCode, calendarOptions, calendarText));
   });
 
   // Time
+  const timeOptions = 
   $('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
-    $(this).calendar({ type: 'time', ampm: false, formatter: calendarFormatter, text: calendarI18n });
+    $(this).calendar(getCalendarOptions('time', languageCode, calendarOptions, calendarText));
   });
 })
 </script>

@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Screenshots - Django Semantic UI admin theme</title>
+  <title>Translating the calendar - Django Semantic UI admin theme</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Screenshots";
-    var mkdocs_page_input_path = "screenshots.md";
+    var mkdocs_page_name = "Translating the calendar";
+    var mkdocs_page_input_path = "calendar.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -58,14 +58,14 @@
                     <li class="toctree-l1"><a class="reference internal" href="../awesome/">Awesome optional features</a>
                     </li>
                 </ul>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Screenshots</a>
-    <ul class="current">
-    </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../screenshots/">Screenshots</a>
                     </li>
                 </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../calendar/">Translating the calendar</a>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Translating the calendar</a>
+    <ul class="current">
+    </ul>
                     </li>
                 </ul>
                 <ul>
@@ -97,7 +97,7 @@
     
       
     
-    <li>Screenshots</li>
+    <li>Translating the calendar</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -109,26 +109,29 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="change-list">Change list</h2>
-<ol><li>Desktop</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-list.png" alt="change-list-desktop" /></p>
-<ol start="2"><li>Tablet</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-list-collapse-menu.png" alt="change-list-tablet" /></p>
-<ol start="3"><li>Mobile</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-list-stacked.png" alt="change-list-mobile" /></p>
-<h2 id="change-form">Change form</h2>
-<ol><li>Desktop</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-form.png" alt="change-form-desktop" /></p>
-<ol start="2"><li>Tablet</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-form-collapse-menu.png" alt="change-form-tablet" /></p>
-<ol start="3"><li>Mobile</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/change-form-stacked.png" alt="change-form-mobile" /></p>
+                <h2 id="translating-the-calendar">Translating the calendar</h2>
+<p><code>SemanticModelAdmin</code>, <code>SemanticStackedInline</code>, and <code>SemanticTabularInline</code> admin classes for models with <code>DateTimeField</code>, <code>DateField</code>, or <code>TimeField</code> will automatically use Semantic UI's calendar component. </p>
+<p>To translate the calendar add Django's <code>JavaScriptCatalog</code> to <code>urlpatterns</code>, as described in Django's <a href="https://docs.djangoproject.com/en/4.0/topics/i18n/translation/#module-django.views.i18n">Translation documentation</a>.</p>
+<p>To format the date, there is a setting using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat">Intl.DateTimeFormat</a> options.</p>
+<p>Django Semantic Admin's default setting in <code>SEMANTIC_CALENDAR_OPTIONS</code> in <code>settings.py</code></p>
+<pre><code class="language-python">SEMANTIC_CALENDAR_OPTIONS = {
+    &quot;datetime&quot;: {
+        &quot;intlDateTimeFormatOptions&quot;: {&quot;dateStyle&quot;: &quot;short&quot;, &quot;timeStyle&quot;: &quot;short&quot;},
+    },
+    &quot;date&quot;: {&quot;intlDateTimeFormatOptions&quot;: {&quot;dateStyle&quot;: &quot;short&quot;}},
+    &quot;time&quot;: {&quot;intlDateTimeFormatOptions&quot;: {&quot;timeStyle&quot;: &quot;short&quot;}},
+}
+</code></pre>
+<p>A number of calendar options that can be serialized to JSON are supported. For example, as described in the Fomantic UI's <a href="https://fomantic-ui.com/modules/calendar.html#24-hour-format">Calendar documentation</a>, to additionally not display <code>AM/PM</code>.</p>
+<pre><code class="language-python">SEMANTIC_CALENDAR_OPTIONS = {
+    &quot;datetime&quot;: {
+        &quot;intlDateTimeFormatOptions&quot;: {&quot;dateStyle&quot;: &quot;short&quot;, &quot;timeStyle&quot;: &quot;short&quot;},
+        &quot;ampm&quot;: False,
+    },
+    &quot;date&quot;: {&quot;intlDateTimeFormatOptions&quot;: {&quot;dateStyle&quot;: &quot;short&quot;}},
+    &quot;time&quot;: {&quot;intlDateTimeFormatOptions&quot;: {&quot;timeStyle&quot;: &quot;short&quot;}, &quot;ampm&quot;: False},
+}
+</code></pre>
               
             </div>
           </div>
@@ -136,10 +139,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../calendar/" class="btn btn-neutral float-right" title="Translating the calendar">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../contributing/" class="btn btn-neutral float-right" title="Contributing">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../awesome/" class="btn btn-neutral" title="Awesome optional features"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../screenshots/" class="btn btn-neutral" title="Screenshots"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -165,10 +168,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../awesome/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../screenshots/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../calendar/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../contributing/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

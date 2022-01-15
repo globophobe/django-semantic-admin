@@ -1,6 +1,8 @@
 import datetime
+import json
 
 from django import template
+from django.conf import settings
 from django.contrib.admin.templatetags.admin_list import (
     _coerce_field_name,
     result_hidden_fields,
@@ -15,7 +17,7 @@ from django.contrib.admin.utils import (
 from django.contrib.admin.views.main import ORDER_VAR, PAGE_VAR
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.urls import NoReverseMatch
+from django.urls import NoReverseMatch, reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -275,3 +277,25 @@ def semantic_paginator_number(cl, i):
             mark_safe(" end" if i == cl.paginator.num_pages else ""),
             i,
         )
+
+
+@register.simple_tag
+def semantic_calendar_options():
+    """Get semantic calendar options."""
+    try:
+        options = settings.SEMANTIC_CALENDAR_OPTIONS
+    except AttributeError:
+        options = {}
+    finally:
+        return mark_safe(json.dumps(options))
+
+
+@register.simple_tag
+def has_url(url):
+    """Does the url exist?"""
+    try:
+        reverse(url)
+    except NoReverseMatch:
+        return False
+    else:
+        return True

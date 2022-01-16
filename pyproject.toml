@@ -8,11 +8,7 @@ license = "MIT"
 homepage = "https://github.com/globophobe/django-semantic-admin"
 repository = "https://github.com/globophobe/django-semantic-admin"
 keywords = ["django", "admin", "theme"]
-classifiers = [
-    "Framework :: Django",
-    "Development Status :: 4 - Beta",
-    "Operating System :: OS Independent",
-]
+classifiers = ["Framework :: Django", "Development Status :: 4 - Beta", "Operating System :: OS Independent"]
 packages = [{ include = "semantic_admin" }]
 
 [tool.poetry.dependencies]

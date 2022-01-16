@@ -68,7 +68,21 @@ div.ui.checkbox:not(.changelist) {
 
 th.action-checkbox-column,
 td.action-checkbox {
-  text-align: center !important;
+  width: 3.875rem;
+}
+
+@media (min-width: 768px) {
+  th.action-checkbox-column,
+  td.action-checkbox {
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 767px) {
+  th.action-checkbox-column,
+  td.action-checkbox {
+    text-align: auto !important;
+  }
 }
 
 div#action-toggle, div.action-select {

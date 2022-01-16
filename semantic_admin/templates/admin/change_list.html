@@ -75,15 +75,15 @@
 
         <div class="results">
 
-            {% if cl.result_count %}
-            <table id="result_list" class="ui large {% comment %}selectable{% endcomment %}{% if has_action_checkbox %} definition{% endif %} celled table">
-        <thead class="full-width">
-          {% if action_form and actions_on_top and cl.show_admin_actions %}
-          <tr>
+        {% if cl.result_count %}
+        <table id="result_list" class="ui large {% comment %}selectable{% endcomment %}{% if has_action_checkbox %} definition{% endif %} celled table">
+          <thead class="full-width">
+            {% if action_form and actions_on_top and cl.show_admin_actions %}
+            <tr>
               <th colspan="100%">
                   {% admin_actions %}
               </th>
-          </tr>
+            </tr>
           {% endif %}
           {% semantic_result_list cl %}
         </table>

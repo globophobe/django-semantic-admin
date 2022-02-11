@@ -64,6 +64,34 @@ div.ui.checkbox:not(.changelist) {
   margin-bottom: 0.69em;
 }
 
+/* END CHECKBOX */
+
+/* ACTIONS  */
+
+@media (max-width: 767px) {
+  div.actions {
+    margin-bottom: 0 !important;
+
+  } 
+  div.actions > label {
+    margin-bottom: 0.28571429rem !important; /* Same as non-inline form */
+  }
+
+  div.actions > div.field {
+    margin-bottom: 0 !important;
+  }
+
+  div.actions > div.field > button {
+    margin-top: 1rem !important;
+  }
+
+  span.action-counter {
+    margin-top: 1rem !important;
+  }
+}
+
+/* END ACTIONS */
+
 /* ACTION CHECKBOX */
 
 th.action-checkbox-column,

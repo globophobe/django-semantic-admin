@@ -161,7 +161,6 @@ def build_container(ctx, hostname="asia.gcr.io"):
     # Requirements
     requirements = [
         "gunicorn",
-        "django",
         "django-filter",
         "django-taggit",
         "pillow",

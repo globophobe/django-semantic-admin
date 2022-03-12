@@ -71,8 +71,8 @@ div.ui.checkbox:not(.changelist) {
 @media (max-width: 767px) {
   div.actions {
     margin-bottom: 0 !important;
-
   } 
+
   div.actions > label {
     margin-bottom: 0.28571429rem !important; /* Same as non-inline form */
   }
@@ -87,6 +87,12 @@ div.ui.checkbox:not(.changelist) {
 
   span.action-counter {
     margin-top: 1rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  div.actions > div.field  {
+    margin-left: 1rem !important;
   }
 }
 

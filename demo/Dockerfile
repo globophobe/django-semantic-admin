@@ -14,7 +14,7 @@ ADD media /demo/media
 ADD templates /demo/templates
 ADD db.sqlite3 /demo/db.sqlite3
 
-RUN pip install --no-cache-dir $POETRY_EXPORT "django<4" django-semantic-admin sentry-sdk
+RUN pip install --no-cache-dir $POETRY_EXPORT django-semantic-admin sentry-sdk
 
 # Start the server
 ENTRYPOINT ["gunicorn", "--chdir", "/demo", "--bind", "0.0.0.0:8080", "demo.wsgi:application"]

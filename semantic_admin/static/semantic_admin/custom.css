@@ -21,6 +21,13 @@
   min-width: 0px;
 }
 
+/* Fix full-height bottom off by 2px */
+#app-main .full.height > .computer-menu > .ui.inverted.menu {
+  border-top: 1px solid transparent !important;
+  border-bottom: 1px solid transparent !important;
+  border-radius: 0 !important;
+}
+
 /* Hide Top Bar */
 @media only screen and (min-width: 1145px) {
   #app-main .full.height {
@@ -39,11 +46,5 @@
   }
   #app-main #app-content {
     margin-top: 3em;
-  }
-}
-
-@media print {
-  .page-break {
-    page-break-inside: avoid;
   }
 }

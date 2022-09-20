@@ -12,28 +12,8 @@ body,
   margin-top: 0 !important;
 }
 
-.red {
-  color: #db2828;
-}
-
-.error-red {
-  color: #9f3a38;
-}
-
-.green {
-  color: #21ba45;
-}
-
 .help {
   padding-top: 0.5em;
-}
-
-.c-sf-add-button {
-  color: #333 !important;
-}
-
-button.c-sf-button:hover {
-  background-color: #808080 !important;
 }
 
 .hidden, .empty-form {
@@ -43,18 +23,6 @@ button.c-sf-button:hover {
 @media only screen and (max-width: 767.98px) {
   .ui.table:not(.unstackable) > tbody> tr.empty-form {
     display: none !important;
-  }
-}
-
-.no-horizontal-padding {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-/* Helper class rescued from previous pure.css admin */
-@media (min-width: 48em) {
-  .text-align-right-md {
-    text-align: right;
   }
 }
 

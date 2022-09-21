@@ -12,7 +12,7 @@ body,
   margin-top: 0 !important;
 }
 
-.help {
+.help:not(.help-tooltip) {
   padding-top: 0.5em;
 }
 

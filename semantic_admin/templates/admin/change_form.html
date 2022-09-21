@@ -154,22 +154,20 @@
 
         const languageCode = '{{ LANGUAGE_CODE|default:"en-us" }}';
         const hasJavascriptCatalog = {% if javascript_catalog %}true{% else %}false{% endif %};
-        const calendarText = getCalendarText(hasJavascriptCatalog);
-        const calendarOptions = JSON.parse('{% semantic_calendar_options %}');
 
         // Datetime
         $row.find('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('datetime', languageCode, calendarOptions, calendarText));
+            $(this).calendar(getCalendarOptions('datetime', hasJavascriptCatalog));
         });
 
         // Date
         $row.find('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('date', languageCode, calendarOptions, calendarText));
+            $(this).calendar(getCalendarOptions('date', hasJavascriptCatalog));
         });
 
         // Time
         $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('time', languageCode, calendarOptions, calendarText));
+            $(this).calendar(getCalendarOptions('time', hasJavascriptCatalog));
         });
 
     };

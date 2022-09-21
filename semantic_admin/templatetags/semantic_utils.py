@@ -1,8 +1,6 @@
 import datetime
-import json
 
 from django import template
-from django.conf import settings
 from django.contrib.admin.templatetags.admin_list import (
     _coerce_field_name,
     result_hidden_fields,
@@ -277,17 +275,6 @@ def semantic_paginator_number(cl, i):
             mark_safe(" end" if i == cl.paginator.num_pages else ""),
             i,
         )
-
-
-@register.simple_tag
-def semantic_calendar_options():
-    """Get semantic calendar options."""
-    try:
-        options = settings.SEMANTIC_CALENDAR_OPTIONS
-    except AttributeError:
-        options = {}
-    finally:
-        return mark_safe(json.dumps(options))
 
 
 @register.simple_tag

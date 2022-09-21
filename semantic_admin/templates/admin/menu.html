@@ -19,8 +19,8 @@
   <div class="ui inverted accordion">
     {% for app in app_list %}
       <div class="item">
-          <div class="title{% if app.is_current %} active{% endif %}" href="{{ app.app_url }}" title="{% blocktrans with name=app.name %}Models in the {{ app.name }} application{% endblocktrans %}"><i class="small dropdown icon"></i> {{ app.name|title }}</div>
-          <div class="content{% if app.is_current %} active{% endif %}">
+          <div class="title{% if app.is_active %} active{% endif %}" href="{{ app.app_url }}" title="{% blocktrans with name=app.name %}Models in the {{ app.name }} application{% endblocktrans %}"><i class="small dropdown icon"></i> {{ app.name|title }}</div>
+          <div class="content{% if app.is_active %} active{% endif %}">
             {% for model in app.models %}
               {% if model.admin_url %}
                 <a class="item" href="{{ model.admin_url }}">{{ model.name }}</a>

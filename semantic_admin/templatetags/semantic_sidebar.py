@@ -13,10 +13,13 @@ def get_semantic_sidebar(app_list, current_app):
         ordered = []
         for app_label in semantic_sidebar:
             for app in app_list:
-                is_current = app["app_label"] == current_app
-                app["is_current"] = is_current
+                is_active = app["app_label"] == current_app
+                app["is_active"] = is_active
                 if app_label == app["app_label"]:
                     ordered.append(app)
+        has_active = any([app["is_active"] for app in ordered])
+        if len(ordered) and not has_active:
+            ordered[0]["is_active"] = True
         app_list = ordered
     return app_list
 

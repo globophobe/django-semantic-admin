@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.10-alpine
 
 ARG POETRY_EXPORT
 ARG SECRET_KEY

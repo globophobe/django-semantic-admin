@@ -47,15 +47,6 @@ INSTALLED_APPS += PROJECT_APPS
 
 SEMANTIC_SIDEBAR = PROJECT_APPS
 
-SEMANTIC_CALENDAR_OPTIONS = {
-    "datetime": {
-        "intlDateTimeFormatOptions": {"dateStyle": "short", "timeStyle": "short"},
-        "ampm": False,
-    },
-    "date": {"intlDateTimeFormatOptions": {"dateStyle": "short"}},
-    "time": {"intlDateTimeFormatOptions": {"timeStyle": "short"}, "ampm": False},
-}
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     # Whitenoise for static

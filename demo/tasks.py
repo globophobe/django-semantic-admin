@@ -170,7 +170,7 @@ def build_container(ctx, hostname="asia.gcr.io"):
     # Versions
     reqs = "\\ ".join(
         [
-            req
+            req.split(";")[0]
             for req in ctx.run("poetry export --dev --without-hashes").stdout.split(
                 "\n"
             )

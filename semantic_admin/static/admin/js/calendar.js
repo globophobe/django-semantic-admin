@@ -59,59 +59,19 @@ function getCalendarText(hasJavascriptCatalog) {
   }
 }
 
-function getCalendarOptions(type, languageCode, calendarOptions, text) {
-  const dateStyle = 'short';
-  const timeStyle = 'short';
-
-  let defaultFormatterOptions;
-  if (type === 'datetime') {
-    defaultFormatterOptions = { dateStyle, timeStyle };
-  } else if (type === 'date') {
-    defaultFormatterOptions = { dateStyle };
-  } else if (type === 'time') {
-    defaultFormatterOptions = { timeStyle };
-  }
-
-  const options = calendarOptions[type];
-
-  let formatterOptions;
-  if (options && options.intlDateTimeFormatOptions) {
-    formatterOptions = Object.assign({}, options.intlDateTimeFormatOptions)
-  } else {
-    formatterOptions = defaultFormatterOptions;
-  }
-
-  const intlFormatter = new Intl.DateTimeFormat(languageCode, formatterOptions);
-
-  function calendarFormatter(date) {
-    if (!date) return '';
-    return intlFormatter.format(date)
-  }
-
-  let formatter;
-  if (type == 'datetime') { 
-    formatter = { 
-      datetime: function(date, settings, forCalendar) {  
-        return calendarFormatter(date)
+function getCalendarOptions(type, hasJavascriptCatalog) {
+  return { 
+    type, 
+    formatter: {
+      date: function (date, settings) {
+          if (!date) return '';
+          var year = date.getFullYear();
+          var month = ('0' + (date.getMonth()+1)).slice(-2)
+          var day = ('0' + date.getDate()).slice(-2)
+          return year + '-' + month + '-' + day;
       }
-    }
-  } else if (type == 'date') {
-    formatter = { 
-      date: function(date, settings) {  
-        return calendarFormatter(date)
-      }
-    }
-  } else if (type == 'time') {
-    formatter = { 
-      time: function(date, settings, forCalendar) {  
-        return calendarFormatter(date)
-      }
-    }
+    },
+    ampm: false,
+    text: getCalendarText(hasJavascriptCatalog)
   }
-
-  if (options) {
-    return Object.assign(options, { type, formatter, text })
-  }
-  return { type, formatter, text }
 }
-

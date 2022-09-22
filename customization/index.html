@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Awesome optional features - Django Semantic UI admin theme</title>
+    <title>Customization - Django Semantic UI admin theme</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Awesome optional features";
-        var mkdocs_page_input_path = "awesome.md";
+        var mkdocs_page_name = "Customization";
+        var mkdocs_page_input_path = "customization.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -48,14 +48,14 @@
                 <li class="toctree-l1"><a class="reference internal" href="../install/">Install</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../customization/">Customization</a>
-                </li>
-              </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Awesome optional features</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Customization</a>
     <ul class="current">
     </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../awesome/">Awesome optional features</a>
                 </li>
               </ul>
               <ul>
@@ -84,7 +84,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>Awesome optional features</li>
+      <li>Customization</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -93,37 +93,61 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="awesome-optional-features">Awesome optional features</h2>
-<ol><li>Optional integration with <a href="https://github.com/carltongibson/django-filter">django_filter</a>:</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" /></p>
-<p>To enable this awesome feature, add <code>filterset_class</code> to your Django admin:</p>
-<pre><code class="language-python">from semantic_admin.filters import SemanticFilterSet
-
-class DemoFilter(SemanticFilterSet):
-    class Meta:
-        model = Demo
-        fields = (&quot;demo_field&quot;,)
-
-class DemoAdmin(SemanticModelAdmin):
-    filterset_class = DemoFilter
+                <h2 id="app-list-ordering">App list ordering</h2>
+<p>Ordering of sidebar, and index page, apps and models can be customized with the optional <code>SEMANTIC_APP_LIST</code> setting.</p>
+<p>With the following in settings.py, <code>app_2</code> will be displayed before <code>app_1</code></p>
+<pre><code class="language-python">SEMANTIC_APP_LIST = [{ &quot;app_label&quot;: &quot;app_2&quot; }, { &quot;app_label&quot;: &quot;app_1&quot; }]
 </code></pre>
-<ol start="2"><li>HTML preview in Django `autocomplete_fields`:</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/html5-autocomplete.png" width="670" alt="html5-autocomplete" /></p>
-<p>To enable this awesome feature, add the <code>semantic_autocomplete</code> property to your Django model:</p>
-<pre><code class="language-python">class DemoModel(models.Model):
-    @property
-    def semantic_autocomplete(self):
-        html = self.get_img()
-        return format_html(html)
+<p>In this example, <code>ModelB</code> will be displayed before <code>ModelA</code></p>
+<pre><code class="language-python">SEMANTIC_APP_LIST = [
+    {
+        &quot;app_label&quot;: &quot;app_1&quot;,
+        &quot;models&quot;: [{&quot;object_name&quot;: &quot;ModelB&quot;}, {&quot;object_name&quot;: &quot;ModelA&quot;}],
+    },
+]
 </code></pre>
+<h2 id="changing-the-logo">Changing the logo</h2>
+<p>The logo may be changed by overriding <code>menu.html</code></p>
+<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/pony-powered.png" alt="pony-powered" /></p>
+<ol><li>Add a dir to the <code>TEMPLATES</code> setting</li></ol>
+
+<pre><code class="language-python">&quot;DIRS&quot;: [BASE_DIR / &quot;templates&quot;],
+</code></pre>
+<ol start="2"><li>Create a file <code>templates/admin/menu.html</code> with the following</li></ol>
+
+<pre><code class="language-html">{% extends 'admin/menu.html' %}
+{% block branding %}
+&lt;a class=&quot;item&quot; href=&quot;{% url 'admin:index' %}&quot;&gt;
+  &lt;img 
+    title=&quot;Magic! Ponies! Django! Whee!&quot; 
+    src=&quot;http://media.djangopony.com/img/small/badge.png&quot; 
+    alt=&quot;{{ site_header|default:_('Django administration') }}&quot; /&gt;
+&lt;/a&gt;
+{% endblock %}
+</code></pre>
+<h2 id="customizing-the-css">Customizing the CSS</h2>
+<p>CSS may be customized by overriding <code>base.html</code>. </p>
+<ol><li>Add a dir to the <code>TEMPLATES</code> setting</li></ol>
+
+<pre><code class="language-python">&quot;DIRS&quot;: [BASE_DIR / &quot;templates&quot;],
+</code></pre>
+<ol start="2"><li>Create a file <code>templates/admin/base.html</code> with the following</li></ol>
+
+<pre><code class="language-html">{% extends 'admin/base.html' %}
+{% load static %}
+{% block extrastyle %}
+&lt;link rel=&quot;stylesheet&quot; href=&quot;{% static &quot;demo_app/custom.css&quot; %}&quot; /&gt;
+{% endblock %}
+</code></pre>
+<h2 id="translating-the-calendar">Translating the calendar</h2>
+<p><code>SemanticModelAdmin</code>, <code>SemanticStackedInline</code>, and <code>SemanticTabularInline</code> admin classes for models with <code>DateTimeField</code>, <code>DateField</code>, or <code>TimeField</code> will automatically use Semantic UI's calendar component. </p>
+<p>To translate the calendar add Django's <code>JavaScriptCatalog</code> to <code>urlpatterns</code>, as described in Django's <a href="https://docs.djangoproject.com/en/4.0/topics/i18n/translation/#module-django.views.i18n">Translation documentation</a>.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../customization/" class="btn btn-neutral float-left" title="Customization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../screenshots/" class="btn btn-neutral float-right" title="Screenshots">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../install/" class="btn btn-neutral float-left" title="Install"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../awesome/" class="btn btn-neutral float-right" title="Awesome optional features">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -146,10 +170,10 @@ class DemoAdmin(SemanticModelAdmin):
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../customization/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../install/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../screenshots/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../awesome/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

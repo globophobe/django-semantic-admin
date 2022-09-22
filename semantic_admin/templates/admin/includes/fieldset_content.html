@@ -22,7 +22,9 @@ Semantic opinions about fieldset and legend tags https://github.com/Semantic-Org
       {% endif %}
 
       {% if field.is_readonly %}
-          {{ field.contents }}
+          <div class="readonly">
+            {% if field.contents %}{{ field.contents }}{% else %}&nbsp;{% endif %}
+          </div>
       {% else %}
           {{ field.field }}
       {% endif %}

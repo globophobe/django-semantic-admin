@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static %}
+{% load i18n static semantic_app_list %}
 
 {% block content_title %}<h1></h1>{% endblock %}
 
@@ -17,6 +17,7 @@
   <div class="row">
 
   <div class="ten wide column">
+  {% admin_apps as app_list %}
   {% if app_list %}
     {% for app in app_list %}
       <div class="app-{{ app.app_label }} module">

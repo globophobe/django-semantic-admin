@@ -1,10 +1,8 @@
 /* Also note: https://github.com/Semantic-Org/Semantic-UI/issues/1114 */
 
-html,
-body,
-#app-menu,
-.ui.sidebar {
-  min-height: 100%;
+.readonly {
+  line-height: 1.21428571em;
+  padding: .67857143em 1em;
 }
 
 /* TODO: Fix this */

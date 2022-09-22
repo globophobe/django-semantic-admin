@@ -3,8 +3,8 @@ site_name: Django Semantic UI admin theme
 nav:
   - Home: index.md
   - Install: install.md
+  - Customization: customization.md
   - Awesome optional features: awesome.md
   - Screenshots: screenshots.md
-  - Translating the calendar: calendar.md
   - Contributing: contributing.md
   - Notes: notes.md

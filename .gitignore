@@ -5,4 +5,3 @@ db.sqlite3
 /site
 /demo/static
 /demo/media
-/demo/demo_app/migrations

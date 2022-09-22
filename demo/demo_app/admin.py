@@ -74,7 +74,7 @@ class PersonFavoriteTabularInline(TabularInline):
 @admin.register(Person)
 class PersonAdmin(ModelAdmin):
     search_fields = ("name",)
-    filter_class = PersonFilter
+    filterset_class = PersonFilter
     list_display = ("name", "birthday", "list_friends", "list_favorites")
     list_editable = ("birthday",)
     fieldsets = (

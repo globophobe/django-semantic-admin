@@ -124,7 +124,6 @@
       now_link.textContent = gettext("Now");
       now_link.addEventListener("click", function(e) {
         e.preventDefault();
-        // BEGIN CUSTOMIZATION
         DateTimeShortcuts.handleClockShortcutQuicklink(num, -1);
       });
 

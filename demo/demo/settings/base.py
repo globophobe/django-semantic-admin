@@ -39,13 +39,15 @@ INSTALLED_APPS = [
     # 3rd party
     "taggit",
     "whitenoise",
+    "demo_app",
 ]
 
-PROJECT_APPS = ["demo_app"]
-
-INSTALLED_APPS += PROJECT_APPS
-
-SEMANTIC_SIDEBAR = PROJECT_APPS
+SEMANTIC_APP_LIST = [
+    {
+        "app_label": "demo_app",
+        "models": [{"object_name": "Person"}, {"object_name": "Picture"}],
+    },
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

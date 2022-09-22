@@ -1,7 +1,7 @@
 Awesome optional features
 -------------------------
 
-1. Optional integration with [django_filter](https://github.com/carltongibson/django-filter):
+<ol><li>Optional integration with <a href="https://github.com/carltongibson/django-filter">django_filter</a>:</li></ol>
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" />
 
@@ -19,7 +19,7 @@ class DemoAdmin(SemanticModelAdmin):
     filterset_class = DemoFilter
 ```
 
-2. HTML preview in Django `autocomplete_fields`:
+<ol start="2"><li>HTML preview in Django `autocomplete_fields`:</li></ol>
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/html5-autocomplete.png" width="670" alt="html5-autocomplete" />
 

@@ -52,6 +52,13 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
     advanced filtering with https://github.com/alex/django-filter
     """
 
+    def get_filterset_class(self):
+        """Get filterset class."""
+        if hasattr(self, "filter_class"):
+            return self.filter_class
+        elif hasattr(self, "filterset_class"):
+            return self.filterset_class
+
     def get_changelist(self, request, **kwargs):
         """Returns the ChangeList class for use on the changelist page."""
         return AwesomeSearchChangeList
@@ -66,7 +73,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         # To remove filterset params from request, temporarily make
         # request.GET mutable
         request.GET._mutable = True
-        if hasattr(self, "filter_class"):
+        if self.get_filterset_class():
             # Reset filterset params every request
             self.get_filterset_params(request)
         # Restore immutability of request.GET
@@ -97,14 +104,14 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         return ""
 
     def get_filterset_params(self, request):
-        if hasattr(self, "filter_class"):
-            # Does this matter?
-            filter_class = self.filter_class(request=request)
-            if hasattr(filter_class, "get_initial"):
-                self.filterset_params = filter_class.get_initial()
+        filterset_class = self.get_filterset_class()
+        if filterset_class:
+            filterset = filterset_class(request=request)
+            if hasattr(filterset, "get_initial"):
+                self.filterset_params = filterset.get_initial()
             else:
                 self.filterset_params = {}
-            form = filter_class.form
+            form = filterset.form
             for field in form.fields:
                 # Is it a RangeField, etc?
                 if hasattr(form.fields[field], "fields"):
@@ -140,14 +147,13 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         queryset, may_have_duplicates = super().get_search_results(
             request, queryset, search_term
         )
-        if hasattr(self, "filter_class") and hasattr(self, "filterset_params"):
+        filterset_class = self.get_filterset_class()
+        if filterset_class and hasattr(self, "filterset_params"):
             kwargs = {
                 "request": request,
                 "queryset": queryset,
                 "passed_validation": True,
             }
-            self.filterset = filterset = self.filter_class(
-                self.filterset_params, **kwargs
-            )
-            queryset = filterset.qs
+            self.filterset = filterset_class(self.filterset_params, **kwargs)
+            queryset = self.filterset.qs
         return queryset, may_have_duplicates

@@ -76,7 +76,7 @@ Awesome optional features
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" />
 
-To enable this awesome feature, add `filter_class` to your Django admin:
+To enable this awesome feature, add `filterset_class` to your Django admin:
 
 ```python
 from semantic_admin.filters import SemanticFilterSet
@@ -87,7 +87,7 @@ class DemoFilter(SemanticFilterSet):
         fields = ("demo_field",)
 
 class DemoAdmin(SemanticModelAdmin):
-    filter_class = DemoFilter
+    filterset_class = DemoFilter
 ```
 
 2. HTML preview in Django `autocomplete_fields`:

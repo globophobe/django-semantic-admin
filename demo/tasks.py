@@ -1,4 +1,5 @@
 import os
+import re
 
 from decouple import config
 from invoke import task
@@ -154,8 +155,14 @@ def docker_secrets():
     return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
 
 
+def build_semantic_admin(ctx):
+    result = ctx.run("poetry build").stdout
+    return re.search(r"django_semantic_admin-.*\.whl", result).group()
+
+
 @task
 def build_container(ctx, hostname="asia.gcr.io"):
+    wheel = build_semantic_admin(ctx)
     ctx.run("echo yes | python manage.py collectstatic")
     name = get_container_name(ctx, hostname=hostname)
     # Requirements
@@ -168,7 +175,7 @@ def build_container(ctx, hostname="asia.gcr.io"):
         "python-decouple",
     ]
     # Versions
-    reqs = "\\ ".join(
+    reqs = " ".join(
         [
             req.split(";")[0]
             for req in ctx.run("poetry export --dev --without-hashes").stdout.split(
@@ -178,9 +185,20 @@ def build_container(ctx, hostname="asia.gcr.io"):
         ]
     )
     # Build
-    build_args = f"--build-arg POETRY_EXPORT={reqs} " + docker_secrets()
-    cmd = f"docker build {build_args} --no-cache --file=Dockerfile --tag={name} ."
-    ctx.run(cmd)
+    build_args = {"WHEEL": wheel, "POETRY_EXPORT": reqs}
+    build_args = " ".join(
+        [f'--build-arg {key}="{value}"' for key, value in build_args.items()]
+    )
+    with ctx.cd(".."):
+        cmd = " ".join(
+            [
+                "docker build",
+                build_args,
+                docker_secrets(),
+                f"--no-cache --file=Dockerfile --tag={name} .",
+            ]
+        )
+        ctx.run(cmd)
 
 
 @task

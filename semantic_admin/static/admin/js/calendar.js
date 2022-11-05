@@ -65,9 +65,9 @@ function getCalendarOptions(type, hasJavascriptCatalog) {
     formatter: {
       date: function (date, settings) {
           if (!date) return '';
-          var year = date.getFullYear();
-          var month = ('0' + (date.getMonth()+1)).slice(-2)
-          var day = ('0' + date.getDate()).slice(-2)
+          const year = date.getFullYear();
+          const month = ('0' + (date.getMonth()+1)).slice(-2)
+          const day = ('0' + date.getDate()).slice(-2)
           return year + '-' + month + '-' + day;
       }
     },

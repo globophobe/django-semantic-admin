@@ -53,11 +53,15 @@
         <input type="hidden" name="next" value="{{ next }}" />
       </div>
       {% url 'admin_password_reset' as password_reset_url %}
+
+      {% block passwordreset %}
       {% if password_reset_url %}
       <div class="password-reset-link" style="margin-bottom: 1rem;">
         <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
       </div>
       {% endif %}
+      {% endblock %}
+
       <div class="submit-row">
         <label>&nbsp;</label><input class="ui primary button" type="submit" value="{% trans 'Log in' %}" />
       </div>

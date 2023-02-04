@@ -1,7 +1,7 @@
 *.pyc
+*.sqlite3
 .env
-db.sqlite3
-/dist
-/site
-/demo/static
-/demo/media
+.coverage
+dist/
+static/
+media/

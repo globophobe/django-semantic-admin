@@ -6,7 +6,7 @@ except ImportError:
     from urllib.parse import urlparse
 
 from whitenoise.middleware import WhiteNoiseMiddleware
-from whitenoise.string_utils import decode_if_byte_string, ensure_leading_trailing_slash
+from whitenoise.string_utils import ensure_leading_trailing_slash
 
 
 class WhiteNoiseMediaMiddleware(WhiteNoiseMiddleware):
@@ -29,7 +29,7 @@ class WhiteNoiseMediaMiddleware(WhiteNoiseMiddleware):
             except AttributeError:
                 pass
             else:
-                value = decode_if_byte_string(value)
+                value = value
                 setattr(self, attr, value)
         self.static_prefix = ensure_leading_trailing_slash(self.static_prefix)
-        self.static_root = decode_if_byte_string(settings.MEDIA_ROOT)
+        self.static_root = settings.MEDIA_ROOT

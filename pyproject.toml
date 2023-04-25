@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-semantic-admin"
-version = "0.3.8"
+version = "0.3.9"
 description = "Django Semantic UI Admin theme"
 authors = ["Alex <globophobe@gmail.com>"]
 readme = "README.md"

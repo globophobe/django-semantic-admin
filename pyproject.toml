@@ -12,7 +12,7 @@ classifiers = ["Framework :: Django", "Development Status :: 4 - Beta", "Operati
 packages = [{ include = "semantic_admin" }]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.8"
 django = ">=3.2"
 
 [tool.poetry.dev-dependencies]

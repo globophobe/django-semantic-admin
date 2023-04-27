@@ -21,5 +21,4 @@ RUN pip install $WHEEL
 RUN pip install --no-cache-dir $POETRY_EXPORT sentry-sdk
 RUN rm $WHEEL
 
-# Start the server
-ENTRYPOINT ["gunicorn", "--chdir", "/demo", "--bind", "0.0.0.0:8080", "demo.wsgi:application"]
+ENTRYPOINT ["gunicorn", "--chdir", "/demo", "--bind", "0.0.0.0:8080", "--threads", "2", "--timeout", "0", "--preload", "demo.wsgi:application"]

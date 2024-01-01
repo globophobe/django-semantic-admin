@@ -1,0 +1,44 @@
+{% extends "admin/import_export/base.html" %}
+{% load i18n admin_urls import_export_tags %}
+
+{% block breadcrumbs_last %}
+{% trans "Export" %}
+{% endblock %}
+
+{% block content %}
+{% include "admin/import_export/resource_fields_list.html" with import_or_export="export" %}
+<form class="ui form" action="" method="POST">
+  {% csrf_token %}
+
+    <div class="ui segment">
+      <div class="equal width fields">
+      {% for field in form %}
+        <div class="field{% if field.errors %} error{% endif %}">
+          {{ field.label_tag }}
+
+          {{ field }}
+
+          {% if field.field.help_text %}
+          <div class="help">{{ field.field.help_text|safe }}</div>
+          {% endif %}
+
+          {{ field.errors }}
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <div class="ui basic segment" style="margin-top: 0;">
+        <div class="ui form noprint">
+          <div class="fields">
+            <div class="twelve wide field" style="margin: 0;"></div>
+            <div class="four wide field">
+              <button type="submit" class="ui fluid blue button" name="submit" value="{% trans "Submit" %}">{% trans "Submit" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+{% endblock %}

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
 ]
 ```
 
+Please remember to run `python manage.py collectstatic` for production deployments.
+
 Usage
 -----
 

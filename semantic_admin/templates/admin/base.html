@@ -121,15 +121,15 @@ launches the offscreen menu.
         {% block contenttop %}
         <div class="ui basic segment" style="padding-top: 0; padding-bottom: 0;">
           <div class="ui form">
-            <div class="equal width fields">
-              <div class="eight wide field">
+            <div class="fields">
+              <div class="ten wide field">
                 {% block pretitle %}{% endblock %}
                 {% block content_title %}
                   {% if title %}<h1 class="ui header">{{ title }}</h1>{% endif %}
                 {% endblock %}
               </div>
 
-            {% block object-tools %}{% endblock %}
+              {% block object-tools %}{% endblock %}
             </div>
           </div>
         </div>

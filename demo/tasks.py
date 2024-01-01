@@ -167,12 +167,13 @@ def build_container(ctx, hostname="asia.gcr.io"):
     name = get_container_name(ctx, hostname=hostname)
     # Requirements
     requirements = [
-        "gunicorn",
+        "django-import-export",
         "django-filter",
         "django-taggit",
+        "gunicorn",
         "pillow",
-        "whitenoise",
         "python-decouple",
+        "whitenoise",
     ]
     # Versions
     reqs = " ".join(

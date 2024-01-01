@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # 3rd party
     "taggit",
     "whitenoise",
+    "import_export",
     "demo_app",
 ]
 

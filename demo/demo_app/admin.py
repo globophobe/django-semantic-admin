@@ -13,6 +13,7 @@ from semantic_admin import (
     SemanticStackedInline,
     SemanticTabularInline,
 )
+from semantic_admin.contrib.import_export import SemanticImportExportModelAdmin
 from taggit.models import Tag
 
 from .filters import PersonFilter
@@ -29,6 +30,7 @@ admin.site.unregister(Group)
 admin.site.unregister(Tag)
 
 if "semantic_admin" in settings.INSTALLED_APPS:
+    ImportExportModelAdmin = SemanticImportExportModelAdmin
     ModelAdmin = SemanticModelAdmin
     StackedInline = SemanticStackedInline
     TabularInline = SemanticTabularInline
@@ -72,7 +74,7 @@ class PersonFavoriteTabularInline(TabularInline):
 
 
 @admin.register(Person)
-class PersonAdmin(ModelAdmin):
+class PersonAdmin(ImportExportModelAdmin):
     search_fields = ("name",)
     filterset_class = PersonFilter
     list_display = ("name", "birthday", "list_friends", "list_favorites")

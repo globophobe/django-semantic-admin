@@ -33,3 +33,24 @@ class DemoModel(models.Model):
         return format_html(html)
 ```
 
+<ol start="3"><li>Optional integration with <a href="https://github.com/django-import-export/django-import-export">django-import-export</a>:</li></ol>
+
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" />
+
+To enable this awesome feature, instead of `import_export.ImportExportModelAdmin`, etc:
+
+```python
+from import_export.admin import ImportExportModelAdmin 
+
+class ExampleImportExportAdmin(ImportExportModelAdmin):
+    pass
+```
+
+Inherit from their `Semantic` equivalents:
+
+```python
+from semantic_admin.contrib.import_export.admin import SemanticImportExportModelAdmin
+
+class ExampleImportExportAdmin(SemanticImportExportModelAdmin):
+    pass
+```

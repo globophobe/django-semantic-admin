@@ -16,19 +16,78 @@ python = ">=3.8"
 django = ">=3.2"
 
 [tool.poetry.dev-dependencies]
-flake8 = "*"
-black = "*"
-isort = "*"
-Pillow = "*"
-django-taggit = "*"
+django-import-export = "*"
 django-filter = "*"
-invoke = "*"
+django-taggit = "*"
 factory-boy = "*"
 Faker = "*"
 gunicorn = "*"
-whitenoise = "*"
+invoke = "*"
 mkdocs = "*"
+Pillow = "*"
 python-decouple = "*"
+ruff = "*"
+whitenoise = "*"
+
+[tool.ruff]
+exclude = ["migrations"]
+line-length = 88
+target-version = "py38"
+ignore = [
+    "ANN002", # Missing type annotation for *{name}
+    "ANN003", # Missing type annotation for **{name}
+    "ANN101", # Missing type annotation for {name} in method
+    "ANN102", # Missing type annotation for {name} in classmethod
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed in {name}
+    "B007", # Loop control variable not used within loop body
+    "B904", # Within an except clause, raise exceptions with...
+    "D100", # Missing docstring in public module
+    "D104", # Missing docstring in public package
+    "D106", # Missing docstring in public nested class, i.e. Meta
+    "D203", # 1 blank line required before class docstring
+    "D205", # 1 blank line required between summary line and description
+    "D212", # Multi-line docstring summary should start at the first line
+    "D213", # Multi-line docstring summary should start at the second line
+    "D400", # First line should end with a period
+    "D401", # First line should be in imperative mood
+    "D403", # First word of the first line should be properly capitalized
+    "D404", # First word of the docstring should not be This
+    "D406", # Section name should end with a newline
+    "D407", # Missing dashed underline after section
+    "D411", # Missing blank line before section
+    "D413", # Missing blank line after last section
+    "D415", # First line should end with a period, question mark, or exclamation point
+    "D417", # Missing argument description in the docstring: {name}
+    "E501", # Line too long
+    "E721", # Do not compare types, use `isinstance()`
+    "N803", # Argument name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "PTH123", # open() should be replaced by Path.open()
+    "UP032", # [*] Use f-string instead of `format` call
+]
+select = [
+    "ANN", # flake8-annotations
+    "B", # flake8-bugbear
+    "D", # pydocstyle
+    "E", # pycodestyle
+    "F", # Pyflakes
+    "I", # isort
+    "INT", # flake8-gettext
+    "N", # pep8-naming
+    "PTH", # flake8-use-pathlib
+    "UP", # pyupgrade
+    "RUF100", # unused-noqa
+    "RUF200", # invalid-pyproject-toml
+    "W", # pycodestyle
+]
+unfixable = ["F401", "F841"]
+
+[tool.ruff.per-file-ignores]
+"**/tests/*" = ["ANN", "D"]
+"**/migrations/*" = ["ANN", "D"]
+
+[tool.ruff.isort]
+known-first-party = ["semantic_admin"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

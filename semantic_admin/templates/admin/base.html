@@ -97,7 +97,7 @@ launches the offscreen menu.
         {% block messages %}
           {% if messages %}
             {% for message in messages %}
-              <div class="ui message 
+              <div class="ui
                   {% if message.tags %}
                     {% with message.tags as tags %}
                     {% if tags == 'debug' %}
@@ -107,7 +107,7 @@ launches the offscreen menu.
                     {% elif tags == 'error' %}negative
                     {% endif %}
                     {% endwith %}
-                  {% endif %}"
+                  {% endif %} message"
                   >{{ message|capfirst }}
                 </div>
             {% endfor %}

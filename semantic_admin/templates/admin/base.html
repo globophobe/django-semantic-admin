@@ -22,7 +22,7 @@
 
 <!-- Script -->
 {% block extrahead %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
 {% if javascript_catalog %}
   <script src="{% url 'javascript-catalog' %}"></script>
@@ -97,7 +97,7 @@ launches the offscreen menu.
         {% block messages %}
           {% if messages %}
             {% for message in messages %}
-              <div class="ui message 
+              <div class="ui
                   {% if message.tags %}
                     {% with message.tags as tags %}
                     {% if tags == 'debug' %}
@@ -107,7 +107,7 @@ launches the offscreen menu.
                     {% elif tags == 'error' %}negative
                     {% endif %}
                     {% endwith %}
-                  {% endif %}"
+                  {% endif %} message"
                   >{{ message|capfirst }}
                 </div>
             {% endfor %}
@@ -121,15 +121,15 @@ launches the offscreen menu.
         {% block contenttop %}
         <div class="ui basic segment" style="padding-top: 0; padding-bottom: 0;">
           <div class="ui form">
-            <div class="equal width fields">
-              <div class="eight wide field">
+            <div class="fields">
+              <div class="ten wide field">
                 {% block pretitle %}{% endblock %}
                 {% block content_title %}
                   {% if title %}<h1 class="ui header">{{ title }}</h1>{% endif %}
                 {% endblock %}
               </div>
 
-            {% block object-tools %}{% endblock %}
+              {% block object-tools %}{% endblock %}
             </div>
           </div>
         </div>

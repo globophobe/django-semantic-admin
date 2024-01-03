@@ -1,0 +1,8 @@
+{% load i18n %}
+{% load admin_urls %}
+
+{% if has_export_permission %}
+<div class="two wide field">
+  <a class="ui fluid button" href="{% url opts|admin_urlname:'export' %}{{cl.get_query_string}}" class="export_link">{% trans "Export" %}</a>
+</div>
+{% endif %}

@@ -1,4 +1,5 @@
 import datetime
+from typing import Generator
 
 from django import template
 from django.contrib.admin.templatetags.admin_list import (
@@ -12,7 +13,7 @@ from django.contrib.admin.utils import (
     label_for_field,
     lookup_field,
 )
-from django.contrib.admin.views.main import ORDER_VAR, PAGE_VAR
+from django.contrib.admin.views.main import ORDER_VAR, PAGE_VAR, ChangeList
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.urls import NoReverseMatch, reverse
@@ -24,12 +25,10 @@ from .semantic_admin_list import semantic_results
 register = template.Library()
 
 
-def items_for_result(cl, result, form):
-    """
-    Generate the actual list of data.
-    """
+def items_for_result(cl: ChangeList, result, form):
+    """Generate the actual list of data."""
 
-    def link_in_col(is_first, field_name, cl):
+    def link_in_col(is_first: bool, field_name: str, cl: ChangeList) -> bool:
         if cl.list_display_links is None:
             return False
         if is_first and not cl.list_display_links:
@@ -81,7 +80,6 @@ def items_for_result(cl, result, form):
         # If list_display_links not defined, add the link tag to the first
         # field
         if link_in_col(first, field_name, cl):
-
             # BEGIN CUSTOMIZATION #
             table_tag = "td"  # if first else 'td'
             # END CUSTOMIZATION #
@@ -136,7 +134,8 @@ def items_for_result(cl, result, form):
         yield format_html("<td>{}</td>", form[cl.model._meta.pk.name])
 
 
-def has_action_checkbox(cl):
+def has_action_checkbox(cl: ChangeList)-> bool:
+    """Does the changelist have an action checkbox?"""
     for i, field_name in enumerate(cl.list_display):
         text, attr = label_for_field(
             field_name, cl.model, model_admin=cl.model_admin, return_attr=True
@@ -148,12 +147,11 @@ def has_action_checkbox(cl):
             # if the field is the action checkbox: no sorting and special class
             if field_name == "action_checkbox":
                 return True
+    return False
 
 
-def result_headers(cl):
-    """
-    Generate the list column headers.
-    """
+def result_headers(cl: ChangeList) -> Generator[dict, None, None]:
+    """Generate the list column headers."""
     ordering_field_columns = cl.get_ordering_field_columns()
     for i, field_name in enumerate(cl.list_display):
         text, attr = label_for_field(
@@ -201,7 +199,8 @@ def result_headers(cl):
         o_list_remove = []  # URL for removing this field from sort
         o_list_toggle = []  # URL for toggling order type for this field
 
-        def make_qs_param(t, n):
+        def make_qs_param(t: str, n: int) -> str:
+            """Make query string parameter."""
             return ("-" if t == "desc" else "") + str(n)
 
         for j, ot in ordering_field_columns.items():
@@ -237,10 +236,8 @@ def result_headers(cl):
 
 
 @register.inclusion_tag("admin/change_list_results.html")
-def semantic_result_list(cl):
-    """
-    Display the headers and data list together.
-    """
+def semantic_result_list(cl: ChangeList) -> dict:
+    """Display the headers and data list together."""
     headers = list(result_headers(cl))
     num_sorted_fields = 0
     for h in headers:
@@ -258,10 +255,8 @@ def semantic_result_list(cl):
 
 
 @register.simple_tag
-def semantic_paginator_number(cl, i):
-    """
-    Generate an individual page index link in a paginated list.
-    """
+def semantic_paginator_number(cl: ChangeList, i: int) -> str:
+    """Generate an individual page index link in a paginated list."""
     DOT = "."
     ELLIPSIS = getattr(cl.paginator, "ELLIPSIS", None)
     if i == DOT or i == ELLIPSIS:
@@ -278,7 +273,7 @@ def semantic_paginator_number(cl, i):
 
 
 @register.simple_tag
-def has_url(url):
+def has_url(url: str) -> bool:
     """Does the url exist?"""
     try:
         reverse(url)

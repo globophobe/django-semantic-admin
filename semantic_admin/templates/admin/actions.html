@@ -2,14 +2,20 @@
 <div class="ui compact form">
     {% comment %} Lift actions class to fields {% endcomment %}
     <div class="actions inline equal width fields">
-        {% for field in action_form %}
-            {% if field.name == 'action' %}
-                <label>{{ field.label }}</label>
-                {{ field }}
-            {% else %}
-                {{ field }}
-            {% endif %}
-        {% endfor %}
+        <div class="field" style="margin: 0 !important; padding: 0;">
+          <div class="equal width fields">
+          {% for field in action_form %}
+              {% if field.name == 'action' %}
+                  {% if forloop.first %}
+                      <label class="action-label">{{ field.label }}</label>
+                  {% endif %}
+                  {{ field }}
+              {% else %}
+                  {{ field }}
+              {% endif %}
+          {% endfor %}
+          </div>
+        </div>
         <div class="field">
             <button type="submit" class="ui button" title="{% trans "Run the selected action" %}" name="index" value="{{ action_index|default:0 }}">{% trans "Go" %}</button>
             {% if actions_selection_counter %}

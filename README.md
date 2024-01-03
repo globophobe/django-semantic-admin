@@ -38,6 +38,8 @@ INSTALLED_APPS = [
 ]
 ```
 
+Please remember to run `python manage.py collectstatic` for production deployments.
+
 Usage
 -----
 
@@ -102,6 +104,28 @@ class DemoModel(models.Model):
     def semantic_autocomplete(self):
         html = self.get_img()
         return format_html(html)
+```
+
+3. Optional integration with [django-import-export](https://github.com/django-import-export/django-import-export):
+
+<img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" />
+
+To enable this awesome feature, instead of `import_export.ImportExportModelAdmin`, etc:
+
+```python
+from import_export.admin import ImportExportModelAdmin 
+
+class ExampleImportExportAdmin(ImportExportModelAdmin):
+    pass
+```
+
+Inherit from their `Semantic` equivalents:
+
+```python
+from semantic_admin.contrib.import_export.admin import SemanticImportExportModelAdmin
+
+class ExampleImportExportAdmin(SemanticImportExportModelAdmin):
+    pass
 ```
 
 Contributing

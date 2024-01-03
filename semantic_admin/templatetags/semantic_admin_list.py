@@ -1,33 +1,35 @@
 import datetime
+from typing import Generator
 
 from django import template
 from django.contrib.admin.templatetags.admin_list import ResultList, _coerce_field_name
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.contrib.admin.utils import lookup_field
+from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.urls import NoReverseMatch
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
 from semantic_admin.utils import semantic_display_for_field, semantic_display_for_value
 
 register = template.Library()
 
 
-def _semantic_boolean_icon(field_val):
+def _semantic_boolean_icon(field_val: str) -> str:
+    """Semantic boolean icon."""
     return format_html(
         '<i class="%s circle icon"></i>'
         % {True: "green check", False: "red times", None: "gray question"}[field_val]
     )
 
 
-def semantic_items_for_result(cl, result, form):
-    """
-    Generate the actual list of data.
-    """
+def semantic_items_for_result(cl: ChangeList, result, form):
+    """Generate the actual list of data."""
 
-    def link_in_col(is_first, field_name, cl):
+    def link_in_col(is_first: bool, field_name: str, cl) -> bool:
         if cl.list_display_links is None:
             return False
         if is_first and not cl.list_display_links:
@@ -142,7 +144,8 @@ def semantic_items_for_result(cl, result, form):
         yield format_html("<td>{}</td>", form[cl.model._meta.pk.name])
 
 
-def semantic_results(cl):
+def semantic_results(cl: ChangeList) -> Generator[ResultList, None, None]:
+    """Semantic results."""
     if cl.formset:
         for res, form in zip(cl.result_list, cl.formset.forms):
             yield ResultList(form, semantic_items_for_result(cl, res, form))

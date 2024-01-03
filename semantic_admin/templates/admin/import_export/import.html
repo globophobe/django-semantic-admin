@@ -1,0 +1,227 @@
+{% extends "admin/import_export/base.html" %}
+{% load i18n admin_urls import_export_tags %}
+
+{% block breadcrumbs_last %}
+{% trans "Import" %}
+{% endblock %}
+
+{% block content %}
+
+  {% if confirm_form %}
+    {% block confirm_import_form %}
+    <div class="ui info message">
+      {% trans "Below is a preview of data to be imported. If you are satisfied with the results, click 'Confirm import'" %}
+    </div>
+
+    <form class="ui form" action="{% url opts|admin_urlname:"process_import" %}" method="POST">
+      {% csrf_token %}
+      {{ confirm_form.as_p }}
+      <div class="submit-row">
+        <div class="ui basic segment" style="margin-top: 0;">
+          <div class="ui form noprint">
+            <div class="fields">
+              <div class="twelve wide field" style="margin: 0;"></div>
+              <div class="four wide field">
+                <button type="submit" class="ui fluid blue button" name="confirm" value="{% trans "Confirm import" %}">{% trans "Confirm import" %}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    {% endblock %}
+  {% else %}
+    {% block import_form %}
+      <div>
+        {% include "admin/import_export/resource_fields_list.html" with import_or_export="import" %}
+      </div>
+
+    <form class="ui form" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% block form_detail %}
+          {# <fieldset class="module aligned"> #}
+
+          <div class="ui segment">
+              {% for field in form %}
+                <div class="equal width fields">
+                  <div class="field{% if field.errors %} error{% endif %}">
+                      {{ field.label_tag }}
+
+                      {{ field }}
+
+                      {% if field.field.help_text %}
+                      <div class="help">{{ field.field.help_text|safe }}</div>
+                      {% endif %}
+
+                      {{ field.errors }}
+                  </div>
+                </div>
+              {% endfor %}
+          {# </fieldset> #}
+
+          </div>
+      {% endblock %}
+
+      {% block form_submit_button %}
+        <div class="ui basic segment" style="margin-top: 0;">
+          <div class="ui form noprint">
+            <div class="fields">
+              <div class="twelve wide field" style="margin: 0;"></div>
+              <div class="four wide field">
+                <button type="submit" class="ui fluid blue button" value="{% trans "Submit" %}">{% trans "Submit" %}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endblock %}
+    </form>
+    {% endblock %}
+  {% endif %}
+
+  {% if result %}
+
+    {% if result.has_errors %}
+    {% block errors %}
+      <div class="ui basic segment" style="margin-top: 0;">
+        <h2>{% trans "Errors" %}</h2>
+        <div class="ui bulleted list">
+          {% for error in result.base_errors  %}
+          <div class="item">
+            {{ error.error }}
+            <div class="traceback">{{ error.traceback|linebreaks }}</div>
+          </div>
+          {% endfor %}
+          {% for line, errors in result.row_errors %}
+            <div class="list">
+              {% for error in errors %}
+                <div class="item">
+                  {% trans "Line number" %}: {{ line }} - {{ error.error }}
+                  <div><code>{{ error.row.values|join:", " }}</code></div>
+                  <div class="traceback">{{ error.traceback|linebreaks }}</div>
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endblock %}
+
+    {% elif result.has_validation_errors %}
+
+    {% block validation_errors %}
+      <h2 class="ui header" style="margin-left: 1rem;">{% trans "Some rows failed to validate" %}</h2>
+
+      <div class="ui warning message">{% trans "Please correct these errors in your data where possible, then reupload it using the form above." %}</div>
+
+      <table class="ui large celled table">
+        <thead>
+          <tr>
+            <th>{% trans "Row" %}</th>
+            <th>{% trans "Errors" %}</th>
+            {% for field in result.diff_headers %}
+              <th>{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+        {% for row in result.invalid_rows %}
+          <tr>
+            <td>{{ row.number }} </td>
+            <td class="errors">
+              {% if row.error_count > 0 %}
+                <div class="tiny ui red basic compact button invalid-rows">{{ row.error_count }}</div>
+                  <div class="ui flowing popup">
+                    <div class="ui list">
+                      {% for field_name, error_list in row.field_specific_errors.items %}
+                        <div class="item">
+                          <div class="header">{{ field_name }}</div>
+                          <div class="description">
+                            {% for error in error_list %}
+                              <div class="item">{{ error }}</div>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                      {% if row.non_field_specific_errors %}
+                        <div class="item">
+                          <div class="header">{% trans "Non field specific" %}</div>
+                          <div class="description">
+                            {% for error in row.non_field_specific_errors %}
+                              <div class="item">{{ error }}</div>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      {% endif %}
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+            </td>
+            {% for field in row.values %}
+              <td>{{ field }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% endblock %}
+
+    {% else %}
+
+      {% block preview %}
+      <h2 class="ui header" style="margin-left: 1rem;">{% trans "Preview" %}</h2>
+
+      <table class="ui large celled table">
+        <thead>
+          <tr>
+            <th></th>
+            {% for field in result.diff_headers %}
+              <th>{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        {% for row in result.valid_rows %}
+          <tr class="{{ row.import_type }}{% if row.import_type == 'new' %} positive{% elif row.import_type == 'skip' %} warning{% elif row.import_type == 'delete' %} negative{% elif row.import_type == 'update' %} positive{% endif %}">
+            <td class="import-type">
+              {% if row.import_type == 'new' %}
+                {% trans "New" %}
+              {% elif row.import_type == 'skip' %}
+                {% trans "Skipped" %}
+              {% elif row.import_type == 'delete' %}
+                {% trans "Delete" %}
+              {% elif row.import_type == 'update' %}
+                {% trans "Update" %}
+              {% endif %}
+            </td>
+            {% for field in row.diff %}
+              <td>{{ field }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </table>
+      {% endblock %}
+
+    {% endif %}
+
+  {% endif %}
+{% endblock %}
+
+{% block extrascript %}
+  {% if confirm_form %}
+    {{ confirm_form.media }}
+  {% else %}
+    {{ form.media }}
+  {% endif %}
+
+<script type="text/javascript">
+$( document ).ready(function() {
+  // Popup
+  $('.ui.button.invalid-rows').popup({
+    inline: true,
+    hoverable: true,
+    position: 'bottom left',
+  });
+})
+</script>
+{% endblock %}

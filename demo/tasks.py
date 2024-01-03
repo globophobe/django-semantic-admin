@@ -143,9 +143,10 @@ def delete_migrations(ctx):
 
 
 @task
-def get_container_name(ctx, hostname="asia.gcr.io"):
+def get_container_name(ctx, region="asia-northeast1"):
     project_id = ctx.run("gcloud config get-value project").stdout.strip()
-    return f"{hostname}/{project_id}/django-semantic-admin"
+    name = "django-semantic-admin"
+    return f"{region}-docker.pkg.dev/{project_id}/{name}/{name}"
 
 
 def docker_secrets():
@@ -161,18 +162,18 @@ def build_semantic_admin(ctx):
 
 
 @task
-def build_container(ctx, hostname="asia.gcr.io"):
+def build_container(ctx, region="asia-northeast1"):
     wheel = build_semantic_admin(ctx)
     ctx.run("echo yes | python manage.py collectstatic")
-    name = get_container_name(ctx, hostname=hostname)
+    name = get_container_name(ctx, region=region)
     # Requirements
     requirements = [
-        "gunicorn",
         "django-filter",
         "django-taggit",
+        "gunicorn",
         "pillow",
-        "whitenoise",
         "python-decouple",
+        "whitenoise",
     ]
     # Versions
     reqs = " ".join(
@@ -202,8 +203,8 @@ def build_container(ctx, hostname="asia.gcr.io"):
 
 
 @task
-def push_container(ctx, hostname="asia.gcr.io"):
-    name = get_container_name(ctx, hostname=hostname)
+def push_container(ctx, region="asia-northeast1"):
+    name = get_container_name(ctx, region=region)
     # Push
     cmd = f"docker push {name}"
     ctx.run(cmd)

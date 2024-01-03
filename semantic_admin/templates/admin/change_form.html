@@ -32,9 +32,9 @@
     {% if not is_popup %}
         {% block object-tools-items %}
             {% if not has_absolute_url %}
-                <div class="four wide field"></div>
+                <div class="four wide field" style="margin-bottom: 0;"></div>
             {% endif %}
-            <div class="four wide field noprint">
+            <div class="six wide field noprint">
             {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
             <a class="ui primary basic fluid button historylink" href="{% add_preserved_filters history_url %}">{% trans "History" %}</a>
             </div>

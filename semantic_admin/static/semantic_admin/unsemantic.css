@@ -2,7 +2,7 @@
 
 .readonly {
   line-height: 1.21428571em;
-  padding: .67857143em 1em;
+  padding: 0.67857143em 1em;
 }
 
 /* TODO: Fix this */
@@ -14,12 +14,13 @@
   padding-top: 0.5em;
 }
 
-.hidden, .empty-form {
+.hidden,
+.empty-form {
   display: none !important;
 }
 
 @media only screen and (max-width: 767.98px) {
-  .ui.table:not(.unstackable) > tbody> tr.empty-form {
+  .ui.table:not(.unstackable) > tbody > tr.empty-form {
     display: none !important;
   }
 }
@@ -37,7 +38,7 @@ div.ui.checkbox:not(.changelist) {
 @media (max-width: 767px) {
   div.actions {
     margin-bottom: 0 !important;
-  } 
+  }
 
   div.actions > label {
     margin-bottom: 0.28571429rem !important; /* Same as non-inline form */
@@ -57,7 +58,7 @@ div.ui.checkbox:not(.changelist) {
 }
 
 @media (min-width: 768px) {
-  div.actions > div.field  {
+  div.actions > div.field {
     margin-left: 1rem !important;
   }
 }
@@ -85,12 +86,35 @@ td.action-checkbox {
   }
 }
 
-div#action-toggle, div.action-select {
+div#action-toggle,
+div.action-select {
   max-width: 1.25rem;
   margin-bottom: 0 !important;
 }
 
 /* END ACTION CHECKBOX */
+
+/* IMPORT EXPORT ACTION */
+
+@media (min-width: 768px) {
+  div.ui.export-action.dropdown {
+    width: 35% !important;
+    margin-left: 1rem !important;
+  }
+
+  label.action-label {
+    margin: auto;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  div.ui.export-action.dropdown {
+    margin-top: 1rem !important;
+  }
+}
+
+/* END IMPORT EXPORT ACTION */
 
 @media print {
   .noprint {

@@ -8,7 +8,7 @@
     <title>Awesome optional features - Django Semantic UI admin theme</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,12 +17,11 @@
         var mkdocs_page_url = null;
       </script>
     
-    <script src="../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -34,7 +33,7 @@
           <a href=".." class="icon icon-home"> Django Semantic UI admin theme
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -83,8 +82,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>Awesome optional features</li>
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Awesome optional features</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -117,6 +116,21 @@ class DemoAdmin(SemanticModelAdmin):
     def semantic_autocomplete(self):
         html = self.get_img()
         return format_html(html)
+</code></pre>
+<ol start="3"><li>Optional integration with <a href="https://github.com/django-import-export/django-import-export">django-import-export</a>:</li></ol>
+
+<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" /></p>
+<p>To enable this awesome feature, instead of <code>import_export.ImportExportModelAdmin</code>, etc:</p>
+<pre><code class="language-python">from import_export.admin import ImportExportModelAdmin 
+
+class ExampleImportExportAdmin(ImportExportModelAdmin):
+    pass
+</code></pre>
+<p>Inherit from their <code>Semantic</code> equivalents:</p>
+<pre><code class="language-python">from semantic_admin.contrib.import_export.admin import SemanticImportExportModelAdmin
+
+class ExampleImportExportAdmin(SemanticImportExportModelAdmin):
+    pass
 </code></pre>
               
             </div>
@@ -153,14 +167,15 @@ class DemoAdmin(SemanticModelAdmin):
     
   </span>
 </div>
-    <script>var base_url = '..';</script>
-    <script src="../js/theme_extra.js" defer></script>
-    <script src="../js/theme.js" defer></script>
-      <script src="../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

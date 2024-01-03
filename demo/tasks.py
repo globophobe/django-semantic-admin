@@ -168,7 +168,6 @@ def build_container(ctx, region="asia-northeast1"):
     name = get_container_name(ctx, region=region)
     # Requirements
     requirements = [
-        "django-import-export",
         "django-filter",
         "django-taggit",
         "gunicorn",
@@ -204,7 +203,7 @@ def build_container(ctx, region="asia-northeast1"):
 
 
 @task
-def push_container(ctx,region="asia-northeast1"):
+def push_container(ctx, region="asia-northeast1"):
     name = get_container_name(ctx, region=region)
     # Push
     cmd = f"docker push {name}"

@@ -31,11 +31,25 @@ class SemanticDateTimeInput(forms.DateTimeInput):
 
     template_name = "semantic_ui/forms/widgets/datetime.html"
 
+    def __init__(
+        self, attrs: Optional[dict] = None, format: Optional[str] = None
+    ) -> None:
+        """Initialize."""
+        super().__init__(attrs)
+        self.format = format or "%Y-%m-%d %H:%M"
+
 
 class SemanticDateInput(forms.DateInput):
     """Semantic date input."""
 
     template_name = "semantic_ui/forms/widgets/date.html"
+
+    def __init__(
+        self, attrs: Optional[dict] = None, format: Optional[str] = None
+    ) -> None:
+        """Initialize."""
+        super().__init__(attrs)
+        self.format = format or "%Y-%m-%d"
 
 
 class SemanticTimeInput(forms.TimeInput):
@@ -46,6 +60,7 @@ class SemanticTimeInput(forms.TimeInput):
 
 class SemanticEmailInput(forms.EmailInput):
     """Semantic email input."""
+
     # TODO
     # template_name = "semantic_ui/forms/widgets/email.html"
 
@@ -87,7 +102,7 @@ class SemanticTextarea(forms.Textarea):
     template_name = "semantic_ui/forms/widgets/textarea.html"
 
 
-class SemanticTextInput(forms.Textarea):
+class SemanticTextInput(forms.TextInput):
     """Semantic text input."""
 
     template_name = "semantic_ui/forms/widgets/text.html"
@@ -95,6 +110,8 @@ class SemanticTextInput(forms.Textarea):
 
 class SemanticURLInput(forms.URLInput):
     """Semantic URL input."""
+
+    template_name = "semantic_ui/forms/widgets/url.html"
 
 
 class RangeWidget(forms.MultiWidget):
@@ -119,7 +136,7 @@ class SemanticDateRangeWidget(RangeWidget):
 class SemanticTimeRangeWidget(RangeWidget):
     """Semantic time range widget."""
 
-    def __init__(self, attrs: Optional[dict] =None) -> None:
+    def __init__(self, attrs: Optional[dict] = None) -> None:
         """Initialize."""
         widgets = [SemanticTimeInput(), SemanticTimeInput()]
         super().__init__(widgets, attrs)

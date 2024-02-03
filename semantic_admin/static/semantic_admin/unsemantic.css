@@ -10,7 +10,8 @@
   margin-top: 0 !important;
 }
 
-.help:not(.help-tooltip) {
+.help:not(.help-tooltip),
+.url {
   padding-top: 0.5em;
 }
 

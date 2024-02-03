@@ -53,3 +53,14 @@
   display: inline-flex;
   vertical-align: middle;
 }
+
+.logout-button {
+  width: 100%;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  color: #fff !important;
+}

@@ -48,3 +48,8 @@
     margin-top: 3em;
   }
 }
+
+.pagination-buttons {
+  display: inline-flex;
+  vertical-align: middle;
+}

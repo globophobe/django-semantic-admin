@@ -17,6 +17,7 @@ django = ">=3.2"
 
 [tool.poetry.dev-dependencies]
 black = "*"
+django-debug-toolbar = "*"
 django-import-export = "*"
 django-filter = "*"
 django-taggit = "*"

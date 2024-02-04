@@ -13,12 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 import re
 
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic.base import RedirectView
 from django.views.i18n import JavaScriptCatalog
 from django.views.static import serve
@@ -43,3 +44,6 @@ urlpatterns = [
     ),
     path("", admin.site.urls),
 ]
+
+if settings.DEBUG:
+    urlpatterns.insert(0, path("__debug__/", include("debug_toolbar.urls")))

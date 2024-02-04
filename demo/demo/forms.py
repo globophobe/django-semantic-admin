@@ -10,19 +10,20 @@ except ImportError:
 
 
 class LoginForm(AdminAuthenticationForm):
+    """Login form."""
 
     error_messages = {
         **AdminAuthenticationForm.error_messages,
-        "invalid_login": format_html(_(
-            "Please enter username <i>django</i> and password <i>semantic-admin</i>."
-        )),
+        "invalid_login": format_html(
+            _("Please enter username <i>admin</i> and password <i>semantic</i>.")
+        ),
     }
 
     username = UsernameField(
-        widget=forms.TextInput(attrs={"placeholder": "django", "autofocus": True})
+        widget=forms.TextInput(attrs={"placeholder": "admin", "autofocus": True})
     )
     password = forms.CharField(
         label=_("Password"),
         strip=False,
-        widget=forms.PasswordInput(attrs={"placeholder": "semantic-admin"}),
+        widget=forms.PasswordInput(attrs={"placeholder": "semantic"}),
     )

@@ -9,6 +9,7 @@ from django.contrib.admin.options import (
     TabularInline,
     get_ul_class,
 )
+from django.contrib.admin.widgets import AdminURLFieldWidget
 from django.db import models
 from django.forms.models import (
     modelform_defines_fields,
@@ -47,12 +48,19 @@ try:
 except ImportError:
     from django.utils.translation import gettext_lazy as _
 
+
+class SemanticAdminURLFieldWidget(AdminURLFieldWidget, SemanticURLInput):
+    """Semantic admin URL field widget."""
+
+    template_name = "semantic_ui/forms/widgets/url.html"
+
+
 SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateTimeField: {"widget": SemanticDateTimeInput},
     models.DateField: {"widget": SemanticDateInput},
     models.TimeField: {"widget": SemanticTimeInput},
     models.TextField: {"widget": SemanticTextarea},
-    models.URLField: {"widget": SemanticURLInput},
+    models.URLField: {"widget": SemanticAdminURLFieldWidget},
     # TODO
     models.IntegerField: {"widget": SemanticNumberInput},
     models.BigIntegerField: {"widget": SemanticNumberInput},
@@ -83,7 +91,6 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
         if db_field.name in self.radio_fields:
             # Avoid stomping on custom widget/choices arguments.
             if "widget" not in kwargs:
-
                 # BEGIN CUSTOMIZATION
                 kwargs["widget"] = SemanticRadioSelect(
                     attrs={
@@ -155,7 +162,6 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
         if "widget" not in kwargs:
             autocomplete_fields = self.get_autocomplete_fields(request)
             if db_field.name in autocomplete_fields:
-
                 # BEGIN CUSTOMIZATION
                 kwargs["widget"] = SemanticAutocompleteSelectMultiple(
                     db_field,

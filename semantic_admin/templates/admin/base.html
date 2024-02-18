@@ -1,5 +1,4 @@
 {% load i18n static semantic_utils %}<!DOCTYPE html>
-{% has_url 'javascript-catalog' as javascript_catalog %}
 {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
@@ -24,15 +23,11 @@
 {% block extrahead %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
-{% if javascript_catalog %}
-  <script src="{% url 'javascript-catalog' %}"></script>
-{% endif %}
 {% endblock %}
 <!-- END Script -->
 
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
 </head>
-{% load i18n %}
 
 <body id="app-main" class="{% if is_popup %}popup {% else %}pushable {% endif %}{% block bodyclass %}{% endblock %}" data-admin-utc-offset="{% now "Z" %}">
 
@@ -157,7 +152,6 @@ launches the offscreen menu.
 </div>
 <!-- END Offscreen menu and content -->
 
-<script src="{% static 'admin/js/calendar.js' %}"></script>
 <script type="text/javascript">
 $( document ).ready(function() {
   // Sidemenu
@@ -199,42 +193,7 @@ $( document ).ready(function() {
       // b/c not idempotent.
       $(this).addClass('initialized');
   });
-
-  // Dropdowns
-  $('.ui.dropdown select').not('.initialized').not('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
-      $(this).dropdown({
-          'clearable': true,
-          'fullTextSearch': true,
-          'forceSelection': false,  // https://github.com/Semantic-Org/Semantic-UI/issues/4506
-      });
-      // b/c not idempotent.
-      $(this).addClass('initialized');
-  });
-
-  // Checkboxes
-  $('.ui.checkbox').not('[name*=__prefix__]').each(function() {
-    $(this).checkbox();
-  });
-
-  const languageCode = '{{ LANGUAGE_CODE|default:"en-us" }}';
-  const hasJavascriptCatalog = {% if javascript_catalog %}true{% else %}false{% endif %};
-
-  // Datetime
-  $('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
-    $(this).calendar(getCalendarOptions('datetime', hasJavascriptCatalog));
-  });
-
-  // Date
-  $('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
-    $(this).calendar(getCalendarOptions('date', hasJavascriptCatalog));
-  });
-
-  // Time
-  const timeOptions = 
-  $('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
-    $(this).calendar(getCalendarOptions('time', hasJavascriptCatalog));
-  });
-})
+});
 </script>
 
 {% block extrascript %}{% endblock %}

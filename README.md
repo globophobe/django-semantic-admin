@@ -10,6 +10,19 @@ Log in to the demo with username `django` and password `semantic-admin`: https:/
 
 Documentation is on [GitHub Pages](https://globophobe.github.io/django-semantic-admin/).
 
+
+Django Semantic Forms
+---------------------
+🎉 As of v0.5.0, forms were moved to [django-semantic-forms](https://github.com/globophobe/django-semantic-forms). You may use `semantic_forms` outside of the admin. Please add `semantic_forms` to INSTALLED_APPS, as shown below.
+
+```python
+INSTALLED_APPS = [
+    "semantic_admin",
+    "semantic_forms",
+    ...
+]
+```
+
 Why?
 ----
 * Looks professional, with a nice sidebar.
@@ -33,6 +46,7 @@ Add to `settings.py` before `django.contrib.admin`:
 ```python
 INSTALLED_APPS = [
     "semantic_admin",
+    "semantic_forms",
     "django.contrib.admin",
     ...
 ]
@@ -74,7 +88,7 @@ class ExampleAdmin(SemanticModelAdmin):
 Awesome optional features
 -------------------------
 
-1. Optional integration with [django_filter](https://github.com/carltongibson/django-filter):
+1. Optional integration with [django-filter](https://github.com/carltongibson/django-filter):
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" />
 
@@ -110,7 +124,7 @@ class DemoModel(models.Model):
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" />
 
-To enable this awesome feature, instead of `import_export.ImportExportModelAdmin`, etc:
+To enable this awesome feature, instead of `ImportExportModelAdmin`, etc:
 
 ```python
 from import_export.admin import ImportExportModelAdmin 

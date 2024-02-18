@@ -10,7 +10,8 @@ from django_filters.filters import (
     TimeFilter,
     TypedMultipleChoiceFilter,
 )
-from semantic_admin.fields import (
+
+from semantic_forms.fields import (
     SemanticChoiceField,
     SemanticDateField,
     SemanticDateTimeField,

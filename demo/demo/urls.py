@@ -25,6 +25,7 @@ from django.views.i18n import JavaScriptCatalog
 from django.views.static import serve
 
 from demo.forms import LoginForm
+from semantic_form_demo.views import demo as semantic_form_demo
 
 urlpatterns = [
     path(
@@ -42,6 +43,7 @@ urlpatterns = [
         serve,
         kwargs={"document_root": settings.MEDIA_ROOT},
     ),
+    path("forms/", semantic_form_demo, name="semantic-forms"),
     path("", admin.site.urls),
 ]
 

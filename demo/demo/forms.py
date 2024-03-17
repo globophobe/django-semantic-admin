@@ -1,7 +1,7 @@
 from django import forms
-from django.utils.html import format_html
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth.forms import UsernameField
+from django.utils.html import format_html
 
 try:
     from django.utils.translation import gettext_lazy as _  # Django >= 4

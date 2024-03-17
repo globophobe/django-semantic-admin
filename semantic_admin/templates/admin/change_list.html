@@ -70,7 +70,7 @@
         {% endif %}
       {% endblock %}
 
-      {% block before_changelist %}{% endblock %}
+      {% block before_changelist %}{{ semantic_header }}{% endblock %}
 
       <form id="changelist-form" method="post"{% if cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>{% csrf_token %}
       {% if cl.formset %}

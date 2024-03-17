@@ -1,21 +1,3 @@
-/* Also note: https://github.com/Semantic-Org/Semantic-UI/issues/1114 */
-
-.readonly {
-  line-height: 1.21428571em;
-  padding: 0.67857143em 1em;
-}
-
-/* TODO: Fix this */
-.ui.radio.checkbox {
-  margin-top: 0 !important;
-}
-
-.help:not(.help-tooltip),
-.url {
-  padding-top: 0.5em;
-}
-
-.hidden,
 .empty-form {
   display: none !important;
 }
@@ -25,14 +7,6 @@
     display: none !important;
   }
 }
-
-/* CHECKBOX */
-
-div.ui.checkbox:not(.changelist) {
-  margin-bottom: 0.69em;
-}
-
-/* END CHECKBOX */
 
 /* ACTIONS  */
 
@@ -116,12 +90,3 @@ div.action-select {
 }
 
 /* END IMPORT EXPORT ACTION */
-
-@media print {
-  .noprint {
-    display: none !important;
-    height: 0 !important;
-    border: 0 none !important;
-    opacity: 0 !important;
-  }
-}

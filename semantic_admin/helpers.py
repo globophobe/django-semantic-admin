@@ -1,5 +1,4 @@
 from django.contrib.admin.helpers import ActionForm
-
 from semantic_forms.fields import SemanticChoiceField
 
 try:
@@ -9,4 +8,6 @@ except ImportError:
 
 
 class SemanticActionForm(ActionForm):
+    """Semantic action form."""
+
     action = SemanticChoiceField(label=_("Action:"))

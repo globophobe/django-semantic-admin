@@ -18,13 +18,6 @@ from django.forms.models import (
 )
 from django.http import HttpRequest, HttpResponse
 from django.utils.html import format_html
-
-from semantic_admin.widgets import (
-    SemanticActionCheckboxInput,
-    SemanticAutocompleteSelect,
-    SemanticAutocompleteSelectMultiple,
-    SemanticChangelistCheckboxInput,
-)
 from semantic_forms.widgets import (
     SemanticCheckboxInput,
     SemanticDateInput,
@@ -42,6 +35,13 @@ from semantic_forms.widgets import (
     SemanticURLInput,
 )
 
+from semantic_admin.widgets import (
+    SemanticActionCheckboxInput,
+    SemanticAutocompleteSelect,
+    SemanticAutocompleteSelectMultiple,
+    SemanticChangelistCheckboxInput,
+)
+
 from .awesomesearch import AwesomeSearchModelAdmin
 from .helpers import SemanticActionForm
 from .views.autocomplete import SemanticAutocompleteJsonView
@@ -53,7 +53,7 @@ except ImportError:
 
 
 class SemanticAdminURLFieldWidget(AdminURLFieldWidget, SemanticURLInput):
-    """Semantic admin URL field widget."""
+    """Semantic admin URL field widget"""
 
     template_name = "semantic_ui/forms/widgets/url.html"
 

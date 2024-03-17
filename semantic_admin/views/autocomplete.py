@@ -1,12 +1,15 @@
 from django.contrib.admin.views.autocomplete import AutocompleteJsonView
 from django.core.exceptions import PermissionDenied
-from django.http import JsonResponse
+from django.db import models
+from django.http import HttpRequest, JsonResponse
 
 
 class SemanticAutocompleteJsonView(AutocompleteJsonView):
+    """Semantic autocomplete JSON view"""
+
     # TODO: Delete overridden get method once serialize_result is released
     # in a future Django version
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs) -> JsonResponse:
         """
         Return a JsonResponse with search results of the form:
         {
@@ -38,7 +41,7 @@ class SemanticAutocompleteJsonView(AutocompleteJsonView):
             }
         )
 
-    def serialize_result(self, obj, to_field_name):
+    def serialize_result(self, obj: models.Model, to_field_name: str) -> dict:
         """
         Convert the provided model object to a dictionary that is added to the
         results list.

@@ -55,7 +55,7 @@ except ImportError:
 class SemanticAdminURLFieldWidget(AdminURLFieldWidget, SemanticURLInput):
     """Semantic admin URL field widget"""
 
-    template_name = "semantic_ui/forms/widgets/url.html"
+    template_name = "semantic_forms/forms/widgets/url.html"
 
 
 SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS = {

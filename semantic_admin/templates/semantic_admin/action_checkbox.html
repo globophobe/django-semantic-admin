@@ -1,0 +1,5 @@
+<div class="ui checkbox action-select">
+    <input {% if widget.value != None %}id="checkbox-{{ widget.value|stringformat:'s' }}"{% endif %} type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+    <label {% if widget.value != None %}for="checkbox-{{ widget.value|stringformat:'s' }}"{% endif %}></label>
+</div>
+

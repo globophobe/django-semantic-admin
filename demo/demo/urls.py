@@ -19,13 +19,13 @@ import re
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
-from django.urls import path, re_path, include
+from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 from django.views.i18n import JavaScriptCatalog
 from django.views.static import serve
+from semantic_forms.docs.views import semantic_forms_kitchen_sink
 
 from demo.forms import LoginForm
-from semantic_form_demo.views import demo as semantic_form_demo
 
 urlpatterns = [
     path(
@@ -43,7 +43,7 @@ urlpatterns = [
         serve,
         kwargs={"document_root": settings.MEDIA_ROOT},
     ),
-    path("forms/", semantic_form_demo, name="semantic-forms"),
+    path("forms/", semantic_forms_kitchen_sink, name="semantic-forms-kitchen-sink"),
     path("", admin.site.urls),
 ]
 

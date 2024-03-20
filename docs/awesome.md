@@ -5,10 +5,10 @@ Awesome optional features
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" />
 
-To enable this awesome feature, also install [django-semantic-filter](https://github.com/globophobe/django-semantic-filter), and add `filterset_class` to your Django admin:
+To enable this awesome feature, add `filterset_class` to your Django admin:
 
 ```python
-from semantic_filter import SemanticFilterSet
+from semantic_forms.filters import SemanticFilterSet
 
 class DemoFilter(SemanticFilterSet):
     class Meta:

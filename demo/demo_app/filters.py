@@ -1,7 +1,7 @@
 from typing import Iterable
 
 from django.db.models import QuerySet
-from semantic_filter import SemanticFilterSet, SemanticModelMultipleChoiceFilter
+from semantic_forms.filters import SemanticFilterSet, SemanticModelMultipleChoiceFilter
 
 from .models import Person, Picture
 

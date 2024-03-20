@@ -37,7 +37,7 @@ class DemoModel(models.Model):
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" />
 
-To enable this awesome feature, instead of `import_export.ImportExportModelAdmin`, etc:
+To enable this awesome feature, instead of `ImportExportModelAdmin`, etc:
 
 ```python
 from import_export.admin import ImportExportModelAdmin 

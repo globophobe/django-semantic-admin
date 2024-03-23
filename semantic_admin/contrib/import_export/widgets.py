@@ -1,4 +1,4 @@
-from semantic_admin.widgets import SemanticSelect
+from semantic_forms.widgets import SemanticSelect
 
 
 class SemanticExportActionSelect(SemanticSelect):

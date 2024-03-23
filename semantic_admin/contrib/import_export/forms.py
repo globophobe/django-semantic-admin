@@ -1,7 +1,7 @@
 from django import forms
 from import_export.forms import ExportForm, ImportForm
+from semantic_forms import SemanticChoiceField
 
-from semantic_admin.fields import SemanticChoiceField
 from semantic_admin.helpers import SemanticActionForm
 
 from .widgets import SemanticExportActionSelect
@@ -25,7 +25,7 @@ def semantic_export_action_form_factory(formats: list) -> SemanticActionForm:
             label=_("Format"),
             widget=SemanticExportActionSelect(),
             choices=formats,
-            required=False
+            required=False,
         )
 
     _ExportActionForm.__name__ = "ExportActionForm"
@@ -36,25 +36,16 @@ def semantic_export_action_form_factory(formats: list) -> SemanticActionForm:
 class SemanticImportForm(ImportForm):
     """Semantic import form."""
 
-    input_format = SemanticChoiceField(
-        label=_("Format"),
-        choices=(),
-    )
+    input_format = SemanticChoiceField(label=_("Format"), choices=())
 
     @property
     def media(self) -> forms.Media:
         """Media."""
-        return forms.Media(
-            js=(
-                "import_export/guess_format.js",
-            )
-        )
+        media = self.fields["input_format"].widget.media
+        return media + forms.Media(js=["import_export/guess_format.js"])
 
 
 class SemanticExportForm(ExportForm):
     """Semantic export form."""
 
-    file_format = SemanticChoiceField(
-        label=_("Format"),
-        choices=(),
-    )
+    file_format = SemanticChoiceField(label=_("Format"), choices=())

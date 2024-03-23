@@ -2,16 +2,13 @@
 {% load i18n admin_urls static admin_list semantic_utils %}
 
 {% block extrastyle %}
-  {% if cl.formset or action_form %}
-    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-  {% endif %}
   {{ media.css }}
   {{ cl.model_admin.filterset.form.media.css }}
 {% endblock %}
 
 {% block extrahead %}
-{{ block.super }}
-{{ cl.model_admin.filterset.form.media.js }}
+  {{ block.super }}
+  {{ cl.model_admin.filterset.form.media.js }}
 {% endblock %}
 
 {% if not is_popup %}

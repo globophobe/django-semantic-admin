@@ -9,21 +9,25 @@ class SemanticAutocompleteMixin(AutocompleteMixin):
     and adds the static form media.
     """
 
-    template_name = "semantic_ui/forms/widgets/chooser.html"
+    template_name = "semantic_forms/forms/widgets/chooser.html"
 
     @property
-    def media(self):
-        # No media.
-        pass
+    def media(self) -> None:
+        """Media."""
+        # Does not use django autocomplete media.
 
 
 class SemanticAutocompleteSelect(  # type: ignore
     SemanticAutocompleteMixin, forms.Select
 ):
-    template_name = "semantic_ui/forms/widgets/select.html"
+    """Semantic autocomplete select."""
+
+    template_name = "semantic_forms/forms/widgets/select.html"
 
 
 class SemanticAutocompleteSelectMultiple(  # type: ignore
     SemanticAutocompleteMixin, forms.SelectMultiple
 ):
-    template_name = "semantic_ui/forms/widgets/select.html"
+    """Semantic autocomplete select multiple."""
+
+    template_name = "semantic_forms/forms/widgets/select.html"

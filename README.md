@@ -6,9 +6,25 @@ A completely free (MIT) [Semantic UI](https://semantic-ui.com/) admin theme for 
 
 Semantic UI looks professional, and has great JavaScript components.
 
-Log in to the demo with username `django` and password `semantic-admin`: https://semantic-admin.com
+Log in to the demo with username `admin` and password `semantic`: https://semantic-admin.com
 
 Documentation is on [GitHub Pages](https://globophobe.github.io/django-semantic-admin/).
+
+
+Django Semantic Forms
+---------------------
+🎉 As of v0.5.0, forms were moved to [django-semantic-forms](https://github.com/globophobe/django-semantic-forms). As of v0.5.0, `semantic_forms` must be added to INSTALLED_APPS.
+
+```python
+INSTALLED_APPS = [
+    "semantic_admin",
+    "semantic_forms",
+    ...
+]
+```
+
+You may use `semantic_forms` outside of the admin. 
+
 
 Why?
 ----
@@ -33,6 +49,7 @@ Add to `settings.py` before `django.contrib.admin`:
 ```python
 INSTALLED_APPS = [
     "semantic_admin",
+    "semantic_forms",
     "django.contrib.admin",
     ...
 ]
@@ -74,14 +91,14 @@ class ExampleAdmin(SemanticModelAdmin):
 Awesome optional features
 -------------------------
 
-1. Optional integration with [django_filter](https://github.com/carltongibson/django-filter):
+1. Optional integration with [django-filter](https://github.com/carltongibson/django-filter):
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" />
 
 To enable this awesome feature, add `filterset_class` to your Django admin:
 
 ```python
-from semantic_admin.filters import SemanticFilterSet
+from semantic_forms.filters import SemanticFilterSet
 
 class DemoFilter(SemanticFilterSet):
     class Meta:
@@ -110,7 +127,7 @@ class DemoModel(models.Model):
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" />
 
-To enable this awesome feature, instead of `import_export.ImportExportModelAdmin`, etc:
+To enable this awesome feature, instead of `ImportExportModelAdmin`, etc:
 
 ```python
 from import_export.admin import ImportExportModelAdmin 

@@ -1,4 +1,7 @@
-from semantic_admin.filters import SemanticFilterSet, SemanticModelMultipleChoiceFilter
+from typing import Iterable
+
+from django.db.models import QuerySet
+from semantic_forms.filters import SemanticFilterSet, SemanticModelMultipleChoiceFilter
 
 from .models import Person, Picture
 
@@ -9,13 +12,18 @@ except ImportError:
 
 
 class PersonFilter(SemanticFilterSet):
+    """Person filter."""
+
     favorite_pictures = SemanticModelMultipleChoiceFilter(
         label=_("favorite pictures"),
         queryset=Picture.objects.exclude(favorites=None),
         method="filter_favorite_pictures",
     )
 
-    def filter_favorite_pictures(self, queryset, name, value):
+    def filter_favorite_pictures(
+        self, queryset: QuerySet, name: str, value: Iterable[int]
+    ) -> QuerySet:
+        """Filter by favorite pictures."""
         if not value:
             return queryset
         else:

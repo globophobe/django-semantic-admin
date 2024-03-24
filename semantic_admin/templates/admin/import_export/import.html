@@ -1,6 +1,15 @@
 {% extends "admin/import_export/base.html" %}
 {% load i18n admin_urls import_export_tags %}
 
+{% block extrahead %}
+  {{ block.super }}
+  {% if confirm_form %}
+    {{ confirm_form.media }}
+  {% else %}
+    {{ form.media }}
+  {% endif %}
+{% endblock %}
+
 {% block breadcrumbs_last %}
 {% trans "Import" %}
 {% endblock %}
@@ -208,12 +217,6 @@
 {% endblock %}
 
 {% block extrascript %}
-  {% if confirm_form %}
-    {{ confirm_form.media }}
-  {% else %}
-    {{ form.media }}
-  {% endif %}
-
 <script type="text/javascript">
 $( document ).ready(function() {
   // Popup

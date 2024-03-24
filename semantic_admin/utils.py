@@ -1,9 +1,11 @@
 import datetime
 import decimal
 import json
+from typing import Any
 
 from django.contrib.admin.utils import display_for_value
 from django.db import models
+from django.forms import Field
 from django.utils import formats, timezone
 from django.utils.html import format_html
 
@@ -13,7 +15,10 @@ except ImportError:
     from django.db.models import JSONField  # type: ignore
 
 
-def semantic_display_for_field(value, field, empty_value_display):
+def semantic_display_for_field(
+    value: Any, field: Field, empty_value_display: str
+) -> str:
+    """Semantic display for field"""
     from .templatetags.semantic_admin_list import _semantic_boolean_icon
 
     if getattr(field, "flatchoices", None):
@@ -47,7 +52,10 @@ def semantic_display_for_field(value, field, empty_value_display):
         return display_for_value(value, empty_value_display)
 
 
-def semantic_display_for_value(value, empty_value_display, boolean=False):
+def semantic_display_for_value(
+    value: Any, empty_value_display: str, boolean: bool = False
+) -> str:
+    """Semantic display for value"""
     from .templatetags.semantic_admin_list import _semantic_boolean_icon
 
     # BEGIN CUSTOMIZATION

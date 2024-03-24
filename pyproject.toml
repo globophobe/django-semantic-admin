@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-semantic-admin"
-version = "0.4.1"
+version = "0.5.0"
 description = "Django Semantic UI Admin theme"
 authors = ["Alex <globophobe@gmail.com>"]
 readme = "README.md"
@@ -14,6 +14,7 @@ packages = [{ include = "semantic_admin" }]
 [tool.poetry.dependencies]
 python = ">=3.8"
 django = ">=3.2"
+django-semantic-forms = "*"
 
 [tool.poetry.dev-dependencies]
 black = "*"
@@ -35,7 +36,7 @@ whitenoise = "*"
 exclude = ["migrations"]
 line-length = 88
 target-version = "py38"
-ignore = [
+lint.ignore = [
     "ANN002", # Missing type annotation for *{name}
     "ANN003", # Missing type annotation for **{name}
     "ANN101", # Missing type annotation for {name} in method
@@ -67,7 +68,7 @@ ignore = [
     "PTH123", # open() should be replaced by Path.open()
     "UP032", # [*] Use f-string instead of `format` call
 ]
-select = [
+lint.select = [
     "ANN", # flake8-annotations
     "B", # flake8-bugbear
     "D", # pydocstyle
@@ -82,13 +83,13 @@ select = [
     "RUF200", # invalid-pyproject-toml
     "W", # pycodestyle
 ]
-unfixable = ["F401", "F841"]
+lint.unfixable = ["F401", "F841"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "**/tests/*" = ["ANN", "D"]
 "**/migrations/*" = ["ANN", "D"]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["semantic_admin"]
 
 [build-system]

@@ -1,6 +1,5 @@
 from django.contrib.admin.helpers import ActionForm
-
-from .fields import SemanticChoiceField
+from semantic_forms.fields import SemanticChoiceField
 
 try:
     from django.utils.translation import gettext_lazy as _  # Django >= 4
@@ -9,4 +8,6 @@ except ImportError:
 
 
 class SemanticActionForm(ActionForm):
+    """Semantic action form."""
+
     action = SemanticChoiceField(label=_("Action:"))

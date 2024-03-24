@@ -1,12 +1,15 @@
 import os
 import re
+from pathlib import Path
+from typing import Any
 
 from decouple import config
 from invoke import task
 
 
 @task
-def django_settings(ctx):
+def django_settings(ctx: Any) -> Any:
+    """Get django settings."""
     os.environ["DJANGO_SETTINGS_MODULE"] = "demo.settings.development"
     import django
 
@@ -17,7 +20,8 @@ def django_settings(ctx):
 
 
 @task
-def build(ctx):
+def build(ctx: Any) -> None:
+    """Build the project."""
     delete_database(ctx)
     delete_media(ctx)
     delete_migrations(ctx)
@@ -27,13 +31,15 @@ def build(ctx):
 
 
 @task
-def create_database(ctx):
+def create_database(ctx: Any) -> None:
+    """Create the database."""
     ctx.run("python manage.py makemigrations")
     ctx.run("python manage.py migrate")
 
 
 @task
-def create_user(ctx):
+def create_user(ctx: Any) -> None:
+    """Create a superuser."""
     from django.contrib.auth import get_user_model
 
     User = get_user_model()
@@ -43,26 +49,26 @@ def create_user(ctx):
 
 
 @task
-def populate_database(ctx):
+def populate_database(ctx: Any) -> None:
+    """Populate the database."""
     django_settings(ctx)
 
     import datetime
     import os
     import random
 
+    from demo_app.factory import PersonFactory
+    from demo_app.models import Favorite, Picture
     from django.conf import settings
     from django.core.files import File
     from django.utils.text import slugify
     from faker import Faker
 
-    from demo_app.factory import PersonFactory
-    from demo_app.models import Favorite, Picture
-
     fake = Faker()
 
     COFFEE_DIR = settings.BASE_DIR / "coffee"
 
-    coffees = [c for c in os.listdir(COFFEE_DIR) if os.path.splitext(c)[1] == ".jpeg"]
+    coffees = [c for c in os.listdir(COFFEE_DIR) if Path(c).suffix == ".jpeg"]
 
     people = []
     for index in range(int(len(coffees) / 2)):
@@ -103,7 +109,8 @@ def populate_database(ctx):
 
 
 @task
-def delete_database(ctx):
+def delete_database(ctx: any) -> None:
+    """Delete the database."""
     django_settings(ctx)
 
     from django.conf import settings
@@ -114,7 +121,8 @@ def delete_database(ctx):
 
 
 @task
-def delete_media(ctx):
+def delete_media(ctx: Any) -> None:
+    """Delete media."""
     django_settings(ctx)
 
     from django.conf import settings
@@ -124,7 +132,8 @@ def delete_media(ctx):
 
 
 @task
-def delete_migrations(ctx):
+def delete_migrations(ctx: Any) -> None:
+    """Delete migrations."""
     import os
 
     from django.conf import settings
@@ -134,8 +143,7 @@ def delete_migrations(ctx):
     migrations = [
         MIGRATIONS_DIR / migration
         for migration in os.listdir(MIGRATIONS_DIR)
-        if os.path.splitext(migration)[0] != "__init__"
-        and os.path.splitext(migration)[1] == ".py"
+        if Path(migration).stem != "__init__" and Path(migration).suffix == ".py"
     ]
 
     for migration in migrations:
@@ -143,26 +151,30 @@ def delete_migrations(ctx):
 
 
 @task
-def get_container_name(ctx, region="asia-northeast1"):
+def get_container_name(ctx: Any, region: str = "asia-northeast1") -> str:
+    """Get container name."""
     project_id = ctx.run("gcloud config get-value project").stdout.strip()
     name = "django-semantic-admin"
     return f"{region}-docker.pkg.dev/{project_id}/{name}/{name}"
 
 
-def docker_secrets():
+def docker_secrets() -> str:
+    """Get docker secrets."""
     build_args = [
         f'{secret}="{config(secret)}"' for secret in ("SECRET_KEY", "SENTRY_DSN")
     ]
     return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
 
 
-def build_semantic_admin(ctx):
+def build_semantic_admin(ctx: Any) -> str:
+    """Build semantic admin."""
     result = ctx.run("poetry build").stdout
     return re.search(r"django_semantic_admin-.*\.whl", result).group()
 
 
 @task
-def build_container(ctx, region="asia-northeast1"):
+def build_container(ctx: Any, region: str = "asia-northeast1") -> None:
+    """Build container."""
     wheel = build_semantic_admin(ctx)
     ctx.run("echo yes | python manage.py collectstatic")
     name = get_container_name(ctx, region=region)
@@ -203,7 +215,8 @@ def build_container(ctx, region="asia-northeast1"):
 
 
 @task
-def push_container(ctx, region="asia-northeast1"):
+def push_container(ctx: Any, region: str = "asia-northeast1") -> None:
+    """Push container."""
     name = get_container_name(ctx, region=region)
     # Push
     cmd = f"docker push {name}"

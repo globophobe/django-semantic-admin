@@ -50,7 +50,7 @@
 
 {% block content %}
 <div id="content-main" class="change-form">
-  <form class="ui form {% if errors %} error{% endif %}" {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}
+  <form class="ui form{% if errors %} error{% endif %}" {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}
 <div class="width-100">
 {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1" />{% endif %}
 {% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}" />{% endif %}
@@ -90,26 +90,6 @@
     django.jQuery(document).on('formset:added', formsetAdded) 
 
     function formsetAdded(event, $row, formsetName) {
-        // Streamfield
-        
-        // Remove existing container.
-        $row.find('.c-sf-container').remove()
-
-        // Get init script.
-        $row.find('script').each(function() {
-            var attr = $row[0].id;
-            var regex = /^.*\-(\d+)$/;
-            var m = attr.match(regex);
-            if (m.length) {
-                var id = m[1]
-                var script = $(this).text();
-                // Wagtail has modelcluster, not regular inlines. Set id.
-                var s = script.replace('__prefix__', id);
-                // Reinitialize.
-                eval(s)
-            }
-        });
-
         // Autocompletes
         $row.find('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
             var url = $(this).data('ajax--url');

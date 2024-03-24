@@ -8,7 +8,7 @@ Awesome optional features
 To enable this awesome feature, add `filterset_class` to your Django admin:
 
 ```python
-from semantic_admin.filters import SemanticFilterSet
+from semantic_forms.filters import SemanticFilterSet
 
 class DemoFilter(SemanticFilterSet):
     class Meta:
@@ -37,7 +37,7 @@ class DemoModel(models.Model):
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" />
 
-To enable this awesome feature, instead of `import_export.ImportExportModelAdmin`, etc:
+To enable this awesome feature, instead of `ImportExportModelAdmin`, etc:
 
 ```python
 from import_export.admin import ImportExportModelAdmin 

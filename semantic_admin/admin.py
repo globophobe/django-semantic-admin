@@ -16,13 +16,9 @@ from django.forms.models import (
     modelform_factory,
     modelformset_factory,
 )
+from django.http import HttpRequest, HttpResponse
 from django.utils.html import format_html
-
-from semantic_admin.widgets import (
-    SemanticActionCheckboxInput,
-    SemanticAutocompleteSelect,
-    SemanticAutocompleteSelectMultiple,
-    SemanticChangelistCheckboxInput,
+from semantic_forms.widgets import (
     SemanticCheckboxInput,
     SemanticDateInput,
     SemanticDateTimeInput,
@@ -39,6 +35,13 @@ from semantic_admin.widgets import (
     SemanticURLInput,
 )
 
+from semantic_admin.widgets import (
+    SemanticActionCheckboxInput,
+    SemanticAutocompleteSelect,
+    SemanticAutocompleteSelectMultiple,
+    SemanticChangelistCheckboxInput,
+)
+
 from .awesomesearch import AwesomeSearchModelAdmin
 from .helpers import SemanticActionForm
 from .views.autocomplete import SemanticAutocompleteJsonView
@@ -50,9 +53,9 @@ except ImportError:
 
 
 class SemanticAdminURLFieldWidget(AdminURLFieldWidget, SemanticURLInput):
-    """Semantic admin URL field widget."""
+    """Semantic admin URL field widget"""
 
-    template_name = "semantic_ui/forms/widgets/url.html"
+    template_name = "semantic_forms/forms/widgets/url.html"
 
 
 SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS = {
@@ -74,8 +77,11 @@ SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS = {
 }
 
 
-class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
-    def __init__(self, *args, **kwargs):
+class SemanticBaseModelAdmin(BaseModelAdmin):
+    """Semantic base model admin"""
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize"""
         super().__init__(*args, **kwargs)
         # Simply overwrite
         overrides = copy.deepcopy(SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS)
@@ -83,10 +89,10 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
             self.formfield_overrides.setdefault(k, {}).update(v)
         self.formfield_overrides = overrides
 
-    def formfield_for_choice_field(self, db_field, request, **kwargs):
-        """
-        Get a form Field for a database Field that has declared choices.
-        """
+    def formfield_for_choice_field(
+        self, db_field: str, request: HttpRequest, **kwargs
+    ) -> forms.Field:
+        """Get a form Field for a database Field that has declared choices"""
         # If the field is named as a radio_field, use a RadioSelect
         if db_field.name in self.radio_fields:
             # Avoid stomping on custom widget/choices arguments.
@@ -111,10 +117,10 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
 
         return db_field.formfield(**kwargs)
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """
-        Get a form Field for a ForeignKey.
-        """
+    def formfield_for_foreignkey(
+        self, db_field: str, request: HttpRequest, **kwargs
+    ) -> forms.Field:
+        """Get a form Field for a ForeignKey"""
         db = kwargs.get("using")
 
         if db_field.name in self.get_autocomplete_fields(request):
@@ -149,10 +155,10 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
 
         return db_field.formfield(**kwargs)
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        """
-        Get a form Field for a ManyToManyField.
-        """
+    def formfield_for_manytomany(
+        self, db_field: str, request: HttpRequest, **kwargs
+    ) -> forms.Field:
+        """Get a form Field for a ManyToManyField"""
         # If it uses an intermediary model that isn't auto created, don't show
         # a field in admin.
         if not db_field.remote_field.through._meta.auto_created:
@@ -209,10 +215,8 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
 
         return form_field
 
-    def get_changelist_form(self, request, **kwargs):
-        """
-        Return a Form class for use in the Formset on the changelist page.
-        """
+    def get_changelist_form(self, request: HttpRequest, **kwargs) -> forms.ModelForm:
+        """Return a Form class for use in the Formset on the changelist page"""
         # BEGIN CUSTOMIZATION
         defaults = {
             "formfield_callback": partial(
@@ -229,10 +233,12 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
             defaults["fields"] = forms.ALL_FIELDS
         return modelform_factory(self.model, **defaults)
 
-    def get_changelist_formset(self, request, **kwargs):
+    def get_changelist_formset(
+        self, request: HttpRequest, **kwargs
+    ) -> forms.BaseModelFormSet:
         """
         Return a FormSet class for use on the changelist page if list_editable
-        is used.
+        is used
         """
         # BEGIN CUSTOMIZATION
         defaults = {
@@ -251,27 +257,23 @@ class SemanticBaseModelAdmin(BaseModelAdmin):  # type: ignore
             **defaults
         )
 
-    def changelist_formfield_for_dbfield(self, db_field, request, **kwargs):
+    def changelist_formfield_for_dbfield(
+        self, db_field: str, request: HttpRequest, **kwargs
+    ) -> forms.Field:
+        """Changelist form field for db field"""
         formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
         if formfield and isinstance(formfield.widget, SemanticCheckboxInput):
             formfield.widget = SemanticChangelistCheckboxInput()
         return formfield
 
-    def get_exclude(self, request, obj=None):
-        # TODO: Verify and delete this method
-        """
-        Hook for specifying exclude.
-        """
-        return self.exclude
-
 
 class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):
+    """Semantic model admin"""
+
     action_form = SemanticActionForm
 
-    def action_checkbox(self, obj):
-        """
-        A list_display column containing a checkbox widget.
-        """
+    def action_checkbox(self, obj: models.Model) -> str:
+        """A list_display column containing a checkbox widget"""
         semantic_checkbox = SemanticActionCheckboxInput(
             {"class": "action-select"}, lambda value: False
         )
@@ -287,13 +289,14 @@ class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):
         )
     )
 
-    def autocomplete_view(self, request):
+    def autocomplete_view(self, request: HttpRequest) -> HttpResponse:
+        """Autocomplete view"""
         return SemanticAutocompleteJsonView.as_view(model_admin=self)(request)
 
 
 class SemanticStackedInline(SemanticBaseModelAdmin, StackedInline):
-    pass
+    """Semantic stacked inline"""
 
 
 class SemanticTabularInline(SemanticBaseModelAdmin, TabularInline):
-    pass
+    """Semantic tabular inline"""

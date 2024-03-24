@@ -2,7 +2,7 @@
 <div class="field">
   <label for="{field_id}">{% blocktrans with filter_title=title|capfirst %}{{ filter_title }}{% endblocktrans %}: </label>
   <div class="ui fluid menu">
-    <div class="ui fluid simple dropdown item">
+    <div class="ui fluid simple scrolling dropdown item">
       {% for choice in choices %}
         {% if choice.selected %}
           {{ choice.display }}

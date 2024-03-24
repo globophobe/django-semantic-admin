@@ -1,9 +1,13 @@
-from django import forms
+from semantic_forms import SemanticCheckboxInput
 
 
-class SemanticChangelistCheckboxInput(forms.CheckboxInput):
-    template_name = "semantic_ui/forms/widgets/changelist_checkbox.html"
+class SemanticChangelistCheckboxInput(SemanticCheckboxInput):
+    """Semantic changelist checkbox input."""
+
+    template_name = "semantic_admin/changelist_checkbox.html"
 
 
-class SemanticActionCheckboxInput(forms.CheckboxInput):
-    template_name = "semantic_ui/forms/widgets/action_checkbox.html"
+class SemanticActionCheckboxInput(SemanticCheckboxInput):
+    """Semantic action checkbox input."""
+
+    template_name = "semantic_admin/action_checkbox.html"

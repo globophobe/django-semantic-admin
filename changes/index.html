@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Awesome optional features - Django Semantic UI admin theme</title>
+    <title>Changes - Django Semantic UI admin theme</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Awesome optional features";
-        var mkdocs_page_input_path = "awesome.md";
+        var mkdocs_page_name = "Changes";
+        var mkdocs_page_input_path = "changes.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -51,10 +51,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="../customization/">Customization</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Awesome optional features</a>
-    <ul class="current">
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../awesome/">Awesome optional features</a>
                 </li>
               </ul>
               <ul>
@@ -69,8 +67,10 @@
                 <li class="toctree-l1"><a class="reference internal" href="../notes/">Notes</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../changes/">Changes</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Changes</a>
+    <ul class="current">
+    </ul>
                 </li>
               </ul>
       </div>
@@ -87,7 +87,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Awesome optional features</li>
+      <li class="breadcrumb-item active">Changes</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -96,52 +96,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="awesome-optional-features">Awesome optional features</h2>
-<ol><li>Optional integration with <a href="https://github.com/carltongibson/django-filter">django_filter</a>:</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" /></p>
-<p>To enable this awesome feature, add <code>filterset_class</code> to your Django admin:</p>
-<pre><code class="language-python">from semantic_forms.filters import SemanticFilterSet
-
-class DemoFilter(SemanticFilterSet):
-    class Meta:
-        model = Demo
-        fields = (&quot;demo_field&quot;,)
-
-class DemoAdmin(SemanticModelAdmin):
-    filterset_class = DemoFilter
-</code></pre>
-<ol start="2"><li>HTML preview in Django `autocomplete_fields`:</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/html5-autocomplete.png" width="670" alt="html5-autocomplete" /></p>
-<p>To enable this awesome feature, add the <code>semantic_autocomplete</code> property to your Django model:</p>
-<pre><code class="language-python">class DemoModel(models.Model):
-    @property
-    def semantic_autocomplete(self):
-        html = self.get_img()
-        return format_html(html)
-</code></pre>
-<ol start="3"><li>Optional integration with <a href="https://github.com/django-import-export/django-import-export">django-import-export</a>:</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" /></p>
-<p>To enable this awesome feature, instead of <code>ImportExportModelAdmin</code>, etc:</p>
-<pre><code class="language-python">from import_export.admin import ImportExportModelAdmin 
-
-class ExampleImportExportAdmin(ImportExportModelAdmin):
-    pass
-</code></pre>
-<p>Inherit from their <code>Semantic</code> equivalents:</p>
-<pre><code class="language-python">from semantic_admin.contrib.import_export.admin import SemanticImportExportModelAdmin
-
-class ExampleImportExportAdmin(SemanticImportExportModelAdmin):
-    pass
-</code></pre>
+                <h2 id="v050">v0.5.0</h2>
+<p>Forms were moved to <a href="https://github.com/globophobe/django-semantic-forms">django-semantic-forms</a> so that they may be used outside of the admin.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../customization/" class="btn btn-neutral float-left" title="Customization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../screenshots/" class="btn btn-neutral float-right" title="Screenshots">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../notes/" class="btn btn-neutral float-left" title="Notes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
     </div>
 
   <hr/>
@@ -164,10 +125,8 @@ class ExampleImportExportAdmin(SemanticImportExportModelAdmin):
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../customization/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../notes/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../screenshots/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

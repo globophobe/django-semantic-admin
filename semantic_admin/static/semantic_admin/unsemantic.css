@@ -90,3 +90,12 @@ div.action-select {
 }
 
 /* END IMPORT EXPORT ACTION */
+
+@media print {
+  .noprint {
+    display: none !important;
+    height: 0 !important;
+    border: 0 none !important;
+    opacity: 0 !important;
+  }
+}

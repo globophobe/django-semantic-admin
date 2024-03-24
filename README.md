@@ -13,7 +13,7 @@ Documentation is on [GitHub Pages](https://globophobe.github.io/django-semantic-
 
 Django Semantic Forms
 ---------------------
-🎉 As of v0.5.0, forms were moved to [django-semantic-forms](https://github.com/globophobe/django-semantic-forms). As of v0.5.0, `semantic_forms` must be added to INSTALLED_APPS.
+🎉 As of v0.5.0, forms were moved to [django-semantic-forms](https://github.com/globophobe/django-semantic-forms). `semantic_forms` must be added to INSTALLED_APPS.
 
 ```python
 INSTALLED_APPS = [

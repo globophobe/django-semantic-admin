@@ -197,7 +197,6 @@ def build_container(ctx: Any, region: str = "asia-northeast1") -> None:
             if req.split("==")[0] in requirements
         ]
     )
-    reqs = "django==5.1b1 " + reqs
     # Build
     build_args = {"WHEEL": wheel, "POETRY_EXPORT": reqs}
     build_args = " ".join(

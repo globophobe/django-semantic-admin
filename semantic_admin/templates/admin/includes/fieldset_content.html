@@ -33,7 +33,7 @@ Semantic opinions about fieldset and legend tags https://github.com/Semantic-Org
           {{ field.label_tag }}
       {% endif %}
 
-      {% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}
+      {% if not line.fields|length == 1 and not field.is_readonly %}{{ field.errors }}{% endif %}
       {% if field.is_checkbox %}
           </div>
       {% endif %}
@@ -41,7 +41,7 @@ Semantic opinions about fieldset and legend tags https://github.com/Semantic-Org
       {% if field.field.help_text %}
           <div class="help">{{ field.field.help_text|safe }}</div>
       {% endif %}
-      {% if line.fields|length_is:'1' %}{{ line.errors }}{% endif %}
+      {% if line.fields|length == 1 %}{{ line.errors }}{% endif %}
     </div>
     {% endfor %}
 

@@ -13,7 +13,7 @@ packages = [{ include = "semantic_admin" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
-django = "*"
+django = ">=3.2"
 django-semantic-forms = "*"
 
 [tool.poetry.dev-dependencies]

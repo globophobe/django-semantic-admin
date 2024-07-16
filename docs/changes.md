@@ -1,4 +1,4 @@
-v0.5.1
+v0.6.0
 ------
 * Require Python >= 3.10
 * Replace deprecated length_is filter with length for Django 5.1

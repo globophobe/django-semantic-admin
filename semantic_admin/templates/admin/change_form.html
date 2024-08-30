@@ -1,7 +1,6 @@
 {# comment Extend base_site.html instead of change_form.html b/c override extrastyle without block.super #}
 {% extends "admin/base_site.html" %}
 {% load i18n admin_urls static admin_modify semantic_utils %}
-{% has_url 'javascript-catalog' as javascript_catalog %}
 
 {% block extrahead %}{{ block.super }}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
@@ -133,21 +132,20 @@
         });
 
         const languageCode = '{{ LANGUAGE_CODE|default:"en-us" }}';
-        const hasJavascriptCatalog = {% if javascript_catalog %}true{% else %}false{% endif %};
 
         // Datetime
         $row.find('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('datetime', hasJavascriptCatalog));
+            $(this).calendar(getCalendarOptions('datetime', true));
         });
 
         // Date
         $row.find('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('date', hasJavascriptCatalog));
+            $(this).calendar(getCalendarOptions('date', true));
         });
 
         // Time
         $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('time', hasJavascriptCatalog));
+            $(this).calendar(getCalendarOptions('time', true));
         });
 
     };

@@ -1,5 +1,5 @@
 import datetime
-from typing import Generator
+from collections.abc import Generator
 
 from django import template
 from django.contrib.admin.templatetags.admin_list import (
@@ -272,14 +272,3 @@ def semantic_paginator_number(cl: ChangeList, i: int) -> str:
             mark_safe(" end" if i == cl.paginator.num_pages else ""),
             i,
         )
-
-
-@register.simple_tag
-def has_url(url: str) -> bool:
-    """Does the url exist?"""
-    try:
-        reverse(url)
-    except NoReverseMatch:
-        return False
-    else:
-        return True

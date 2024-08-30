@@ -2,6 +2,7 @@
 *.sqlite3
 .env
 .coverage
+.DS_Store
 dist/
 static/
 media/

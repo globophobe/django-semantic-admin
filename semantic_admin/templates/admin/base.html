@@ -6,7 +6,7 @@
 <title>{% block title %}{% endblock %}</title>
 
 <!-- Style -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.css">
+<link rel="stylesheet" type="text/css" href="{% static "semantic_admin/semantic.min.css" %}">
 
 <link rel="stylesheet" href="{% static "semantic_admin/semantic-admin.css" %}" />
 <link rel="stylesheet" href="{% static "semantic_admin/unsemantic.css" %}" />
@@ -21,8 +21,8 @@
 
 <!-- Script -->
 {% block extrahead %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
+<script src="{% static "semantic_admin/jquery.min.js" %}"></script>
+<script src="{% static "semantic_admin/semantic.min.js" %}"></script>
 {% endblock %}
 <!-- END Script -->
 

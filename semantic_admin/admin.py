@@ -82,11 +82,14 @@ class SemanticBaseModelAdmin(BaseModelAdmin):
 
     def __init__(self, *args, **kwargs) -> None:
         """Initialize"""
+        original_formfield_overrides = copy.deepcopy(self.formfield_overrides)
         super().__init__(*args, **kwargs)
         # Simply overwrite
         overrides = copy.deepcopy(SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS)
-        for k, v in overrides.items():
-            self.formfield_overrides.setdefault(k, {}).update(v)
+        for k, v in self.formfield_overrides.items():
+            overrides.setdefault(k, {}).update(v)
+        for k, v in original_formfield_overrides.items():
+            overrides.setdefault(k, {}).update(v)
         self.formfield_overrides = overrides
 
     def formfield_for_choice_field(

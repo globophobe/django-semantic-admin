@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block extrahead %}
+  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
   {{ block.super }}
   {{ cl.model_admin.filterset.form.media.js }}
 {% endblock %}

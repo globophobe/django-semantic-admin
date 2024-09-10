@@ -89,6 +89,10 @@ div.action-select {
   }
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* END IMPORT EXPORT ACTION */
 
 @media print {

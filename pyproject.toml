@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-semantic-admin"
-version = "0.6.2"
+version = "0.6.3"
 description = "Django Semantic UI Admin theme"
 authors = ["Alex <globophobe@gmail.com>"]
 readme = "README.md"
@@ -15,11 +15,15 @@ packages = [{ include = "semantic_admin" }]
 python = ">=3.10"
 django = ">=3.2"
 django-semantic-forms = "*"
+django-import-export = { version = "<=3.3.9", optional = true }
+
+[tool.poetry.extras]
+import-export = ["django-import-export"]
 
 [tool.poetry.dev-dependencies]
 black = "*"
 django-debug-toolbar = "*"
-django-import-export = "*"
+django-import-export = "<=3.3.9"
 django-filter = "*"
 django-taggit = "*"
 factory-boy = "*"

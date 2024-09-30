@@ -16,7 +16,7 @@ from django.contrib.admin.utils import (
 from django.contrib.admin.views.main import ORDER_VAR, PAGE_VAR, ChangeList
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.urls import NoReverseMatch, reverse
+from django.urls import NoReverseMatch
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 

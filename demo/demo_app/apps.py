@@ -7,5 +7,7 @@ except ImportError:
 
 
 class DemoAppConfig(AppConfig):
+    """Demo App Config."""
+
     name = "demo_app"
     verbose_name = _("demo")

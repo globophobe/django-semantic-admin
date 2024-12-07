@@ -33,13 +33,13 @@ invoke = "*"
 mkdocs = "*"
 Pillow = "*"
 python-decouple = "*"
-ruff = "<0.5.0"
+ruff = "*"
 whitenoise = "*"
 
 [tool.ruff]
 exclude = ["migrations"]
 line-length = 88
-target-version = "py38"
+target-version = "py310"
 lint.ignore = [
     "ANN002", # Missing type annotation for *{name}
     "ANN003", # Missing type annotation for **{name}

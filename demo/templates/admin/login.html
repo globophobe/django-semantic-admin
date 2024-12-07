@@ -3,6 +3,6 @@
 
 {% block passwordreset %}
   <div class="password-reset-link" style="margin-bottom: 1rem;">
-    <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+    <input type="submit" style="background: none; border: none; padding: 0; color: #4183c4; text-decoration: underline; cursor: pointer; font: inherit;" value="{% trans 'Forgotten your password or username?' %}" />
   </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Type
+from typing import TYPE_CHECKING
 
 from django.contrib import admin, messages
 from django.contrib.admin import helpers
@@ -14,12 +14,17 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import SimpleTemplateResponse, TemplateResponse
 from django.utils.http import urlencode
 from django.utils.translation import ngettext
-from django_filters import FilterSet
 
 try:
     from django.utils.translation import gettext_lazy as _  # Django >= 4
 except ImportError:
     from django.utils.translation import ugettext_lazy as _
+
+if TYPE_CHECKING:
+    try:
+        from django_filters import FilterSet
+    except ImportError:
+        pass
 
 
 class AwesomeSearchChangeList(ChangeList):
@@ -37,7 +42,7 @@ class AwesomeSearchChangeList(ChangeList):
             self.full_result_count = self.model_admin.get_queryset(request).count()
 
     def get_query_string(
-        self, new_params: Optional[dict] = None, remove: Optional[str] = None
+        self, new_params: dict | None = None, remove: str | None = None
     ) -> str:
         """Get query string"""
         params = super().get_query_string(new_params=new_params, remove=remove)
@@ -76,7 +81,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
     advanced filtering with https://github.com/alex/django-filter
     """
 
-    def get_filterset_class(self) -> Optional[FilterSet]:
+    def get_filterset_class(self) -> "FilterSet | None":
         """Get filterset class"""
         if hasattr(self, "filter_class"):
             return self.filter_class
@@ -85,13 +90,13 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
 
     def get_changelist(
         self, request: HttpRequest, **kwargs
-    ) -> Type[AwesomeSearchChangeList]:
+    ) -> type[AwesomeSearchChangeList]:
         """Returns the ChangeList class for use on the changelist page."""
         return AwesomeSearchChangeList
 
     @csrf_protect_m
     def changelist_view(
-        self, request: HttpRequest, extra_context: Optional[dict] = None, **kwargs
+        self, request: HttpRequest, extra_context: dict | None = None, **kwargs
     ) -> HttpResponse:
         """
         FilterSet params must be removed from request within this function, or
@@ -287,7 +292,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
             or [
                 "admin/%s/%s/change_list.html"  # noqa: UP031
                 % (app_label, self.opts.model_name),
-                "admin/%s/change_list.html" % app_label,
+                "admin/%s/change_list.html" % app_label,  # noqa: UP031
                 "admin/change_list.html",
             ],
             context,
@@ -356,7 +361,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
 
     def get_search_results(
         self, request: HttpRequest, queryset: QuerySet, search_term: str
-    ) -> Tuple[QuerySet, bool]:
+    ) -> tuple[QuerySet, bool]:
         """
         Returns a tuple containing a queryset to implement the search,
         and a boolean indicating if the results may contain duplicates.

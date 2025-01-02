@@ -26,13 +26,6 @@
 {% block object-tools %}
   {# <div class="object-tools"> #}
     {% block object-tools-items %}
-      {% if not has_import_permission %}
-        <div class="two wide field" style="margin-bottom: 0;"></div>
-      {% endif %}
-      {% if not has_export_permission %}
-        <div class="two wide field" style="margin-bottom: 0;"></div>
-      {% endif %}
-
       {% if has_add_permission %}
         {% url cl.opts|admin_urlname:'add' as add_url %}
         <div class="six wide field noprint">

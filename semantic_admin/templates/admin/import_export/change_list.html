@@ -4,6 +4,13 @@
 {# This hack allows sub templates to add to object-tools #}
 {% block object-tools %}
     {% block object-tools-items %}
+      {% if not has_import_permission %}
+        <div class="two wide field" style="margin-bottom: 0;"></div>
+      {% endif %}
+      {% if not has_export_permission %}
+        <div class="two wide field" style="margin-bottom: 0;"></div>
+      {% endif %}
+
       {% if has_add_permission %}
         {{ block.super }}
       {% endif %}

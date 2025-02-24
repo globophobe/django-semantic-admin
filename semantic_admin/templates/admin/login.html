@@ -6,9 +6,15 @@
 {% block extrastyle %}
 {{ form.media }}
 <style>
+  html, body {
+      margin: 0;
+      overflow-x: hidden;
+      position: fixed;
+      width: 100%;
+  }
+
   #container {
-    min-height: calc(100vh - 5.5rem);
-    margin-top: auto;
+    min-height: calc(95vh);
   }
 
   #column {
@@ -16,7 +22,7 @@
   }
 
   #login {
-    min-width: 30rem;
+    min-width: 25rem;
     margin: auto;
   }
 </style>

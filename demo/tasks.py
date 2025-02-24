@@ -221,3 +221,14 @@ def push_container(ctx: Any, region: str = "asia-northeast1") -> None:
     # Push
     cmd = f"docker push {name}"
     ctx.run(cmd)
+
+
+@task
+def deploy_container(
+    ctx: Any, service: str = "django-semantic-admin", region: str = "asia-northeast1"
+) -> None:
+    """Deploy container."""
+    build_container(ctx, region=region)
+    push_container(ctx, region=region)
+    image = get_container_name(ctx, region=region)
+    ctx.run(f"gcloud run deploy {service} --image={image} --region={region}")

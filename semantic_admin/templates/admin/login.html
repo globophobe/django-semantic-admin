@@ -7,7 +7,8 @@
 {{ form.media }}
 <style>
   #container {
-    margin-top: 1.75rem;
+    min-height: calc(100vh - 5.5rem);
+    margin-top: auto;
   }
 
   #column {
@@ -15,15 +16,8 @@
   }
 
   #login {
-    min-width: 25rem;
+    min-width: 30rem;
     margin: auto;
-  }
-
-  @media screen and (min-width: 768px) {
-    #container {
-      min-height: calc(100vh - 1.75rem);
-      margin-top: auto;
-    }
   }
 </style>
 {% endblock %}
@@ -83,6 +77,8 @@
             </div>
           {% endif %}
         {% endblock %}
+
+        <br />
 
         <div>
           <label>&nbsp;</label><input class="ui primary button" type="submit" value="{% trans 'Log in' %}" />

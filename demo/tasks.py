@@ -91,7 +91,7 @@ def populate_database(ctx: Any) -> None:
     pictures = []
     random.shuffle(coffees)
     coffee_people = people + random.choices(people, k=len(coffees) - len(people))
-    for coffee, coffee_person in zip(coffees, coffee_people):
+    for coffee, coffee_person in zip(coffees, coffee_people, strict=True):
         date_and_time = fake.past_datetime().replace(tzinfo=datetime.timezone.utc)
         picture = Picture(person=coffee_person, date_and_time=date_and_time)
         path = COFFEE_DIR / coffee

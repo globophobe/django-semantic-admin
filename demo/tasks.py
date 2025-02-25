@@ -91,7 +91,7 @@ def populate_database(ctx: Any) -> None:
     pictures = []
     random.shuffle(coffees)
     coffee_people = people + random.choices(people, k=len(coffees) - len(people))
-    for coffee, coffee_person in zip(coffees, coffee_people):
+    for coffee, coffee_person in zip(coffees, coffee_people, strict=True):
         date_and_time = fake.past_datetime().replace(tzinfo=datetime.timezone.utc)
         picture = Picture(person=coffee_person, date_and_time=date_and_time)
         path = COFFEE_DIR / coffee
@@ -221,3 +221,14 @@ def push_container(ctx: Any, region: str = "asia-northeast1") -> None:
     # Push
     cmd = f"docker push {name}"
     ctx.run(cmd)
+
+
+@task
+def deploy_container(
+    ctx: Any, service: str = "django-semantic-admin", region: str = "asia-northeast1"
+) -> None:
+    """Deploy container."""
+    build_container(ctx, region=region)
+    push_container(ctx, region=region)
+    image = get_container_name(ctx, region=region)
+    ctx.run(f"gcloud run deploy {service} --image={image} --region={region}")

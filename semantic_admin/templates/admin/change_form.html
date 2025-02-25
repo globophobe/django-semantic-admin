@@ -13,8 +13,8 @@
 <div class="row">
     <div class="ui large breadcrumb" style="padding-left: 1rem;">
         <a class="section" href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-        {% if has_change_permission %}
         <i class="right chevron icon divider"></i>
+        {% if has_change_permission or has_view_permission %}
         <a class="section" href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}
         {% endif %}
         <i class="right chevron icon divider"></i>

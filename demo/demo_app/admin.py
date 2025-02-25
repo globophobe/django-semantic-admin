@@ -1,5 +1,3 @@
-from typing import Optional
-
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin as DefaultModelAdmin
@@ -69,9 +67,7 @@ class PictureStackedInline(StackedInline):
 
     inline_picture.short_description = _("picture").capitalize()  # type: ignore
 
-    def has_add_permission(
-        self, request: HttpRequest, obj: Optional[Picture] = None
-    ) -> bool:
+    def has_add_permission(self, *args, **kwargs) -> bool:
         """Has add permission."""
         return False
 
@@ -212,7 +208,7 @@ class PictureAdmin(ModelAdmin):
     has_favorites.admin_order_field = "total_favorites"
     has_favorites.boolean = True  # type: ignore
 
-    def has_add_permission(self, request: HttpRequest) -> bool:
+    def has_add_permission(self, *args, **kwargs) -> bool:
         """Has add permission."""
         return False
 

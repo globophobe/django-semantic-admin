@@ -22,19 +22,9 @@ class LoginForm(AdminAuthenticationForm):
 
     username = UsernameField(
         widget=forms.TextInput(attrs={"placeholder": "admin", "autofocus": True}),
-        required=False,
     )
     password = forms.CharField(
         label=_("Password"),
         strip=False,
         widget=forms.PasswordInput(attrs={"placeholder": "semantic"}),
-        required=False,
     )
-
-    @sensitive_variables()
-    def clean(self) -> dict:
-        """Clean."""
-        cleaned_data = super().clean()
-        if not cleaned_data.get("username") or not cleaned_data.get("password"):
-            raise self.get_invalid_login_error()
-        return cleaned_data

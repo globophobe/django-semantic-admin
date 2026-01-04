@@ -84,11 +84,13 @@
 {% block admin_change_form_document_ready %}
     {{ block.super }}
     <script type="text/javascript">
+    // Django uses noConflict, so define $ explicitly
+    const $ = django.jQuery;
 
-    // As per https://docs.djangoproject.com/en/1.11/ref/contrib/admin/javascript/
-    django.jQuery(document).on('formset:added', formsetAdded) 
+    // Initialize widgets in a newly added inline row
+    function initInlineRow(row, formsetName) {
+        const $row = $(row);
 
-    function formsetAdded(event, $row, formsetName) {
         // Autocompletes
         $row.find('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
             var url = $(this).data('ajax--url');
@@ -97,7 +99,7 @@
             url += '&field_name=' + $(this).data('field-name');
             url += '&term={query}';
             $(this).dropdown({
-                apiSettings: { 
+                apiSettings: {
                     'url': url,
                     'onResponse': function(response) {
                         response.results = response.results.map(result => {
@@ -105,11 +107,11 @@
                         });
                         return response
                     },
-                    'cache': false 
+                    'cache': false
                 },
                 'clearable': true,
                 'fullTextSearch': true,
-                'forceSelection': false,  
+                'forceSelection': false,
                 'saveRemoteData': false
             });
             // b/c not idempotent.
@@ -147,8 +149,20 @@
         $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
             $(this).calendar(getCalendarOptions('time', true));
         });
+    }
 
-    };
+    // Django 6.0+ uses DOM CustomEvent
+    document.addEventListener('formset:added', function(event) {
+        initInlineRow(event.target, event.detail?.formsetName);
+    });
+
+    // Django 4.2-5.x uses jQuery triggers
+    django.jQuery(document).on('formset:added', function(event, $row, formsetName) {
+        // Only handle if jQuery-style args are present (not from DOM event bubbling)
+        if ($row && $row.length) {
+            initInlineRow($row[0], formsetName);
+        }
+    });
 
     </script>
 {% endblock %}

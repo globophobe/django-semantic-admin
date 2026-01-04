@@ -1,14 +1,13 @@
 from django import forms, template
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 BLANK_LABEL = "<label>&nbsp;</label>"
 FIELD = '<div class="field">{}</div>'
 COMPUTER_FIELD = '<div class="computer only field"></div>'
 
 register = template.Library()
-
-from django.utils.translation import gettext_lazy as _
 
 
 def format_fields(cl, fields):
@@ -37,12 +36,16 @@ def format_search_field(context, cl):
         label = _("Search")
         search_var = context["search_var"]
         search_label = f'<label for="searchbar">{label}: </label>'
+        # Add aria-describedby for search help text
+        aria_describedby = ""
+        if getattr(cl, "search_help_text", None):
+            aria_describedby = ' aria-describedby="searchbar_helptext"'
         search_input = f"""
             <input
                 id="searchbar"
                 type="text"
                 name="{search_var}"
-                value="{cl.query}"
+                value="{cl.query}"{aria_describedby}
             />
         """
         if hasattr(cl.model_admin, "filterset"):

@@ -13,9 +13,8 @@ from django.forms.fields import MultipleChoiceField
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import SimpleTemplateResponse, TemplateResponse
 from django.utils.http import urlencode
-from django.utils.translation import ngettext
-
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext
 
 if TYPE_CHECKING:
     try:

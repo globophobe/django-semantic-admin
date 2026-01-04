@@ -1,5 +1,5 @@
 import datetime
-from typing import Generator
+from collections.abc import Generator
 
 from django import template
 from django.contrib.admin.templatetags.admin_list import ResultList, _coerce_field_name
@@ -107,9 +107,11 @@ def semantic_items_for_result(cl: ChangeList, result, form):
                 link_or_text = format_html(
                     '<a href="{}"{}>{}</a>',
                     url,
-                    format_html(' data-popup-opener="{}"', value)
-                    if cl.is_popup
-                    else "",
+                    (
+                        format_html(' data-popup-opener="{}"', value)
+                        if cl.is_popup
+                        else ""
+                    ),
                     result_repr,
                 )
 
@@ -147,7 +149,7 @@ def semantic_items_for_result(cl: ChangeList, result, form):
 def semantic_results(cl: ChangeList) -> Generator[ResultList, None, None]:
     """Semantic results."""
     if cl.formset:
-        for res, form in zip(cl.result_list, cl.formset.forms):
+        for res, form in zip(cl.result_list, cl.formset.forms, strict=False):
             yield ResultList(form, semantic_items_for_result(cl, res, form))
     else:
         for res in cl.result_list:

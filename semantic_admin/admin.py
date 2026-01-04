@@ -46,10 +46,7 @@ from .awesomesearch import AwesomeSearchModelAdmin
 from .helpers import SemanticActionForm
 from .views.autocomplete import SemanticAutocompleteJsonView
 
-try:
-    from django.utils.translation import ugettext_lazy as _
-except ImportError:
-    from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class SemanticAdminURLFieldWidget(AdminURLFieldWidget, SemanticURLInput):

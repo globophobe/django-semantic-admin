@@ -52,24 +52,29 @@
             reset(options);
         }
         // BEGIN CUSTOMIZATION //
-        // actionCheckboxes.forEach(function(el) {
-        //     el.checked = checked;
-        //     el.closest('tr').classList.toggle(options.selectedClass, checked);
-        // });
+        // actionCheckboxes are now <input> elements, get wrapper for Semantic UI
         const update = checked ? "check" : "uncheck";
-        actionCheckboxes.forEach(function(actionCheckbox) {
-          $(actionCheckbox).checkbox(update);
-        })
+        actionCheckboxes.forEach(function(el) {
+            const wrapper = el.closest('.ui.checkbox');
+            if (wrapper) {
+                $(wrapper).checkbox(update);
+            } else {
+                el.checked = checked;
+            }
+            el.closest('tr').classList.toggle(options.selectedClass, checked);
+        });
         // END CUSTOMIZATION //
     }
 
     function updateCounter(actionCheckboxes, options) {
-        // BEGIN CUSTOMIZATION // 
-        // const sel = Array.from(actionCheckboxes).filter(function(el) {
-        //     return el.checked;
-        // }).length;
+        // BEGIN CUSTOMIZATION //
+        // actionCheckboxes are now <input> elements, get wrapper for Semantic UI
         const sel = Array.from(actionCheckboxes).filter(function(el) {
-            return $(el).checkbox('is checked');
+            const wrapper = el.closest('.ui.checkbox');
+            if (wrapper) {
+                return $(wrapper).checkbox('is checked');
+            }
+            return el.checked;
         }).length;
         // END CUSTOMIZATION // 
 
@@ -212,14 +217,16 @@
             el.addEventListener('click', function(event) {
                 if (document.querySelector('[name=action]').value) {
                     const text = list_editable_changed
-                        ? gettext("You have selected an action, but you haven’t saved your changes to individual fields yet. Please click OK to save. You’ll need to re-run the action.")
-                        : gettext("You have selected an action, and you haven’t made any changes on individual fields. You’re probably looking for the Go button rather than the Save button.");
+                        ? gettext("You have selected an action, but you haven't saved your changes to individual fields yet. Please click OK to save. You'll need to re-run the action.")
+                        : gettext("You have selected an action, and you haven't made any changes on individual fields. You're probably looking for the Go button rather than the Save button.");
                     if (!confirm(text)) {
                         event.preventDefault();
                     }
                 }
             });
         }
+        // Sync counter when navigating to the page, such as through the back button. Django 6.0+
+        window.addEventListener('pageshow', (event) => updateCounter(actionCheckboxes, options));
     };
 
     // Call function fn when the DOM is loaded and ready. If it is already
@@ -234,10 +241,10 @@
     }
 
     ready(function() {
- 
         // BEGIN CUSTOMIZATION //
-        // const actionsEls = document.querySelectorAll('tr input.action-select');
-        const actionsEls = document.querySelectorAll('.ui.checkbox.action-select');
+        // Select <input> elements so shift-select works correctly.
+        // The wrapper is derived when needed for Semantic UI operations.
+        const actionsEls = document.querySelectorAll('tr input.action-select');
         // END CUSTOMIZATION //
 
         if (actionsEls.length > 0) {

@@ -84,8 +84,8 @@
 {% block admin_change_form_document_ready %}
     {{ block.super }}
     <script type="text/javascript">
-    // Django uses noConflict, so define $ explicitly
-    const $ = django.jQuery;
+    // Use window.$ which has Fomantic, not django.jQuery which lacks it
+    const $ = window.$;
 
     // Initialize widgets in a newly added inline row
     function initInlineRow(row, formsetName) {

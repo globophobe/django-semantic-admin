@@ -3,8 +3,7 @@
 {% if cl.search_fields or cl.model_admin.filterset.form.fields %}
 <div class="ui secondary segment">
 <div class="ui form">
-<h2 id="changelist-search-form" class="visually-hidden">{% blocktranslate with name=cl.opts.verbose_name_plural %}Search {{ name }}{% endblocktranslate %}</h2>
-<form action="" method="get" role="search" aria-labelledby="changelist-search-form">
+<form action="" method="get" role="search">
 {% if cl.search_fields %}
 {% for pair in cl.params.items %}
     {% if pair.0 != search_var %}<input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}"/>{% endif %}

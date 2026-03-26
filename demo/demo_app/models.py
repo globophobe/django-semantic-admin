@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from taggit.managers import TaggableManager
 
 try:
@@ -65,7 +65,7 @@ class Picture(models.Model):
         name = str(self)
         img = self.get_img(css="small rounded right spaced")
         html = f"<p>{img}{name}</p>"
-        return format_html(html)
+        return mark_safe(html)
 
     def __str__(self):
         return ", ".join((tag.name for tag in self.tags.all())) if self.pk else ""
@@ -91,7 +91,7 @@ class Favorite(models.Model):
     )
 
     def __str__(self):
-        return format_html('<i class="large red heart icon"></i>')
+        return mark_safe('<i class="large red heart icon"></i>')
 
     class Meta:
         verbose_name = _("favorite")

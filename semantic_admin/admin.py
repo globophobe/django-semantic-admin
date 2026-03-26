@@ -17,7 +17,7 @@ from django.forms.models import (
     modelformset_factory,
 )
 from django.http import HttpRequest, HttpResponse
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from semantic_forms.widgets import (
     SemanticCheckboxInput,
     SemanticDateInput,
@@ -285,14 +285,12 @@ class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):
         )
         return semantic_checkbox.render(helpers.ACTION_CHECKBOX_NAME, str(obj.pk))
 
-    action_checkbox.short_description = format_html(  # type: ignore
-        format_html(
-            """
-            <div id="action-toggle" class="ui checkbox">
-                <label></label><input id="action-toggle-input" type="checkbox">
-            </div>
-            """
-        )
+    action_checkbox.short_description = mark_safe(  # type: ignore
+        """
+        <div id="action-toggle" class="ui checkbox">
+            <label></label><input id="action-toggle-input" type="checkbox">
+        </div>
+        """
     )
 
     def autocomplete_view(self, request: HttpRequest) -> HttpResponse:

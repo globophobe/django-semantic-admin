@@ -1,5 +1,4 @@
 from django import forms, template
-from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 BLANK_LABEL = "<label>&nbsp;</label>"
@@ -142,4 +141,4 @@ def search_fields(context, cl):
         html += format_fields(cl, fields)
     else:
         html = search_field
-    return format_html(mark_safe(html))
+    return mark_safe(html)

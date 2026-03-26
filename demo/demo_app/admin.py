@@ -7,7 +7,6 @@ from django.contrib.auth.models import Group, User
 from django.db.models import Count, QuerySet
 from django.http import HttpRequest
 from django.urls import reverse
-from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from taggit.models import Tag
 
@@ -45,7 +44,7 @@ def html5_picture(obj: Picture, css: str = "") -> str:
     name = str(obj)
     img = obj.get_img(css=css)
     html = f"{img}<em>{name}</em>"
-    return format_html(mark_safe(html))
+    return mark_safe(html)
 
 
 class PictureStackedInline(StackedInline):
@@ -107,7 +106,7 @@ class PersonAdmin(ModelAdmin):
             a = f"<a href={url}>{friend.name}</a>"
             friends.append(a)
         html = ", ".join(friends)
-        return format_html(mark_safe(html))
+        return mark_safe(html)
 
     list_friends.short_description = _("friends").capitalize()  # type: ignore
 
@@ -122,7 +121,7 @@ class PersonAdmin(ModelAdmin):
             a = f"<a href={url}>{img}<em>{name}</em></a>"
             favorites.append(a)
         html = "".join(favorites)
-        return format_html(mark_safe(html))
+        return mark_safe(html)
 
     list_favorites.short_description = _("favorites").capitalize()  # type: ignore
 
@@ -195,7 +194,7 @@ class PictureAdmin(ModelAdmin):
         """Person change link."""
         url = reverse("admin:demo_app_person_change", args=(obj.pk,))
         a = f"<a href={url}>{obj.person.name}</a>"
-        return format_html(mark_safe(a))
+        return mark_safe(a)
 
     person_changelink.short_description = _("person").capitalize()  # type: ignore
     person_changelink.admin_order_field = "person"  # type: ignore

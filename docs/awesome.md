@@ -30,7 +30,7 @@ class DemoModel(models.Model):
     @property
     def semantic_autocomplete(self):
         html = self.get_img()
-        return format_html(html)
+        return mark_safe(html)
 ```
 
 <ol start="3"><li>Optional integration with <a href="https://github.com/django-import-export/django-import-export">django-import-export</a>:</li></ol>

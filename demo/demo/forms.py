@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth.forms import UsernameField
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.views.decorators.debug import sensitive_variables
 
 try:
@@ -15,7 +15,7 @@ class LoginForm(AdminAuthenticationForm):
 
     error_messages = {
         **AdminAuthenticationForm.error_messages,
-        "invalid_login": format_html(
+        "invalid_login": mark_safe(
             _("Please enter username <i>admin</i> and password <i>semantic</i>.")
         ),
     }

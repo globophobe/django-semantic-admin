@@ -64,7 +64,7 @@
 <div class="ui segment">
 {% block field_sets %}
   {% for fieldset in adminform %}
-    {% include "admin/includes/fieldset.html" %}
+    {% include "admin/includes/fieldset.html" with heading_level=2 prefix="fieldset" id_prefix=0 id_suffix=forloop.counter0 %}
   {% endfor %}
 {% endblock %}
 
@@ -89,6 +89,11 @@
 
     // Initialize widgets in a newly added inline row
     function initInlineRow(row, formsetName) {
+        if (row.dataset.inlineInitialized === '1') {
+            return;
+        }
+        row.dataset.inlineInitialized = '1';
+
         const $row = $(row);
 
         // Autocompletes
@@ -114,8 +119,6 @@
                 'forceSelection': false,
                 'saveRemoteData': false
             });
-            // b/c not idempotent.
-            $(this).addClass('initialized');
         });
 
         // Dropdowns
@@ -124,8 +127,6 @@
                 'fullTextSearch': true,
                 'forceSelection': false,  // https://github.com/Semantic-Org/Semantic-UI/issues/4506
             });
-            // b/c not idempotent.
-            $(this).addClass('initialized')
         });
 
         // Checkboxes

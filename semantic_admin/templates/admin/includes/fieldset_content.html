@@ -1,7 +1,7 @@
 {% comment %}
 Semantic opinions about fieldset and legend tags https://github.com/Semantic-Org/Semantic-UI/issues/596 However, class="ui segment" seems to do the same thing.
 {% endcomment %}
-{% if fieldset.name %}<h2 id="fieldset-{{ id_prefix|default:'0' }}-{{ id_suffix|default:'0' }}-heading">{{ fieldset.name }}</h2>{% endif %}
+{% if fieldset.name %}<h{{ heading_level|default:2 }} id="{{ prefix|default:'fieldset' }}-{{ id_prefix|default:'0' }}-{{ id_suffix|default:'0' }}-heading">{{ fieldset.name }}</h{{ heading_level|default:2 }}>{% endif %}
 {% if fieldset.description %}
 <div class="description">{{ fieldset.description|safe }}</div>
 {% endif %}

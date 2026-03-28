@@ -23,9 +23,11 @@
     {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}<div class="ui checkbox delete" style="margin-left: 0.5rem;">{{ inline_admin_form.deletion_field.field }} {{ inline_admin_form.deletion_field.label_tag }}</div>{% endif %}
   </h3>
   {% if inline_admin_form.form.non_field_errors %}{{ inline_admin_form.form.non_field_errors }}{% endif %}
-  {% for fieldset in inline_admin_form %}
-    {% include "admin/includes/fieldset.html" %}
-  {% endfor %}
+  {% with parent_counter=forloop.counter0 %}
+    {% for fieldset in inline_admin_form %}
+      {% include "admin/includes/fieldset.html" with heading_level=4 prefix=fieldset.formset.prefix id_prefix=parent_counter id_suffix=forloop.counter0 %}
+    {% endfor %}
+  {% endwith %}
   {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
   {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
 </div>{% endfor %}

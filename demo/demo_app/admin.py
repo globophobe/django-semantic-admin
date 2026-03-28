@@ -7,8 +7,7 @@ from django.contrib.auth.models import Group, User
 from django.db.models import Count, QuerySet
 from django.http import HttpRequest
 from django.urls import reverse
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html, format_html_join
 from taggit.models import Tag
 
 from semantic_admin import (
@@ -43,9 +42,7 @@ else:
 def html5_picture(obj: Picture, css: str = "") -> str:
     """HTML5 picture."""
     name = str(obj)
-    img = obj.get_img(css=css)
-    html = f"{img}<em>{name}</em>"
-    return format_html(mark_safe(html))
+    return format_html("{}<em>{}</em>", obj.get_img(css=css), name)
 
 
 class PictureStackedInline(StackedInline):
@@ -101,28 +98,31 @@ class PersonAdmin(ModelAdmin):
 
     def list_friends(self, obj: Person) -> str:
         """List friends."""
-        friends = []
-        for friend in obj.friends.all():
-            url = reverse("admin:demo_app_person_change", args=(friend.pk,))
-            a = f"<a href={url}>{friend.name}</a>"
-            friends.append(a)
-        html = ", ".join(friends)
-        return format_html(mark_safe(html))
+        return format_html_join(
+            ", ",
+            '<a href="{}">{}</a>',
+            (
+                (reverse("admin:demo_app_person_change", args=(friend.pk,)), friend.name)
+                for friend in obj.friends.all()
+            ),
+        )
 
     list_friends.short_description = _("friends").capitalize()  # type: ignore
 
     def list_favorites(self, obj: Person) -> str:
         """List favorites."""
-        favorites = []
-        for favorite in obj.favorites.all():
-            picture = favorite.picture
-            name = str(picture)
-            url = reverse("admin:demo_app_picture_change", args=(picture.pk,))
-            img = picture.get_img(css="tiny rounded")
-            a = f"<a href={url}>{img}<em>{name}</em></a>"
-            favorites.append(a)
-        html = "".join(favorites)
-        return format_html(mark_safe(html))
+        return format_html_join(
+            "",
+            '<a href="{}">{}<em>{}</em></a>',
+            (
+                (
+                    reverse("admin:demo_app_picture_change", args=(favorite.picture.pk,)),
+                    favorite.picture.get_img(css="tiny rounded"),
+                    str(favorite.picture),
+                )
+                for favorite in obj.favorites.all()
+            ),
+        )
 
     list_favorites.short_description = _("favorites").capitalize()  # type: ignore
 
@@ -193,9 +193,8 @@ class PictureAdmin(ModelAdmin):
 
     def person_changelink(self, obj: Picture) -> str:
         """Person change link."""
-        url = reverse("admin:demo_app_person_change", args=(obj.pk,))
-        a = f"<a href={url}>{obj.person.name}</a>"
-        return format_html(mark_safe(a))
+        url = reverse("admin:demo_app_person_change", args=(obj.person_id,))
+        return format_html('<a href="{}">{}</a>', url, obj.person.name)
 
     person_changelink.short_description = _("person").capitalize()  # type: ignore
     person_changelink.admin_order_field = "person"  # type: ignore

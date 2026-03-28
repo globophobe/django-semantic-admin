@@ -21,8 +21,8 @@ register = template.Library()
 def _semantic_boolean_icon(field_val: str) -> str:
     """Semantic boolean icon."""
     return format_html(
-        '<i class="%s circle icon"></i>'
-        % {True: "green check", False: "red times", None: "gray question"}[field_val]
+        '<i class="{} circle icon"></i>',
+        {True: "green check", False: "red times", None: "gray question"}[field_val],
     )
 
 

@@ -52,7 +52,10 @@
             reset(options);
         }
         // BEGIN CUSTOMIZATION //
-        // actionCheckboxes are now <input> elements, get wrapper for Semantic UI
+        // actionCheckboxes.forEach(function(el) {
+        //     el.checked = checked;
+        //     el.closest('tr').classList.toggle(options.selectedClass, checked);
+        // });
         const update = checked ? "check" : "uncheck";
         actionCheckboxes.forEach(function(el) {
             const wrapper = el.closest('.ui.checkbox');
@@ -68,7 +71,9 @@
 
     function updateCounter(actionCheckboxes, options) {
         // BEGIN CUSTOMIZATION //
-        // actionCheckboxes are now <input> elements, get wrapper for Semantic UI
+        // const sel = Array.from(actionCheckboxes).filter(function(el) {
+        //     return el.checked;
+        // }).length;
         const sel = Array.from(actionCheckboxes).filter(function(el) {
             const wrapper = el.closest('.ui.checkbox');
             if (wrapper) {
@@ -242,8 +247,7 @@
 
     ready(function() {
         // BEGIN CUSTOMIZATION //
-        // Select <input> elements so shift-select works correctly.
-        // The wrapper is derived when needed for Semantic UI operations.
+        // const actionsEls = document.querySelectorAll('.ui.checkbox.action-select');
         const actionsEls = document.querySelectorAll('tr input.action-select');
         // END CUSTOMIZATION //
 

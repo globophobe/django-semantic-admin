@@ -91,15 +91,14 @@
 
   // BEGIN CUSTOMIZATION - Django 6.0 cross-select sync
   function updateRelatedSelectsOptions(currentSelect, win, objId, newRepr, newId, skipIds) {
-    // After create/edit a model from the options next to the current
-    // select (+ or pencil) update ForeignKey PK of the rest of selects
-    // in the page.
+    // After adding or editing a related object in a popup, sync that
+    // option across other related selects for the same model on the page.
     var path = win.location.pathname;
-    // Extract the model from the popup url '.../<model>/add/' or
-    // '.../<model>/<id>/change/' depending the action (add or change).
+    // Infer the related model from the popup URL:
+    // .../<model>/add/ for adds, or .../<model>/<id>/change/ for edits.
     var pathParts = path.split('/');
     var modelName = pathParts[pathParts.length - (objId ? 4 : 3)];
-    // Select elements with a specific model reference and context of "available-source".
+    // Find other non-autocomplete related-field selects for that model.
     var selectsRelated = document.querySelectorAll(
       '[data-model-ref="' + modelName + '"] [data-context="available-source"]'
     );

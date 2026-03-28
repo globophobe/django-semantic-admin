@@ -246,10 +246,7 @@
     }
 
     ready(function() {
-        // BEGIN CUSTOMIZATION //
-        // const actionsEls = document.querySelectorAll('.ui.checkbox.action-select');
         const actionsEls = document.querySelectorAll('tr input.action-select');
-        // END CUSTOMIZATION //
 
         if (actionsEls.length > 0) {
             Actions(actionsEls);

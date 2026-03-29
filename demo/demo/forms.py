@@ -2,12 +2,8 @@ from django import forms
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth.forms import UsernameField
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.debug import sensitive_variables
-
-try:
-    from django.utils.translation import gettext_lazy as _  # Django >= 4
-except ImportError:
-    from django.utils.translation import ugettext_lazy as _
 
 
 class LoginForm(AdminAuthenticationForm):

@@ -1,14 +1,10 @@
 from typing import Iterable
 
 from django.db.models import QuerySet
+from django.utils.translation import gettext_lazy as _
 from semantic_forms.filters import SemanticFilterSet, SemanticModelMultipleChoiceFilter
 
 from .models import Person, Picture
-
-try:
-    from django.utils.translation import gettext_lazy as _  # Django >= 4
-except ImportError:
-    from django.utils.translation import ugettext_lazy as _
 
 
 class PersonFilter(SemanticFilterSet):

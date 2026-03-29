@@ -44,7 +44,7 @@
                 </li>
               </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Install</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Install</a>
     <ul class="current">
     </ul>
                 </li>
@@ -96,13 +96,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="install">Install</h2>
+                <h2 id="django-semantic-forms">Django Semantic Forms</h2>
+<p>🎉 As of <code>v0.5.0</code>, forms were moved to <a href="https://github.com/globophobe/django-semantic-forms">django-semantic-forms</a>. <code>semantic_forms</code> must be added to <code>INSTALLED_APPS</code>.</p>
+<pre><code class="language-python">INSTALLED_APPS = [
+    &quot;semantic_admin&quot;,
+    &quot;semantic_forms&quot;,
+    ...
+]
+</code></pre>
+<p>You may use <code>semantic_forms</code> outside of the admin.</p>
+<h2 id="install">Install</h2>
 <p>Install from PyPI:</p>
 <pre><code>pip install django-semantic-admin
 </code></pre>
 <p>Add to <code>settings.py</code> before <code>django.contrib.admin</code>:</p>
 <pre><code class="language-python">INSTALLED_APPS = [
     &quot;semantic_admin&quot;,
+    &quot;semantic_forms&quot;,
     &quot;django.contrib.admin&quot;,
     ...
 ]

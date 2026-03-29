@@ -52,7 +52,7 @@
                 </li>
               </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Awesome optional features</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Awesome optional features</a>
     <ul class="current">
     </ul>
                 </li>
@@ -97,7 +97,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h2 id="awesome-optional-features">Awesome optional features</h2>
-<ol><li>Optional integration with <a href="https://github.com/carltongibson/django-filter">django_filter</a>:</li></ol>
+<ol><li>Optional integration with <a href="https://github.com/carltongibson/django-filter">django-filter</a>:</li></ol>
 
 <p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" /></p>
 <p>To enable this awesome feature, add <code>filterset_class</code> to your Django admin:</p>
@@ -118,8 +118,7 @@ class DemoAdmin(SemanticModelAdmin):
 <pre><code class="language-python">class DemoModel(models.Model):
     @property
     def semantic_autocomplete(self):
-        html = self.get_img()
-        return format_html(html)
+        return self.get_img()
 </code></pre>
 <ol start="3"><li>Optional integration with <a href="https://github.com/django-import-export/django-import-export">django-import-export</a>:</li></ol>
 

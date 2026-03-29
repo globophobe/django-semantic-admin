@@ -80,7 +80,6 @@ def semantic_items_for_result(cl: ChangeList, result, form):
         row_class = mark_safe(' class="%s"' % " ".join(row_classes))
         # If list_display_links not defined, add the link tag to the first field
         if link_in_col(first, field_name, cl):
-
             # BEGIN CUSTOMIZATION
             table_tag = "td"
             # END CUSTOMIZATION
@@ -130,7 +129,6 @@ def semantic_items_for_result(cl: ChangeList, result, form):
                     and form[cl.model._meta.pk.name].is_hidden
                 )
             ):
-
                 # BEGIN CUSTOMIZATION
                 field = form.fields[field_name]
                 bf = form[field_name]

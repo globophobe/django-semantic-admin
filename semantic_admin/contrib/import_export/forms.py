@@ -1,15 +1,11 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from import_export.forms import ExportForm, ImportForm
 from semantic_forms import SemanticChoiceField
 
 from semantic_admin.helpers import SemanticActionForm
 
 from .widgets import SemanticExportActionSelect
-
-try:
-    from django.utils.translation import ugettext_lazy as _
-except ImportError:
-    from django.utils.translation import gettext_lazy as _
 
 
 def semantic_export_action_form_factory(formats: list) -> SemanticActionForm:

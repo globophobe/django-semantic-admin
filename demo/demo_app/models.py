@@ -4,12 +4,9 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
-
-try:
-    from django.utils.translation import gettext_lazy as _  # Django >= 4
-except ImportError:
-    from django.utils.translation import ugettext_lazy as _
 
 
 class Person(models.Model):
@@ -56,16 +53,24 @@ class Picture(models.Model):
             filename = self.picture.name
             self.picture.close()
             return settings.MEDIA_URL + filename
+        return ""
 
     def get_img(self, css="", style=""):
-        return f'<img class="ui {css} image" style="{style}" src={self.url} />'
+        return format_html(
+            '<img class="ui {} image" style="{}" src="{}" />',
+            css,
+            style,
+            self.url,
+        )
 
     @property
     def semantic_autocomplete(self):
         name = str(self)
-        img = self.get_img(css="small rounded right spaced")
-        html = f"<p>{img}{name}</p>"
-        return format_html(html)
+        return format_html(
+            "<p>{}{}</p>",
+            self.get_img(css="small rounded right spaced"),
+            name,
+        )
 
     def __str__(self):
         return ", ".join((tag.name for tag in self.tags.all())) if self.pk else ""
@@ -91,7 +96,7 @@ class Favorite(models.Model):
     )
 
     def __str__(self):
-        return format_html('<i class="large red heart icon"></i>')
+        return mark_safe('<i class="large red heart icon"></i>')
 
     class Meta:
         verbose_name = _("favorite")

@@ -1,5 +1,5 @@
 import datetime
-from typing import Generator
+from collections.abc import Generator
 
 from django import template
 from django.contrib.admin.templatetags.admin_list import ResultList, _coerce_field_name
@@ -21,8 +21,8 @@ register = template.Library()
 def _semantic_boolean_icon(field_val: str) -> str:
     """Semantic boolean icon."""
     return format_html(
-        '<i class="%s circle icon"></i>'
-        % {True: "green check", False: "red times", None: "gray question"}[field_val]
+        '<i class="{} circle icon"></i>',
+        {True: "green check", False: "red times", None: "gray question"}[field_val],
     )
 
 
@@ -80,7 +80,6 @@ def semantic_items_for_result(cl: ChangeList, result, form):
         row_class = mark_safe(' class="%s"' % " ".join(row_classes))
         # If list_display_links not defined, add the link tag to the first field
         if link_in_col(first, field_name, cl):
-
             # BEGIN CUSTOMIZATION
             table_tag = "td"
             # END CUSTOMIZATION
@@ -107,9 +106,11 @@ def semantic_items_for_result(cl: ChangeList, result, form):
                 link_or_text = format_html(
                     '<a href="{}"{}>{}</a>',
                     url,
-                    format_html(' data-popup-opener="{}"', value)
-                    if cl.is_popup
-                    else "",
+                    (
+                        format_html(' data-popup-opener="{}"', value)
+                        if cl.is_popup
+                        else ""
+                    ),
                     result_repr,
                 )
 
@@ -128,7 +129,6 @@ def semantic_items_for_result(cl: ChangeList, result, form):
                     and form[cl.model._meta.pk.name].is_hidden
                 )
             ):
-
                 # BEGIN CUSTOMIZATION
                 field = form.fields[field_name]
                 bf = form[field_name]
@@ -147,7 +147,7 @@ def semantic_items_for_result(cl: ChangeList, result, form):
 def semantic_results(cl: ChangeList) -> Generator[ResultList, None, None]:
     """Semantic results."""
     if cl.formset:
-        for res, form in zip(cl.result_list, cl.formset.forms):
+        for res, form in zip(cl.result_list, cl.formset.forms, strict=False):
             yield ResultList(form, semantic_items_for_result(cl, res, form))
     else:
         for res in cl.result_list:

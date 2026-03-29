@@ -29,8 +29,7 @@ To enable this awesome feature, add the `semantic_autocomplete` property to your
 class DemoModel(models.Model):
     @property
     def semantic_autocomplete(self):
-        html = self.get_img()
-        return format_html(html)
+        return self.get_img()
 ```
 
 <ol start="3"><li>Optional integration with <a href="https://github.com/django-import-export/django-import-export">django-import-export</a>:</li></ol>

@@ -66,8 +66,9 @@
   function updateRelatedObjectLinks(triggeringLink) {
     var $this = $(triggeringLink);
     // BEGIN CUSTOMIZATION
-    var relatedWidget = $this.closest("div.related-widget").next();
-    var siblings = relatedWidget.children(".change-related, .delete-related");
+    // Find links within the same .related-widget-wrapper
+    var wrapper = $this.closest(".related-widget-wrapper");
+    var siblings = wrapper.find(".view-related, .change-related, .delete-related");
     // END CUSTOMIZATION
     if (!siblings.length) {
       return;
@@ -80,11 +81,51 @@
           "href",
           elm.attr("data-href-template").replace("__fk__", value)
         );
+        elm.removeAttr("aria-disabled");
       });
     } else {
       siblings.removeAttr("href");
+      siblings.attr("aria-disabled", "true");
     }
   }
+
+  // BEGIN CUSTOMIZATION - Django 6.0 cross-select sync
+  function updateRelatedSelectsOptions(currentSelect, win, objId, newRepr, newId, skipIds) {
+    // After adding or editing a related object in a popup, sync that
+    // option across other related selects for the same model on the page.
+    var path = win.location.pathname;
+    // Infer the related model from the popup URL:
+    // .../<model>/add/ for adds, or .../<model>/<id>/change/ for edits.
+    var pathParts = path.split('/');
+    var modelName = pathParts[pathParts.length - (objId ? 4 : 3)];
+    // Find other non-autocomplete related-field selects for that model.
+    var selectsRelated = document.querySelectorAll(
+      '[data-model-ref="' + modelName + '"] [data-context="available-source"]'
+    );
+
+    selectsRelated.forEach(function(select) {
+      if (currentSelect === select || (skipIds && skipIds.indexOf(select.id) !== -1)) {
+        return;
+      }
+
+      var option = select.querySelector('option[value="' + objId + '"]');
+
+      if (!option) {
+        option = new Option(newRepr, newId);
+        select.options.add(option);
+        // Update SelectBox cache for related fields.
+        if (window.SelectBox !== undefined && !SelectBox.cache[currentSelect.id]) {
+          SelectBox.add_to_cache(select.id, option);
+          SelectBox.redisplay(select.id);
+        }
+        return;
+      }
+
+      option.textContent = newRepr;
+      option.value = newId;
+    });
+  }
+  // END CUSTOMIZATION
 
   function dismissAddRelatedObjectPopup(win, newId, newRepr) {
     var name = windowname_to_id(win.name);
@@ -98,6 +139,7 @@
           true,
           true
         );
+        updateRelatedSelectsOptions(elem, win, null, newRepr, newId);
       } else if (elemName === "INPUT") {
         if (
           elem.className.indexOf("vManyToManyRawIdAdminField") !== -1 &&
@@ -112,9 +154,14 @@
       $(elem).trigger("change");
     } else {
       var toId = name + "_to";
+      var toElem = document.getElementById(toId);
       var o = new Option(newRepr, newId);
       SelectBox.add_to_cache(toId, o);
       SelectBox.redisplay(toId);
+      if (toElem && toElem.nodeName.toUpperCase() === "SELECT") {
+        var skipIds = [name + "_from"];
+        updateRelatedSelectsOptions(toElem, win, null, newRepr, newId, skipIds);
+      }
     }
     win.close();
   }
@@ -129,6 +176,7 @@
         this.value = newId;
       }
     });
+    updateRelatedSelectsOptions(selects[0], win, objId, newRepr, newId);
     win.close();
   }
 
@@ -168,7 +216,9 @@
       event.preventDefault();
       opener.dismissRelatedLookupPopup(window, $(this).data("popup-opener"));
     });
-    $("body").on("click", ".related-widget-wrapper-link", function(e) {
+    // Only bind to links with data-popup="yes" (add/change/delete).
+    // View links navigate normally without popup.
+    $("body").on("click", ".related-widget-wrapper-link[data-popup='yes']", function(e) {
       e.preventDefault();
       if (this.href) {
         var event = $.Event("django:show-related", { href: this.href });

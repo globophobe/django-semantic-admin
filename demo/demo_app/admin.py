@@ -7,8 +7,8 @@ from django.contrib.auth.models import Group, User
 from django.db.models import Count, QuerySet
 from django.http import HttpRequest
 from django.urls import reverse
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html, format_html_join
+from django.utils.translation import gettext_lazy as _
 from taggit.models import Tag
 
 from semantic_admin import (
@@ -19,11 +19,6 @@ from semantic_admin import (
 
 from .filters import PersonFilter
 from .models import Favorite, Person, Picture
-
-try:
-    from django.utils.translation import gettext_lazy as _  # Django >= 4
-except ImportError:
-    from django.utils.translation import ugettext_lazy as _
 
 
 admin.site.unregister(User)
@@ -43,9 +38,7 @@ else:
 def html5_picture(obj: Picture, css: str = "") -> str:
     """HTML5 picture."""
     name = str(obj)
-    img = obj.get_img(css=css)
-    html = f"{img}<em>{name}</em>"
-    return format_html(mark_safe(html))
+    return format_html("{}<em>{}</em>", obj.get_img(css=css), name)
 
 
 class PictureStackedInline(StackedInline):
@@ -61,11 +54,10 @@ class PictureStackedInline(StackedInline):
     show_change_link = True
     extra = 0
 
+    @admin.display(description=_("picture").capitalize())
     def inline_picture(self, obj: Picture) -> str:
         """Inline picture."""
         return html5_picture(obj, css="large rounded")
-
-    inline_picture.short_description = _("picture").capitalize()  # type: ignore
 
     def has_add_permission(self, *args, **kwargs) -> bool:
         """Has add permission."""
@@ -99,32 +91,38 @@ class PersonAdmin(ModelAdmin):
     actions = ("send_friend_request",)
     inlines = (PictureStackedInline, PersonFavoriteTabularInline)
 
+    @admin.display(description=_("friends").capitalize())
     def list_friends(self, obj: Person) -> str:
         """List friends."""
-        friends = []
-        for friend in obj.friends.all():
-            url = reverse("admin:demo_app_person_change", args=(friend.pk,))
-            a = f"<a href={url}>{friend.name}</a>"
-            friends.append(a)
-        html = ", ".join(friends)
-        return format_html(mark_safe(html))
+        return format_html_join(
+            ", ",
+            '<a href="{}">{}</a>',
+            (
+                (
+                    reverse("admin:demo_app_person_change", args=(friend.pk,)),
+                    friend.name,
+                )
+                for friend in obj.friends.all()
+            ),
+        )
 
-    list_friends.short_description = _("friends").capitalize()  # type: ignore
-
+    @admin.display(description=_("favorites").capitalize())
     def list_favorites(self, obj: Person) -> str:
         """List favorites."""
-        favorites = []
-        for favorite in obj.favorites.all():
-            picture = favorite.picture
-            name = str(picture)
-            url = reverse("admin:demo_app_picture_change", args=(picture.pk,))
-            img = picture.get_img(css="tiny rounded")
-            a = f"<a href={url}>{img}<em>{name}</em></a>"
-            favorites.append(a)
-        html = "".join(favorites)
-        return format_html(mark_safe(html))
-
-    list_favorites.short_description = _("favorites").capitalize()  # type: ignore
+        return format_html_join(
+            "",
+            '<a href="{}">{}<em>{}</em></a>',
+            (
+                (
+                    reverse(
+                        "admin:demo_app_picture_change", args=(favorite.picture.pk,)
+                    ),
+                    favorite.picture.get_img(css="tiny rounded"),
+                    str(favorite.picture),
+                )
+                for favorite in obj.favorites.all()
+            ),
+        )
 
     def send_friend_request(self, request: HttpRequest, queryset: QuerySet) -> None:
         """Send friend request."""
@@ -178,35 +176,36 @@ class PictureAdmin(ModelAdmin):
     list_per_page = 10
     inlines = (PictureFavoriteTabularInline,)
 
+    @admin.display(
+        description=_("picture").capitalize(),
+        ordering="date_and_time",
+    )
     def list_picture(self, obj: Picture) -> str:
         """List picture."""
         return html5_picture(obj, css="medium rounded")
 
-    list_picture.short_description = _("picture").capitalize()  # type: ignore
-    list_picture.admin_order_field = "date_and_time"  # type: ignore
-
+    @admin.display(description=_("picture").capitalize())
     def detail_picture(self, obj: Picture) -> str:
         """Detail picture."""
         return html5_picture(obj, css="large rounded")
 
-    detail_picture.short_description = _("picture").capitalize()  # type: ignore
-
+    @admin.display(
+        description=_("person").capitalize(),
+        ordering="person",
+    )
     def person_changelink(self, obj: Picture) -> str:
         """Person change link."""
-        url = reverse("admin:demo_app_person_change", args=(obj.pk,))
-        a = f"<a href={url}>{obj.person.name}</a>"
-        return format_html(mark_safe(a))
+        url = reverse("admin:demo_app_person_change", args=(obj.person_id,))
+        return format_html('<a href="{}">{}</a>', url, obj.person.name)
 
-    person_changelink.short_description = _("person").capitalize()  # type: ignore
-    person_changelink.admin_order_field = "person"  # type: ignore
-
+    @admin.display(
+        description=_("has favorites").capitalize(),
+        boolean=True,
+        ordering="total_favorites",
+    )
     def has_favorites(self, obj: Picture) -> bool:
         """Has favorites."""
         return obj.total_favorites > 1
-
-    has_favorites.short_description = _("has favorites").capitalize()  # type: ignore
-    has_favorites.admin_order_field = "total_favorites"
-    has_favorites.boolean = True  # type: ignore
 
     def has_add_permission(self, *args, **kwargs) -> bool:
         """Has add permission."""

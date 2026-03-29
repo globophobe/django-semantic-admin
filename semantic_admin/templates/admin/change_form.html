@@ -64,7 +64,7 @@
 <div class="ui segment">
 {% block field_sets %}
   {% for fieldset in adminform %}
-    {% include "admin/includes/fieldset.html" %}
+    {% include "admin/includes/fieldset.html" with heading_level=2 prefix="fieldset" id_prefix=0 id_suffix=forloop.counter0 %}
   {% endfor %}
 {% endblock %}
 
@@ -84,11 +84,18 @@
 {% block admin_change_form_document_ready %}
     {{ block.super }}
     <script type="text/javascript">
+    // Use window.$ which has Fomantic, not django.jQuery which lacks it
+    const $ = window.$;
 
-    // As per https://docs.djangoproject.com/en/1.11/ref/contrib/admin/javascript/
-    django.jQuery(document).on('formset:added', formsetAdded) 
+    // Initialize widgets in a newly added inline row
+    function initInlineRow(row, formsetName) {
+        if (row.dataset.inlineInitialized === '1') {
+            return;
+        }
+        row.dataset.inlineInitialized = '1';
 
-    function formsetAdded(event, $row, formsetName) {
+        const $row = $(row);
+
         // Autocompletes
         $row.find('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
             var url = $(this).data('ajax--url');
@@ -97,7 +104,7 @@
             url += '&field_name=' + $(this).data('field-name');
             url += '&term={query}';
             $(this).dropdown({
-                apiSettings: { 
+                apiSettings: {
                     'url': url,
                     'onResponse': function(response) {
                         response.results = response.results.map(result => {
@@ -105,15 +112,13 @@
                         });
                         return response
                     },
-                    'cache': false 
+                    'cache': false
                 },
                 'clearable': true,
                 'fullTextSearch': true,
-                'forceSelection': false,  
+                'forceSelection': false,
                 'saveRemoteData': false
             });
-            // b/c not idempotent.
-            $(this).addClass('initialized');
         });
 
         // Dropdowns
@@ -122,8 +127,6 @@
                 'fullTextSearch': true,
                 'forceSelection': false,  // https://github.com/Semantic-Org/Semantic-UI/issues/4506
             });
-            // b/c not idempotent.
-            $(this).addClass('initialized')
         });
 
         // Checkboxes
@@ -147,8 +150,20 @@
         $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
             $(this).calendar(getCalendarOptions('time', true));
         });
+    }
 
-    };
+    // Django 6.0+ uses DOM CustomEvent
+    document.addEventListener('formset:added', function(event) {
+        initInlineRow(event.target, event.detail?.formsetName);
+    });
+
+    // Django 4.2-5.x uses jQuery triggers
+    django.jQuery(document).on('formset:added', function(event, $row, formsetName) {
+        // Only handle if jQuery-style args are present (not from DOM event bubbling)
+        if ($row && $row.length) {
+            initInlineRow($row[0], formsetName);
+        }
+    });
 
     </script>
 {% endblock %}

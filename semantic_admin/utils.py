@@ -9,10 +9,7 @@ from django.forms import Field
 from django.utils import formats, timezone
 from django.utils.html import format_html
 
-try:
-    from django.contrib.postgres.fields import JSONField
-except ImportError:
-    from django.db.models import JSONField  # type: ignore
+from django.db.models import JSONField
 
 
 def semantic_display_for_field(

@@ -126,6 +126,14 @@
       if (options.added) {
         options.added(row);
       }
+      // Django 6.0+ 
+      row.get(0).dispatchEvent(new CustomEvent("formset:added", {
+        bubbles: true,
+        detail: {
+          formsetName: options.prefix
+        }
+      }));
+      // Django 4.2-5.x
       $(document).trigger("formset:added", [row, options.prefix]);
     };
 
@@ -194,6 +202,13 @@
       if (options.removed) {
         options.removed(row);
       }
+      // Django 6.0+
+      document.dispatchEvent(new CustomEvent("formset:removed", {
+        detail: {
+          formsetName: options.prefix
+        }
+      }));
+      // Django 4.2-5.x
       $(document).trigger("formset:removed", [row, options.prefix]);
       // Update the TOTAL_FORMS form count.
       const forms = $("." + options.formCssClass);
@@ -294,12 +309,13 @@
       // instantiate a new SelectFilter instance for it.
       if (typeof SelectFilter !== "undefined") {
         $(".selectfilter").each(function(index, value) {
-          const namearr = value.name.split("-");
-          SelectFilter.init(value.id, namearr[namearr.length - 1], false);
+          // Django 6.0+ uses dataset.fieldName, fallback to name for older versions
+          const fieldName = this.dataset.fieldName || value.name.split("-").pop();
+          SelectFilter.init(value.id, fieldName, false);
         });
         $(".selectfilterstacked").each(function(index, value) {
-          const namearr = value.name.split("-");
-          SelectFilter.init(value.id, namearr[namearr.length - 1], true);
+          const fieldName = this.dataset.fieldName || value.name.split("-").pop();
+          SelectFilter.init(value.id, fieldName, true);
         });
       }
     };
@@ -371,12 +387,13 @@
       // If any SelectFilter widgets were added, instantiate a new instance.
       if (typeof SelectFilter !== "undefined") {
         $(".selectfilter").each(function(index, value) {
-          const namearr = value.name.split("-");
-          SelectFilter.init(value.id, namearr[namearr.length - 1], false);
+          // Django 6.0+ uses dataset.fieldName, fallback to parsing name for older versions
+          const fieldName = this.dataset.fieldName || value.name.split("-").pop();
+          SelectFilter.init(value.id, fieldName, false);
         });
         $(".selectfilterstacked").each(function(index, value) {
-          const namearr = value.name.split("-");
-          SelectFilter.init(value.id, namearr[namearr.length - 1], true);
+          const fieldName = this.dataset.fieldName || value.name.split("-").pop();
+          SelectFilter.init(value.id, fieldName, true);
         });
       }
     };
@@ -388,12 +405,14 @@
           dependency_list = input.data("dependency_list") || [],
           dependencies = [];
         $.each(dependency_list, function(i, field_name) {
+          // Dependency in a fieldset.
+          let field_element = row.find(".form-row .field-" + field_name);
+          // Dependency without a fieldset
+          if (!field_element.length) {
+            field_element = row.find(".form-row.field-" + field_name);
+          }
           dependencies.push(
-            "#" +
-              row
-                .find(".form-row .field-" + field_name)
-                .find("input, select, textarea")
-                .attr("id")
+            "#" + field_element.find("input, select, textarea").attr("id")
           );
         });
         if (dependencies.length) {

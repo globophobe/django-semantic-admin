@@ -262,7 +262,7 @@ def semantic_paginator_number(cl: ChangeList, i: int) -> str:
     DOT = "."
     ELLIPSIS = getattr(cl.paginator, "ELLIPSIS", None)
     if i == DOT or i == ELLIPSIS:
-        return format_html('<span class="item">... </span>')
+        return mark_safe('<span class="item">... </span>')
     elif i == cl.page_num:
         return format_html('<span class="this-page item active">{}</span> ', i)
     else:

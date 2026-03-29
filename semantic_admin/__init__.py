@@ -5,7 +5,7 @@ from .admin import (
 )
 
 __all__ = [
-    'SemanticModelAdmin',
-    'SemanticStackedInline',
-    'SemanticTabularInline',
+    "SemanticModelAdmin",
+    "SemanticStackedInline",
+    "SemanticTabularInline",
 ]

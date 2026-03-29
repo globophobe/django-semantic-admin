@@ -1,3 +1,3 @@
-<div class="module {{ fieldset.classes }}">
+<div class="module {{ fieldset.classes }}"{% if fieldset.name %} aria-labelledby="fieldset-{{ id_prefix|default:'0' }}-{{ id_suffix|default:'0' }}-heading"{% endif %}>
     {% include "admin/includes/fieldset_content.html" %}
 </div>

@@ -57,19 +57,29 @@
         //     el.closest('tr').classList.toggle(options.selectedClass, checked);
         // });
         const update = checked ? "check" : "uncheck";
-        actionCheckboxes.forEach(function(actionCheckbox) {
-          $(actionCheckbox).checkbox(update);
-        })
+        actionCheckboxes.forEach(function(el) {
+            const wrapper = el.closest('.ui.checkbox');
+            if (wrapper) {
+                $(wrapper).checkbox(update);
+            } else {
+                el.checked = checked;
+            }
+            el.closest('tr').classList.toggle(options.selectedClass, checked);
+        });
         // END CUSTOMIZATION //
     }
 
     function updateCounter(actionCheckboxes, options) {
-        // BEGIN CUSTOMIZATION // 
+        // BEGIN CUSTOMIZATION //
         // const sel = Array.from(actionCheckboxes).filter(function(el) {
         //     return el.checked;
         // }).length;
         const sel = Array.from(actionCheckboxes).filter(function(el) {
-            return $(el).checkbox('is checked');
+            const wrapper = el.closest('.ui.checkbox');
+            if (wrapper) {
+                return $(wrapper).checkbox('is checked');
+            }
+            return el.checked;
         }).length;
         // END CUSTOMIZATION // 
 
@@ -220,6 +230,8 @@
                 }
             });
         }
+        // Sync counter when navigating to the page, such as through the back button. Django 6.0+
+        window.addEventListener('pageshow', (event) => updateCounter(actionCheckboxes, options));
     };
 
     // Call function fn when the DOM is loaded and ready. If it is already
@@ -234,11 +246,7 @@
     }
 
     ready(function() {
- 
-        // BEGIN CUSTOMIZATION //
-        // const actionsEls = document.querySelectorAll('tr input.action-select');
-        const actionsEls = document.querySelectorAll('.ui.checkbox.action-select');
-        // END CUSTOMIZATION //
+        const actionsEls = document.querySelectorAll('tr input.action-select');
 
         if (actionsEls.length > 0) {
             Actions(actionsEls);

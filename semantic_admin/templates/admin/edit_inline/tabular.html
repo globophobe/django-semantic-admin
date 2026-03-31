@@ -65,14 +65,14 @@
                 {{ field.field.errors.as_ul }}
                 {% if field.is_checkbox %}<div class="ui checkbox">{% endif %}
                 {{ field.field }}
-                {% if field.is_checkbox %}</div>{% endif %}
+                {% if field.is_checkbox %}<label for="{{ field.field.id_for_label }}"></label></div>{% endif %}
             {% endif %}
             </td>
             {% endif %}
           {% endfor %}
         {% endfor %}
       {% endfor %}
-      <td class="delete">{% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}<div class="ui checkbox">{{ inline_admin_form.deletion_field.field }}</div>{% endif %}</td>
+      <td class="delete">{% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}<div class="ui checkbox">{{ inline_admin_form.deletion_field.field }}<label for="{{ inline_admin_form.deletion_field.field.id_for_label }}"></label></div>{% endif %}</td>
       </tr>
    {% endfor %}
    </tbody>

@@ -4,6 +4,7 @@
 .coverage
 .DS_Store
 dist/
-static/
+/static/
+/demo/static/
 media/
 site/

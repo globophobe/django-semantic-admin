@@ -96,38 +96,12 @@
 
         const $row = $(row);
 
-        // Autocompletes
-        $row.find('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
-            var url = $(this).data('ajax--url');
-            url += '?app_label=' + $(this).data('app-label');
-            url += '&model_name=' + $(this).data('model-name');
-            url += '&field_name=' + $(this).data('field-name');
-            url += '&term={query}';
-            $(this).dropdown({
-                apiSettings: {
-                    'url': url,
-                    'onResponse': function(response) {
-                        response.results = response.results.map(result => {
-                            return Object.assign({ value: result.id, name: result.name || result.text }, result)
-                        });
-                        return response
-                    },
-                    'cache': false
-                },
-                'clearable': true,
-                'fullTextSearch': true,
-                'forceSelection': false,
-                'saveRemoteData': false
-            });
-        });
-
-        // Dropdowns
-        $row.find('.ui.dropdown select').not('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
-            $(this).dropdown({
-                'fullTextSearch': true,
-                'forceSelection': false,  // https://github.com/Semantic-Org/Semantic-UI/issues/4506
-            });
-        });
+        if (window.semanticAdminInitAutocompleteSelects) {
+            window.semanticAdminInitAutocompleteSelects(row);
+        }
+        if (window.semanticAdminInitDropdownSelects) {
+            window.semanticAdminInitDropdownSelects(row);
+        }
 
         // Checkboxes
         $row.find('.ui.checkbox').not('[name*=__prefix__]').each(function() {

@@ -20,7 +20,6 @@ from semantic_admin import (
 from .filters import PersonFilter
 from .models import Favorite, Person, Picture
 
-
 admin.site.unregister(User)
 admin.site.unregister(Group)
 admin.site.unregister(Tag)
@@ -213,7 +212,11 @@ class PictureAdmin(ModelAdmin):
 
     def get_queryset(self, request: HttpRequest) -> QuerySet:
         """Get queryset."""
-        queryset = super().get_queryset(request)
-        queryset = queryset.select_related("person")
-        queryset = queryset.prefetch_related("tags")
-        return queryset.annotate(total_favorites=Count("favorites"))
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("person")
+            .prefetch_related("tags")
+            .annotate(total_favorites=Count("favorites"))
+            .order_by("-date_and_time", "-pk")
+        )

@@ -1,0 +1,13 @@
+{
+  "name": "django-semantic-admin",
+  "private": true,
+  "scripts": {
+    "lint:js": "biome lint semantic_admin/static/import_export semantic_admin/static/semantic_admin",
+    "format:js": "biome format --write semantic_admin/static/import_export semantic_admin/static/semantic_admin",
+    "check:js": "biome check semantic_admin/static/import_export semantic_admin/static/semantic_admin",
+    "fix:js": "biome check --write semantic_admin/static/import_export semantic_admin/static/semantic_admin"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.11"
+  }
+}

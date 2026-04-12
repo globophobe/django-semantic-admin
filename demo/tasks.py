@@ -30,6 +30,27 @@ def build(ctx: Any) -> None:
 
 
 @task
+def lint(ctx: Any) -> None:
+    """Run lint checks."""
+    with ctx.cd(".."):
+        ctx.run("uv run ruff check .")
+        ctx.run("npm run check:js")
+        ctx.run("uv run djlint semantic_admin demo --check")
+        ctx.run(
+            "git ls-files '*.py' | xargs uv run django-upgrade "
+            "--target-version 4.2 --check"
+        )
+
+
+@task
+def format_code(ctx: Any) -> None:
+    """Format JavaScript and Django templates."""
+    with ctx.cd(".."):
+        ctx.run("npm run fix:js")
+        ctx.run("uv run djlint semantic_admin demo --reformat")
+
+
+@task
 def create_database(ctx: Any) -> None:
     """Create the database."""
     ctx.run("python manage.py makemigrations")

@@ -16,6 +16,8 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 
+from .utils import get_javascript_catalog_media
+
 if TYPE_CHECKING:
     try:
         from django_filters import FilterSet
@@ -249,6 +251,11 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
             media += action_form.media
         else:
             action_form = None
+
+        if filterset := getattr(self, "filterset", None):
+            media += filterset.form.media
+
+        media = get_javascript_catalog_media() + media
 
         selection_note_all = ngettext(
             "%(total_count)s selected", "All %(total_count)s selected", cl.result_count

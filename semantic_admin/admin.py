@@ -18,6 +18,7 @@ from django.forms.models import (
 )
 from django.http import HttpRequest, HttpResponse
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from semantic_forms.widgets import (
     SemanticCheckboxInput,
     SemanticDateInput,
@@ -44,9 +45,8 @@ from semantic_admin.widgets import (
 
 from .awesomesearch import AwesomeSearchModelAdmin
 from .helpers import SemanticActionForm
+from .utils import get_javascript_catalog_media
 from .views.autocomplete import SemanticAutocompleteJsonView
-
-from django.utils.translation import gettext_lazy as _
 
 
 class SemanticAdminURLFieldWidget(AdminURLFieldWidget, SemanticURLInput):
@@ -274,6 +274,11 @@ class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):
     """Semantic model admin"""
 
     action_form = SemanticActionForm
+
+    def render_change_form(self, request, context, *args, **kwargs):
+        """Render change form with JavaScript catalog."""
+        context["media"] = get_javascript_catalog_media() + context["media"]
+        return super().render_change_form(request, context, *args, **kwargs)
 
     def action_checkbox(self, obj: models.Model) -> str:
         """A list_display column containing a checkbox widget"""

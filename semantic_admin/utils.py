@@ -1,15 +1,16 @@
 import datetime
 import decimal
 import json
-from typing import Any
+from typing import Any, Optional
 
+from django import forms
 from django.contrib.admin.utils import display_for_value
 from django.db import models
+from django.db.models import JSONField
 from django.forms import Field
+from django.urls import NoReverseMatch, reverse
 from django.utils import formats, timezone
 from django.utils.html import format_html
-
-from django.db.models import JSONField
 
 
 def semantic_display_for_field(
@@ -74,3 +75,21 @@ def semantic_display_for_value(
         return ", ".join(str(v) for v in value)
     else:
         return str(value)
+
+
+def get_javascript_catalog_url() -> str | None:
+    """Get JavaScript catalog URL."""
+    for viewname in ("javascript-catalog", "admin:jsi18n"):
+        try:
+            return reverse(viewname)
+        except NoReverseMatch:
+            continue
+    return None
+
+
+def get_javascript_catalog_media() -> forms.Media:
+    """Get media for JavaScript catalog."""
+    url = get_javascript_catalog_url()
+    if not url:
+        return forms.Media()
+    return forms.Media(js=[url])

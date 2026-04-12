@@ -199,16 +199,13 @@ def build_container(ctx: Any, region: str = "asia-northeast1") -> None:
     wheel = build_semantic_admin(ctx)
     ctx.run("echo yes | python manage.py collectstatic")
     name = get_container_name(ctx, region=region)
-    reqs = " ".join(
-        line
-        for line in ctx.run(
-            "uv export --project .. --only-group deploy --format requirements.txt "
-            "--no-hashes --no-header --no-emit-project"
-        ).stdout.splitlines()
-        if line and not line.startswith("#")
+    ctx.run(
+        "uv export --project .. --only-group deploy --format requirements.txt "
+        "--no-hashes --no-header --no-emit-project --no-annotate --frozen "
+        "--output-file ../dist/deploy-requirements.txt"
     )
     # Build
-    build_args = {"WHEEL": wheel, "UV_EXPORT": reqs}
+    build_args = {"WHEEL": wheel}
     build_args = " ".join(
         [f'--build-arg {key}="{value}"' for key, value in build_args.items()]
     )

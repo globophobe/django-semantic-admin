@@ -1,5 +1,4 @@
 import os
-import re
 from pathlib import Path
 from typing import Any
 
@@ -168,8 +167,9 @@ def docker_secrets() -> str:
 
 def build_semantic_admin(ctx: Any) -> str:
     """Build semantic admin."""
-    result = ctx.run("poetry build").stdout
-    return re.search(r"django_semantic_admin-.*\.whl", result).group()
+    ctx.run("uv build .. --wheel --out-dir ../dist --clear")
+    wheels = sorted((Path("..") / "dist").glob("django_semantic_admin-*.whl"))
+    return wheels[-1].name
 
 
 @task
@@ -178,27 +178,16 @@ def build_container(ctx: Any, region: str = "asia-northeast1") -> None:
     wheel = build_semantic_admin(ctx)
     ctx.run("echo yes | python manage.py collectstatic")
     name = get_container_name(ctx, region=region)
-    # Requirements
-    requirements = [
-        "django-filter",
-        "django-taggit",
-        "gunicorn",
-        "pillow",
-        "python-decouple",
-        "whitenoise",
-    ]
-    # Versions
     reqs = " ".join(
-        [
-            req.split(";")[0]
-            for req in ctx.run("poetry export --dev --without-hashes").stdout.split(
-                "\n"
-            )
-            if req.split("==")[0] in requirements
-        ]
+        line
+        for line in ctx.run(
+            "uv export --project .. --only-group deploy --format requirements.txt "
+            "--no-hashes --no-header --no-emit-project"
+        ).stdout.splitlines()
+        if line and not line.startswith("#")
     )
     # Build
-    build_args = {"WHEEL": wheel, "POETRY_EXPORT": reqs}
+    build_args = {"WHEEL": wheel, "UV_EXPORT": reqs}
     build_args = " ".join(
         [f'--build-arg {key}="{value}"' for key, value in build_args.items()]
     )

@@ -67,7 +67,7 @@
           response.results = response.results.map(function (result) {
             return Object.assign(
               { value: result.id, name: result.name || result.text },
-              result
+              result,
             );
           });
           return response;
@@ -102,4 +102,7 @@
   $(document).ready(function () {
     initAutocompleteSelects(document);
   });
-})(window, (window.django && window.django.jQuery) || window.jQuery || window.$);
+})(
+  window,
+  (window.django && window.django.jQuery) || window.jQuery || window.$,
+);

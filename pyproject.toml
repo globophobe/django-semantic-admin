@@ -18,7 +18,7 @@ classifiers = [
 ]
 dependencies = [
     "django>=4.2",
-    "django-semantic-forms",
+    "django-semantic-forms>=0.1.10",
 ]
 
 [project.optional-dependencies]

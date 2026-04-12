@@ -7,8 +7,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-04-05T10:42:16.685396521Z"
-exclude-newer-span = "P7D"
+exclude-newer = "2026-04-12T12:23:43Z"
 
 [[package]]
 name = "asgiref"
@@ -208,7 +207,7 @@ dev = [
 requires-dist = [
     { name = "django", specifier = ">=4.2" },
     { name = "django-import-export", marker = "extra == 'import-export'", specifier = "<=3.3.9" },
-    { name = "django-semantic-forms" },
+    { name = "django-semantic-forms", specifier = ">=0.1.10" },
 ]
 provides-extras = ["import-export"]
 
@@ -243,15 +242,15 @@ dev = [
 
 [[package]]
 name = "django-semantic-forms"
-version = "0.1.9"
+version = "0.1.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django", version = "5.2.12", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "django", version = "6.0.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/85/de/445069e40ae997874d0580766cf88316178e39fb6a2dc13a6e4a511b2a99/django_semantic_forms-0.1.9.tar.gz", hash = "sha256:54f278b1d0f6ea85ffe537fd65b9cc4692cd0bea1502e08d8670fd2c07e5ab0f", size = 14147, upload-time = "2026-03-29T03:19:13.997Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/84/f2a6fc740745c45658a36a718851e588199d74e773a5666abfb4328d3eae/django_semantic_forms-0.1.10.tar.gz", hash = "sha256:048f240190a9351e72ccfeeade2d48a16032749f05823ec578ef0b6dc5d419c8", size = 50325, upload-time = "2026-04-12T12:18:20.043Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/04/8a/4239597a7f79c8ffab6f43e216696d4dd9d0fb90ec3768e3ef557f3c225f/django_semantic_forms-0.1.9-py3-none-any.whl", hash = "sha256:543fb5a85c558ad041f974d4d27bb645371c1306aa10dbf0dd963fc270ecf04e", size = 24556, upload-time = "2026-03-29T03:19:12.449Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/24/d391f31b460245f125c1c1034bbf90c8cfb83e81f15e6d3608db91323fb2/django_semantic_forms-0.1.10-py3-none-any.whl", hash = "sha256:2bbbb2b512575cf1b507f686cef6ec8ad129bc6401b0a0e533d227a11609457d", size = 27823, upload-time = "2026-04-12T12:18:18.725Z" },
 ]
 
 [[package]]

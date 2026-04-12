@@ -14,6 +14,13 @@ Run Python lint:
 uv run ruff check .
 ```
 
+Run JavaScript lint/format checks:
+
+```bash
+npm ci
+npm run check:js
+```
+
 Run Django template lint:
 
 ```bash

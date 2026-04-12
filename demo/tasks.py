@@ -101,7 +101,7 @@ def populate_database(ctx: Any) -> None:
         domain = fake.safe_domain_name()
         dotted_name = slug.replace("-", ".")
         email = f"{dotted_name}@{domain}"
-        person = PersonFactory(name=name, slug=slug, url=domain, email=email)
+        person = PersonFactory(name=name, slug=slug, url=f"https://{domain}", email=email)
         people.append(person)
 
     for person in people:

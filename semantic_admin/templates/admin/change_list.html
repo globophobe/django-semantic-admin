@@ -3,13 +3,10 @@
 
 {% block extrastyle %}
   {{ media.css }}
-  {{ cl.model_admin.filterset.form.media.css }}
 {% endblock %}
 
 {% block extrahead %}
-  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-  {{ block.super }}
-  {{ cl.model_admin.filterset.form.media.js }}
+  <script src="{% static 'admin/js/filters.js' %}" defer></script>
 {% endblock %}
 
 {% if not is_popup %}

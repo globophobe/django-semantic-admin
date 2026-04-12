@@ -20,11 +20,23 @@
 <!-- END Style -->
 
 <!-- Script -->
-{% block extrahead %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+{% block extrahead %}{% endblock %}
+{% if media %}
+{{ media }}
+{% else %}
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+{% endif %}
+<script type="text/javascript">
+(function(window) {
+  if (window.django && window.django.jQuery) {
+    window.jQuery = window.django.jQuery;
+    window.$ = window.django.jQuery;
+  }
+})(window);
+</script>
 <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js"></script>
-<script src="{% static "semantic_admin/semanticWidgets.js" %}"></script>
-{% endblock %}
+<script src="{% static 'semantic_admin/semanticWidgets.js' %}"></script>
 <!-- END Script -->
 
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
@@ -154,20 +166,30 @@ launches the offscreen menu.
 <!-- END Offscreen menu and content -->
 
 <script type="text/javascript">
-$( document ).ready(function() {
+(function($) {
+  if (!$) {
+    return;
+  }
+  $(function() {
   // Sidemenu
   $('#offscreen-menu')
     .sidebar('attach events', '#toggle-offscreen')
     .sidebar('setting', 'transition', 'overlay');
-})
+  });
+})(window.django && window.django.jQuery ? window.django.jQuery : window.jQuery || window.$);
 </script>
 {% endif %}
 
 <script type="text/javascript">
-$( document ).ready(function() {
+(function($) {
+  if (!$) {
+    return;
+  }
+  $(function() {
   // Accordion
   $('.ui.accordion').accordion({ duration: 250 });
-});
+  });
+})(window.django && window.django.jQuery ? window.django.jQuery : window.jQuery || window.$);
 </script>
 
 {% block extrascript %}{% endblock %}

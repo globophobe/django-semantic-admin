@@ -102,4 +102,4 @@
   $(document).ready(function () {
     initAutocompleteSelects(document);
   });
-})(window, window.jQuery || window.$);
+})(window, (window.django && window.django.jQuery) || window.jQuery || window.$);

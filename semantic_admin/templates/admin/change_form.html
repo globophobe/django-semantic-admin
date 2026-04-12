@@ -79,60 +79,65 @@
 {% block admin_change_form_document_ready %}
     {{ block.super }}
     <script type="text/javascript">
-    // Use window.$ which has Fomantic, not django.jQuery which lacks it
-    const $ = window.$;
+    (function(window) {
+        const $ = (window.django && window.django.jQuery) || window.jQuery || window.$;
 
-    // Initialize widgets in a newly added inline row
-    function initInlineRow(row, formsetName) {
-        if (row.dataset.inlineInitialized === '1') {
+        if (!$) {
             return;
         }
-        row.dataset.inlineInitialized = '1';
 
-        const $row = $(row);
+        // Initialize widgets in a newly added inline row
+        function initInlineRow(row, formsetName) {
+            if (row.dataset.inlineInitialized === '1') {
+                return;
+            }
+            row.dataset.inlineInitialized = '1';
 
-        if (window.semanticAdminInitAutocompleteSelects) {
-            window.semanticAdminInitAutocompleteSelects(row);
+            const $row = $(row);
+
+            if (window.semanticAdminInitAutocompleteSelects) {
+                window.semanticAdminInitAutocompleteSelects(row);
+            }
+            if (window.semanticAdminInitDropdownSelects) {
+                window.semanticAdminInitDropdownSelects(row);
+            }
+
+            // Checkboxes
+            $row.find('.ui.checkbox').not('[name*=__prefix__]').each(function() {
+                $(this).checkbox();
+            });
+
+            // Datetime
+            $row.find('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
+                $(this).calendar(getCalendarOptions('datetime', true));
+            });
+
+            // Date
+            $row.find('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
+                $(this).calendar(getCalendarOptions('date', true));
+            });
+
+            // Time
+            $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
+                $(this).calendar(getCalendarOptions('time', true));
+            });
         }
-        if (window.semanticAdminInitDropdownSelects) {
-            window.semanticAdminInitDropdownSelects(row);
+
+        // Django 6.0+ uses DOM CustomEvent
+        document.addEventListener('formset:added', function(event) {
+            initInlineRow(event.target, event.detail?.formsetName);
+        });
+
+        // Django 4.2-5.x uses jQuery triggers
+        if (window.django && window.django.jQuery) {
+            window.django.jQuery(document).on('formset:added', function(event, $row, formsetName) {
+                // Only handle if jQuery-style args are present (not from DOM event bubbling)
+                if ($row && $row.length) {
+                    initInlineRow($row[0], formsetName);
+                }
+            });
         }
-
-        // Checkboxes
-        $row.find('.ui.checkbox').not('[name*=__prefix__]').each(function() {
-            $(this).checkbox();
-        });
-
-        const languageCode = '{{ LANGUAGE_CODE|default:"en-us" }}';
-
-        // Datetime
-        $row.find('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('datetime', true));
-        });
-
-        // Date
-        $row.find('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('date', true));
-        });
-
-        // Time
-        $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('time', true));
-        });
-    }
-
-    // Django 6.0+ uses DOM CustomEvent
-    document.addEventListener('formset:added', function(event) {
-        initInlineRow(event.target, event.detail?.formsetName);
-    });
-
-    // Django 4.2-5.x uses jQuery triggers
-    django.jQuery(document).on('formset:added', function(event, $row, formsetName) {
-        // Only handle if jQuery-style args are present (not from DOM event bubbling)
-        if ($row && $row.length) {
-            initInlineRow($row[0], formsetName);
-        }
-    });
+    })(window);
 
     </script>
 {% endblock %}

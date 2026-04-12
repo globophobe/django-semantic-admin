@@ -1,9 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n l10n admin_urls semantic_filters static %}
 
-{% block extrahead %}
-    {{ block.super }}
-    {{ media }}
+{% block extrahead %}{{ block.super }}
     <script src="{% static 'admin/js/cancel.js' %}" async></script>
 {% endblock %}
 

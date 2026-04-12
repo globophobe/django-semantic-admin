@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          cache-dependency-glob: pyproject.toml
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Ruff
+        run: uv run ruff check .
+
+      - name: Djlint
+        run: uv run djlint semantic_admin demo --check
+
+      - name: Django Upgrade
+        run: git ls-files '*.py' | xargs uv run django-upgrade --target-version 4.2 --check
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.10"
+            django-version: "4.2.*"
+          - python-version: "3.11"
+            django-version: "5.2.*"
+          - python-version: "3.12"
+            django-version: "6.0.*"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          cache-dependency-glob: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          uv sync --group dev
+          uv pip install "django==${{ matrix.django-version }}"
+
+      - name: Run tests
+        env:
+          SECRET_KEY: test-secret
+        run: uv run python demo/manage.py test --verbosity 1

@@ -2,8 +2,10 @@ import os
 from pathlib import Path
 from typing import Any
 
-from decouple import config
+from dotenv import load_dotenv
 from invoke import task
+
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 
 @task
@@ -180,9 +182,7 @@ def get_container_name(ctx: Any, region: str = "asia-northeast1") -> str:
 
 def docker_secrets() -> str:
     """Get docker secrets."""
-    build_args = [
-        f'{secret}="{config(secret)}"' for secret in ("SECRET_KEY", "SENTRY_DSN")
-    ]
+    build_args = [f'{secret}="{os.environ[secret]}"' for secret in ("SECRET_KEY", "SENTRY_DSN")]
     return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
 
 

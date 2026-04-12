@@ -3,6 +3,7 @@
 .env
 .coverage
 .DS_Store
+.venv/
 dist/
 /static/
 /demo/static/

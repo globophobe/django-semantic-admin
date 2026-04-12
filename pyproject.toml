@@ -46,6 +46,7 @@ dev = [
     "django-debug-toolbar==6.2.0",
     "django-filter==25.2",
     "django-import-export==3.3.9",
+    "django-upgrade==1.30.0",
     "django-taggit==6.1.0",
     "factory-boy==3.3.3",
     "faker==40.11.1",

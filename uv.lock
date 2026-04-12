@@ -7,7 +7,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-04-05T02:22:03.075831815Z"
+exclude-newer = "2026-04-05T02:55:07.151416987Z"
 exclude-newer-span = "P7D"
 
 [[package]]
@@ -190,6 +190,7 @@ dev = [
     { name = "django-filter" },
     { name = "django-import-export" },
     { name = "django-taggit" },
+    { name = "django-upgrade" },
     { name = "djlint" },
     { name = "factory-boy" },
     { name = "faker" },
@@ -226,6 +227,7 @@ dev = [
     { name = "django-filter", specifier = "==25.2" },
     { name = "django-import-export", specifier = "==3.3.9" },
     { name = "django-taggit", specifier = "==6.1.0" },
+    { name = "django-upgrade", specifier = "==1.30.0" },
     { name = "djlint", specifier = "==1.36.4" },
     { name = "factory-boy", specifier = "==3.3.3" },
     { name = "faker", specifier = "==40.11.1" },
@@ -263,6 +265,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/34/a6/f1beaf8f552fe90c153cc039316ebab942c23dfbc88588dde081fefca816/django_taggit-6.1.0.tar.gz", hash = "sha256:c4d1199e6df34125dd36db5eb0efe545b254dec3980ce5dd80e6bab3e78757c3", size = 38151, upload-time = "2024-09-29T08:07:39.477Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6b/34/4185c345530b91d05cb82e05d07148f481a5eb5dc2ac44e092b3daa6f206/django_taggit-6.1.0-py3-none-any.whl", hash = "sha256:ab776264bbc76cb3d7e49e1bf9054962457831bd21c3a42db9138b41956e4cf0", size = 75749, upload-time = "2024-09-29T08:07:14.612Z" },
+]
+
+[[package]]
+name = "django-upgrade"
+version = "1.30.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "tokenize-rt" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a3/a5/c59b2123ad588fd52ce69e043e47185a54d1d9966f29ecb50d1cf65861ca/django_upgrade-1.30.0.tar.gz", hash = "sha256:c2c9a02773708c5b4fc24ebf29f2c532082885170d1ab17a2ef33f396893dd8a", size = 39652, upload-time = "2026-02-24T23:19:45.091Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/aa/1f/58c990ab604a5b39b6d1c83f18aa074bfb10eef201c833697d44176d78cd/django_upgrade-1.30.0-py3-none-any.whl", hash = "sha256:3cf6eb4a46918df3f0b863bd96df8a36a8fed90d0e17c6a7c4af5442e489bc46", size = 68910, upload-time = "2026-02-24T23:19:43.65Z" },
 ]
 
 [[package]]
@@ -1007,6 +1021,15 @@ xlsx = [
 ]
 yaml = [
     { name = "pyyaml" },
+]
+
+[[package]]
+name = "tokenize-rt"
+version = "6.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/ed/8f07e893132d5051d86a553e749d5c89b2a4776eb3a579b72ed61f8559ca/tokenize_rt-6.2.0.tar.gz", hash = "sha256:8439c042b330c553fdbe1758e4a05c0ed460dbbbb24a606f11f0dee75da4cad6", size = 5476, upload-time = "2025-05-23T23:48:00.035Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/f0/3fe8c6e69135a845f4106f2ff8b6805638d4e85c264e70114e8126689587/tokenize_rt-6.2.0-py2.py3-none-any.whl", hash = "sha256:a152bf4f249c847a66497a4a95f63376ed68ac6abf092a2f7cfb29d044ecff44", size = 6004, upload-time = "2025-05-23T23:47:58.812Z" },
 ]
 
 [[package]]

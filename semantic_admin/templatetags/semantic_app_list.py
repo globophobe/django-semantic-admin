@@ -7,6 +7,16 @@ from django.urls import resolve, reverse
 register = template.Library()
 
 
+def _set_active_app(apps, current_app):
+    has_active = False
+    for app in apps:
+        app["is_active"] = app["app_label"] == current_app
+        has_active = has_active or app["is_active"]
+    if len(apps) and not has_active:
+        apps[0]["is_active"] = True
+    return apps
+
+
 def get_semantic_app_list(app_list, current_app):
     semantic_app_list = getattr(settings, "SEMANTIC_APP_LIST", None)
     if semantic_app_list:
@@ -19,7 +29,6 @@ def get_semantic_app_list(app_list, current_app):
                     and semantic_app_label == app["app_label"]
                 )
                 if is_semantic_app:
-                    app["is_active"] = app["app_label"] == current_app
                     semantic_models = semantic_app.get("models", None)
                     if isinstance(semantic_models, list):
                         models = []
@@ -33,12 +42,9 @@ def get_semantic_app_list(app_list, current_app):
                                         models.append(model)
                         app["models"] = models
                     apps.append(app)
-        has_active = any([app["is_active"] for app in apps])
-        if len(apps) and not has_active:
-            apps[0]["is_active"] = True
-        return apps
+        return _set_active_app(apps, current_app)
     else:
-        return app_list
+        return _set_active_app(app_list, current_app)
 
 
 def get_app_label(resolver_match):

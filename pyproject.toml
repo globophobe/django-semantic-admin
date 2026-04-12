@@ -62,6 +62,7 @@ dev = [
 
 [tool.uv]
 exclude-newer = "P7D"
+exclude-newer-package = { django-semantic-forms = false }
 
 [tool.ruff]
 exclude = ["migrations"]

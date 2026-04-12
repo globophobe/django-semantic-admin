@@ -37,7 +37,7 @@ deploy = [
     "django-taggit==6.1.0",
     "gunicorn==25.3.0",
     "pillow==12.2.0",
-    "python-decouple==3.8",
+    "python-dotenv==1.1.1",
     "sentry-sdk==2.57.0",
     "whitenoise==6.12.0",
 ]
@@ -54,7 +54,7 @@ dev = [
     "invoke==2.2.1",
     "mkdocs==1.6.1",
     "pillow==12.2.0",
-    "python-decouple==3.8",
+    "python-dotenv==1.1.1",
     "ruff==0.15.9",
     "sentry-sdk==2.57.0",
     "whitenoise==6.12.0",

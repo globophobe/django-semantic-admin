@@ -71,3 +71,4 @@ target-version = "py310"
 [tool.djlint]
 profile = "django"
 max_line_length = 88
+extend_exclude = "semantic_admin/templates/admin/includes/fieldset_content.html"

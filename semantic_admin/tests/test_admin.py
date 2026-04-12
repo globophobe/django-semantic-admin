@@ -92,6 +92,18 @@ class AdminMediaTests(TestCase):
         self.assert_admin_jquery_bootstrap_once(response)
         self.assert_javascript_catalog_once(response)
 
+    def test_change_form_keeps_non_addable_inline_with_existing_rows(self):
+        response = self.client.get(
+            reverse("admin:semantic_admin_tests_event_change", args=(self.event.pk,))
+        )
+
+        self.assertContains(response, 'id="notes-group"')
+
+    def test_add_view_hides_empty_non_addable_inline_group(self):
+        response = self.client.get(reverse("admin:semantic_admin_tests_event_add"))
+
+        self.assertNotContains(response, 'id="notes-group"')
+
     def test_delete_confirmation_uses_django_admin_jquery_once(self):
         response = self.client.get(
             reverse("admin:semantic_admin_tests_event_delete", args=(self.event.pk,))

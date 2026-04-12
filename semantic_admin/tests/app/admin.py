@@ -11,6 +11,10 @@ class EventNoteInline(SemanticTabularInline):
     fields = ("label",)
     extra = 0
 
+    def has_add_permission(self, request, obj=None) -> bool:
+        """Disallow adding inline rows."""
+        return False
+
 
 @admin.register(Category)
 class CategoryAdmin(SemanticModelAdmin):
@@ -24,4 +28,3 @@ class EventAdmin(SemanticModelAdmin):
     list_display = ("name", "category", "when", "is_active")
     list_editable = ("category", "when", "is_active")
     inlines = (EventNoteInline,)
-

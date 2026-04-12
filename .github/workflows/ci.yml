@@ -14,15 +14,25 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
       - uses: astral-sh/setup-uv@v6
         with:
           cache-dependency-glob: pyproject.toml
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: |
+          uv sync --group dev
+          npm ci
 
       - name: Ruff
         run: uv run ruff check .
+
+      - name: Biome
+        run: npm run check:js
 
       - name: Djlint
         run: uv run djlint semantic_admin demo --check

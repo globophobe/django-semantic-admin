@@ -32,7 +32,6 @@ MEDIA_URL = "/media/"
 
 INSTALLED_APPS = [
     "semantic_admin",
-    "semantic_admin.tests.app.apps.SemanticAdminTestsAppConfig",
     "semantic_forms",
     "django.contrib.admin",
     "django.contrib.auth",

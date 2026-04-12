@@ -4,6 +4,7 @@
 .coverage
 .DS_Store
 .venv/
+node_modules/
 dist/
 /static/
 /demo/static/

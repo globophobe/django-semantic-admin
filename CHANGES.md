@@ -1,3 +1,9 @@
+v0.6.8
+------
+* Upgrade Fomantic v2.9.4 and use Django admin jQuery
+* `SemanticTabularInline` delete checkbox fix
+* Deduplicate JavaScript catalog
+
 v0.6.7
 ------
 * Require Django >= 4.2

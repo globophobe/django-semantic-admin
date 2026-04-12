@@ -3,7 +3,6 @@ from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth.forms import UsernameField
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.debug import sensitive_variables
 
 
 class LoginForm(AdminAuthenticationForm):

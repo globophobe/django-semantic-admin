@@ -1,7 +1,7 @@
 import datetime
 import decimal
 import json
-from typing import Any, Optional
+from typing import Any
 
 from django import forms
 from django.contrib.admin.utils import display_for_value

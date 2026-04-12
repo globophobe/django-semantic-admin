@@ -1,171 +1,151 @@
-{% load i18n static semantic_utils %}<!DOCTYPE html>
+{% load i18n static semantic_utils %}
+<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
-<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
-<head>
-<meta charset="utf-8">
-<title>{% block title %}{% endblock %}</title>
-
-<!-- Style -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.css">
-
-<link rel="stylesheet" href="{% static "semantic_admin/semantic-admin.css" %}" />
-<link rel="stylesheet" href="{% static "semantic_admin/unsemantic.css" %}" />
-{% block extrastyle %}{% endblock %}
-{% block responsive %}
-  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  {% if LANGUAGE_BIDI %}
-    <link rel="stylesheet" type="text/css" href="{% static "semantic_admin/rtl.css" %}" />
-  {% endif %}
-{% endblock %}
-<!-- END Style -->
-
-<!-- Script -->
-{% block extrahead %}{% endblock %}
-{% if media %}
-{{ media }}
-{% else %}
-<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script src="{% static 'admin/js/jquery.init.js' %}"></script>
-{% endif %}
-<script type="text/javascript">
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}"
+      {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {% block title %}{% endblock %}
+        </title>
+        <!-- Style -->
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.css">
+        <link rel="stylesheet"
+              href="{% static "semantic_admin/semantic-admin.css" %}" />
+        <link rel="stylesheet" href="{% static "semantic_admin/unsemantic.css" %}" />
+        {% block extrastyle %}{% endblock %}
+        {% block responsive %}
+            <meta name="viewport"
+                  content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+            {% if LANGUAGE_BIDI %}
+                <link rel="stylesheet"
+                      type="text/css"
+                      href="{% static "semantic_admin/rtl.css" %}" />
+            {% endif %}
+        {% endblock %}
+        <!-- END Style -->
+        <!-- Script -->
+        {% block extrahead %}{% endblock %}
+        {% if media %}
+            {{ media }}
+        {% else %}
+            <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+            <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+        {% endif %}
+        <script type="text/javascript">
 (function(window) {
   if (window.django && window.django.jQuery) {
     window.jQuery = window.django.jQuery;
     window.$ = window.django.jQuery;
   }
 })(window);
-</script>
-<script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js"></script>
-<script src="{% static 'semantic_admin/semanticWidgets.js' %}"></script>
-<!-- END Script -->
-
-{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
-</head>
-
-<body id="app-main" class="{% if is_popup %}popup {% else %}pushable {% endif %}{% block bodyclass %}{% endblock %}" data-admin-utc-offset="{% now "Z" %}">
-
-{% if not is_popup %}
-{% comment %}
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js"></script>
+        <script src="{% static 'semantic_admin/semanticWidgets.js' %}"></script>
+        <!-- END Script -->
+        {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+    </head>
+    <body id="app-main"
+          class="{% if is_popup %}popup {% else %}pushable {% endif %}{% block bodyclass %}{% endblock %}"
+          data-admin-utc-offset="{% now "Z" %}">
+        {% if not is_popup %}
+            {% comment %}
 There are two menus on the page. The first is the offscreen menu, which is only
 visible if toggled. The menu button to toggle it is only visible when the screen
 is less than 1144px.
 
 Otherwise, a second computer menu is visible when the screen is more than 1145px.
-{% endcomment %}
-
-<!-- Menu 1 -->
-<div id="offscreen-menu" class="ui vertical inverted sidebar menu left noprint">
-  {% include "admin/menu.html" %}
-</div>
-<!-- END Menu 1 -->
-
-{% comment %}
+            {% endcomment %}
+            <!-- Menu 1 -->
+            <div id="offscreen-menu"
+                 class="ui vertical inverted sidebar menu left noprint">
+                {% include "admin/menu.html" %}
+            </div>
+            <!-- END Menu 1 -->
+            {% comment %}
 When, less than 1144px, the top menu bar appears. Clicking the menu button
 launches the offscreen menu.
-{% endcomment %}
-
-<!-- Top menu -->
-<div class="ui fixed inverted main menu noprint">
-  <div class="ui container">
-    <a id="toggle-offscreen" class="launch icon item">
-      <i class="content large icon"></i>&nbsp;&nbsp;Menu
-    </a>
-  </div>
-</div>
-<!-- END Top menu -->
-{% endif %}
-
-{% comment %}{% endcomment %}
-
-{% if not is_popup %}
-<!-- Computer menu and content -->
-<div class="pusher">
-  <div class="full height">
-    <div class="computer-menu full height noprint">
-      <div class="ui vertical inverted menu full height">
-        {% include "admin/menu.html" %}
-      </div>
-    </div>
-{% endif %}
-
-    <!-- Container -->
-    <div id="app-content" class="ui container" style="margin-left: {% if is_popup %}1rem;{% else %}0 !important;{% endif %} margin-right: 0 !important;">
-      {% if not is_popup %}
-        <!-- Breadcrumbs -->
-        {% block breadcrumbsbox %} 
-          <div class="ui basic compact segment noprint" style="margin-bottom: 0;">
-            {% block breadcrumbs %}{% endblock %}
-          </div>
-          <div class="ui fitted divider"></div>
-        {% endblock %}
-        <!-- END Breadcrumbs -->
-          
-        <div class="ui basic segment" style="margin-top: 0;">
-
-        {% block messages %}
-          {% if messages %}
-            {% for message in messages %}
-              <div class="ui
-                  {% if message.tags %}
-                    {% with message.tags as tags %}
-                    {% if tags == 'debug' %}
-                    {% elif tags == 'info' %}info
-                    {% elif tags == 'success' %}success
-                    {% elif tags == 'warning' %}warning
-                    {% elif tags == 'error' %}negative
-                    {% endif %}
-                    {% endwith %}
-                  {% endif %} message"
-                  >{{ message|capfirst }}
+            {% endcomment %}
+            <!-- Top menu -->
+            <div class="ui fixed inverted main menu noprint">
+                <div class="ui container">
+                    <a id="toggle-offscreen" class="launch icon item">
+                        <i class="content large icon"></i>&nbsp;&nbsp;Menu
+                    </a>
                 </div>
-            {% endfor %}
-          {% endif %}
-        {% endblock messages %}
-      {% endif %}
-
-      <!-- Content -->
-      <div id="content" class="{% block coltype %}colM{% endblock %}">
-
-        {% block contenttop %}
-        <div class="ui basic segment" style="padding-top: 0; padding-bottom: 0;">
-          <div class="ui form">
-            <div class="fields">
-              <div class="sixteen wide field">
-                {% block pretitle %}{% endblock %}
-                {% block content_title %}
-                  {% if title %}<h1 class="ui header">{{ title }}</h1>{% endif %}
-                {% endblock %}
-              </div>
-
-              {% block object-tools %}{% endblock %}
             </div>
-          </div>
+            <!-- END Top menu -->
+        {% endif %}
+        {% comment %}{% endcomment %}
+        {% if not is_popup %}
+            <!-- Computer menu and content -->
+            <div class="pusher">
+                <div class="full height">
+                    <div class="computer-menu full height noprint">
+                        <div class="ui vertical inverted menu full height">
+                            {% include "admin/menu.html" %}
+                        </div>
+                    </div>
+                {% endif %}
+                <!-- Container -->
+                <div id="app-content"
+                     class="ui container"
+                     style="margin-left: {% if is_popup %}1rem;
+                            {% else %}0 !important;
+                            {% endif %} margin-right: 0 !important">
+                    {% if not is_popup %}
+                        <!-- Breadcrumbs -->
+                        {% block breadcrumbsbox %}
+                            <div class="ui basic compact segment noprint" style="margin-bottom: 0;">
+                                {% block breadcrumbs %}{% endblock %}
+                            </div>
+                            <div class="ui fitted divider"></div>
+                        {% endblock %}
+                        <!-- END Breadcrumbs -->
+                        <div class="ui basic segment" style="margin-top: 0;">
+                            {% block messages %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="ui {% if message.tags %} {% with message.tags as tags %} {% if tags == 'debug' %} {% elif tags == 'info' %}info {% elif tags == 'success' %}success {% elif tags == 'warning' %}warning {% elif tags == 'error' %}negative {% endif %} {% endwith %} {% endif %} message">
+                                            {{ message|capfirst }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endblock messages %}
+                        {% endif %}
+                        <!-- Content -->
+                        <div id="content" class="{% block coltype %}colM{% endblock %}">
+                            {% block contenttop %}
+                                <div class="ui basic segment" style="padding-top: 0; padding-bottom: 0;">
+                                    <div class="ui form">
+                                        <div class="fields">
+                                            <div class="sixteen wide field">
+                                                {% block pretitle %}{% endblock %}
+                                                {% block content_title %}
+                                                    {% if title %}<h1 class="ui header">{{ title }}</h1>{% endif %}
+                                                {% endblock %}
+                                            </div>
+                                            {% block object-tools %}{% endblock %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endblock %}
+                            {% block content %}{{ content }}{% endblock %}
+                            {% block sidebar %}{% endblock %}
+                        </div>
+                    </div>
+                    <!-- END Content -->
+                </div>
+                {% block footer %}<div id="footer"></div>{% endblock %}
+                <!-- END Container -->
+            </div>
+            {% if not is_popup %}
+            </div>
         </div>
-        {% endblock %}
-
-          {% block content %}
-          {{ content }}
-          {% endblock %}
-          {% block sidebar %}{% endblock %}
-        </div>
-      </div> 
-      <!-- END Content -->
-
-      </div>
-
-      {% block footer %}
-        <div id="footer"></div>
-      {% endblock %}
-
-      <!-- END Container -->
-    </div>
-  
-{% if not is_popup %}
-  </div>
-</div>
-<!-- END Offscreen menu and content -->
-
-<script type="text/javascript">
+        <!-- END Offscreen menu and content -->
+        <script type="text/javascript">
 (function($) {
   if (!$) {
     return;
@@ -177,10 +157,9 @@ launches the offscreen menu.
     .sidebar('setting', 'transition', 'overlay');
   });
 })(window.django && window.django.jQuery ? window.django.jQuery : window.jQuery || window.$);
-</script>
-{% endif %}
-
-<script type="text/javascript">
+        </script>
+    {% endif %}
+    <script type="text/javascript">
 (function($) {
   if (!$) {
     return;
@@ -190,8 +169,8 @@ launches the offscreen menu.
   $('.ui.accordion').accordion({ duration: 250 });
   });
 })(window.django && window.django.jQuery ? window.django.jQuery : window.jQuery || window.$);
-</script>
-
-{% block extrascript %}{% endblock %}
+    </script>
+    {% block extrascript %}
+    {% endblock %}
 </body>
 </html>

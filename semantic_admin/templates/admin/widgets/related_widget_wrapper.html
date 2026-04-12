@@ -1,43 +1,54 @@
 {% load i18n static %}
-<div class="related-widget-wrapper" {% if not model_has_limit_choices_to %}data-model-ref="{{ model_name }}"{% endif %}>
-    <div class="ui fluid related-widget">
-    {{ rendered_widget }}
-    </div>
+<div class="related-widget-wrapper"
+     {% if not model_has_limit_choices_to %}data-model-ref="{{ model_name }}"{% endif %}>
+    <div class="ui fluid related-widget">{{ rendered_widget }}</div>
     {% block links %}
         {% spaceless %}
-        {% if not is_hidden %}
-        {% if can_change_related %}
-        <a class="related-widget-wrapper-link change-related" id="change_id_{{ name }}"
-            data-href-template="{{ change_related_template_url }}?{{ url_params }}"
-            data-popup="yes"
-            title="{% blocktranslate %}Change selected {{ model }}{% endblocktranslate %}">
-            <i style="color: rgba(0,0,0,.87);" class="pencil icon" title="{% translate 'Change' %}"></i>
-        </a>
-        {% endif %}
-        {% if can_add_related %}
-        <a class="related-widget-wrapper-link add-related" id="add_id_{{ name }}"
-            href="{{ add_related_url }}?{{ url_params }}"
-            data-popup="yes"
-            title="{% blocktranslate %}Add another {{ model }}{% endblocktranslate %}">
-            <i style="color: rgba(0,0,0,.87);" class="plus icon" title="{% translate 'Add' %}"></i>
-        </a>
-        {% endif %}
-        {% if can_delete_related %}
-        <a class="related-widget-wrapper-link delete-related" id="delete_id_{{ name }}"
-            data-href-template="{{ delete_related_template_url }}?{{ url_params }}"
-            data-popup="yes"
-            title="{% blocktranslate %}Delete selected {{ model }}{% endblocktranslate %}">
-            <i style="color: rgba(0,0,0,.87);" class="x icon" title="{% translate 'Delete' %}"></i>
-        </a>
-        {% endif %}
-        {% if can_view_related %}
-        <a class="related-widget-wrapper-link view-related" id="view_id_{{ name }}"
-            data-href-template="{{ change_related_template_url }}?{{ view_related_url_params }}"
-            title="{% blocktranslate %}View selected {{ model }}{% endblocktranslate %}">
-            <i style="color: rgba(0,0,0,.87);" class="eye icon" title="{% translate 'View' %}"></i>
-        </a>
-        {% endif %}
-        {% endif %}
+            {% if not is_hidden %}
+                {% if can_change_related %}
+                    <a class="related-widget-wrapper-link change-related"
+                       id="change_id_{{ name }}"
+                       data-href-template="{{ change_related_template_url }}?{{ url_params }}"
+                       data-popup="yes"
+                       title="{% blocktranslate %}Change selected {{ model }}{% endblocktranslate %}">
+                        <i style="color: rgba(0,0,0,.87)"
+                           class="pencil icon"
+                           title="{% translate 'Change' %}"></i>
+                    </a>
+                {% endif %}
+                {% if can_add_related %}
+                    <a class="related-widget-wrapper-link add-related"
+                       id="add_id_{{ name }}"
+                       href="{{ add_related_url }}?{{ url_params }}"
+                       data-popup="yes"
+                       title="{% blocktranslate %}Add another {{ model }}{% endblocktranslate %}">
+                        <i style="color: rgba(0,0,0,.87)"
+                           class="plus icon"
+                           title="{% translate 'Add' %}"></i>
+                    </a>
+                {% endif %}
+                {% if can_delete_related %}
+                    <a class="related-widget-wrapper-link delete-related"
+                       id="delete_id_{{ name }}"
+                       data-href-template="{{ delete_related_template_url }}?{{ url_params }}"
+                       data-popup="yes"
+                       title="{% blocktranslate %}Delete selected {{ model }}{% endblocktranslate %}">
+                        <i style="color: rgba(0,0,0,.87)"
+                           class="x icon"
+                           title="{% translate 'Delete' %}"></i>
+                    </a>
+                {% endif %}
+                {% if can_view_related %}
+                    <a class="related-widget-wrapper-link view-related"
+                       id="view_id_{{ name }}"
+                       data-href-template="{{ change_related_template_url }}?{{ view_related_url_params }}"
+                       title="{% blocktranslate %}View selected {{ model }}{% endblocktranslate %}">
+                        <i style="color: rgba(0,0,0,.87)"
+                           class="eye icon"
+                           title="{% translate 'View' %}"></i>
+                    </a>
+                {% endif %}
+            {% endif %}
         {% endspaceless %}
     {% endblock %}
 </div>

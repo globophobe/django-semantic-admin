@@ -1,179 +1,166 @@
 {# comment Extend base_site.html instead of change_form.html b/c override extrastyle without block.super #}
 {% extends "admin/base_site.html" %}
 {% load i18n admin_urls static admin_modify semantic_utils %}
-
-{% block extrahead %}{{ block.super }}
-  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-  {{ media }}
-{% endblock %}
-
 <div class="ui stackable grid">
-{% if not is_popup %}
-{% block breadcrumbs %}
-<div class="row">
-    <div class="ui large breadcrumb" style="padding-left: 1rem;">
-        <a class="section" href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-        <i class="right chevron icon divider"></i>
-        {% if has_change_permission or has_view_permission %}
-        <a class="section" href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}
-        {% endif %}
-        <i class="right chevron icon divider"></i>
-        <div class="active section">
-        {% if add %}{% blocktrans with name=opts.verbose_name %}Add {{ name }}{% endblocktrans %}{% else %}{{ original|truncatewords:"18" }}{% endif %}
-        </div>
-    </div>
-</div>
-{% endblock %}
-{% endif %}
-
-{% block object-tools %}
-{% if change %}
     {% if not is_popup %}
-        {% block object-tools-items %}
-            {% if not has_absolute_url %}
-                <div class="four wide field" style="margin-bottom: 0;"></div>
-            {% endif %}
-            <div class="six wide field noprint">
-            {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
-            <a class="ui primary basic fluid button historylink" href="{% add_preserved_filters history_url %}">{% trans "History" %}</a>
+        {% block breadcrumbs %}
+            <div class="row">
+                <div class="ui large breadcrumb" style="padding-left: 1rem;">
+                    <a class="section" href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+                    <i class="right chevron icon divider"></i>
+                    {% if has_change_permission or has_view_permission %}
+                        <a class="section" href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+                    {% else %}
+                        {{ opts.verbose_name_plural|capfirst }}
+                    {% endif %}
+                    <i class="right chevron icon divider"></i>
+                    <div class="active section">
+                        {% if add %}
+                            {% blocktrans with name=opts.verbose_name %}Add {{ name }}{% endblocktrans %}
+                        {% else %}
+                            {{ original|truncatewords:"18" }}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        {% if has_absolute_url %}
-            <div class="four wide field noprint">
-            <a class="ui primary basic fluid button viewsitelink" href="{{ absolute_url }}">{% trans "View on site" %}</a>
-            </div>
-        {% endif %}
         {% endblock %}
     {% endif %}
-{% endif %}
-{% endblock %}
+    {% block object-tools %}
+        {% if change %}
+            {% if not is_popup %}
+                {% block object-tools-items %}
+                    {% if not has_absolute_url %}
+                        <div class="four wide field" style="margin-bottom: 0;"></div>
+                    {% endif %}
+                    <div class="six wide field noprint">
+                        {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
+                        <a class="ui primary basic fluid button historylink"
+                           href="{% add_preserved_filters history_url %}">{% trans "History" %}</a>
+                    </div>
+                    {% if has_absolute_url %}
+                        <div class="four wide field noprint">
+                            <a class="ui primary basic fluid button viewsitelink"
+                               href="{{ absolute_url }}">{% trans "View on site" %}</a>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+    {% block content %}
+        <div id="content-main" class="change-form">
+            <form class="ui form{% if errors %} error{% endif %}"
+                  {% if has_file_field %}enctype="multipart/form-data"{% endif %}
+                  action="{{ form_url }}"
+                  method="post"
+                  id="{{ opts.model_name }}_form"
+                  novalidate>
+                {% csrf_token %}
+                {% block form_top %}{% endblock %}
+                <div class="width-100">
+                    {% if is_popup %}
+                        <input type="hidden" name="{{ is_popup_var }}" value="1" />
+                    {% endif %}
+                    {% if to_field %}
+                        <input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}" />
+                    {% endif %}
+                    {% if save_on_top %}
+                        {% block submit_buttons_top %}
+                            {% submit_row %}
+                        {% endblock %}
+                    {% endif %}
+                    {% if errors %}
+                        <div class="ui message error">
+                            {% blocktranslate count counter=errors|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}
+                        </div>
+                        {{ adminform.form.non_field_errors }}
+                    {% endif %}
+                    <div class="ui segment">
+                        {% block field_sets %}
+                            {% for fieldset in adminform %}
+                                {% include "admin/includes/fieldset.html" with heading_level=2 prefix="fieldset" id_prefix=0 id_suffix=forloop.counter0 %}
+                            {% endfor %}
+                        {% endblock %}
+                        {% block after_field_sets %}{% endblock %}
+                    </div>
+                    {% block inline_field_sets %}
+                        {% for inline_admin_formset in inline_admin_formsets %}
+                            {% include inline_admin_formset.opts.template %}
+                        {% endfor %}
+                    {% endblock %}
+                    {% block after_related_objects %}{% endblock %}
+                    {% block submit_buttons_bottom %}
+                        {% submit_row %}
+                    {% endblock %}
+                    {% block admin_change_form_document_ready %}
+                        {{ block.super }}
+                        <script type="text/javascript">
+    (function(window) {
+        const $ = (window.django && window.django.jQuery) || window.jQuery || window.$;
 
-{% block content %}
-<div id="content-main" class="change-form">
-  <form class="ui form{% if errors %} error{% endif %}" {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}
-<div class="width-100">
-{% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1" />{% endif %}
-{% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}" />{% endif %}
-{% if save_on_top %}{% block submit_buttons_top %}{% submit_row %}{% endblock %}{% endif %}
-{% if errors %}
-    <div class="ui message error">
-    {% blocktranslate count counter=errors|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}
-    </div>
-    {{ adminform.form.non_field_errors }}
-{% endif %}
-
-<div class="ui segment">
-{% block field_sets %}
-  {% for fieldset in adminform %}
-    {% include "admin/includes/fieldset.html" with heading_level=2 prefix="fieldset" id_prefix=0 id_suffix=forloop.counter0 %}
-  {% endfor %}
-{% endblock %}
-
-{% block after_field_sets %}{% endblock %}
-</div>
-
-{% block inline_field_sets %}
-    {% for inline_admin_formset in inline_admin_formsets %}
-        {% include inline_admin_formset.opts.template %}
-    {% endfor %}
-{% endblock %}
-
-{% block after_related_objects %}{% endblock %}
-
-{% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
-
-{% block admin_change_form_document_ready %}
-    {{ block.super }}
-    <script type="text/javascript">
-    // Use window.$ which has Fomantic, not django.jQuery which lacks it
-    const $ = window.$;
-
-    // Initialize widgets in a newly added inline row
-    function initInlineRow(row, formsetName) {
-        if (row.dataset.inlineInitialized === '1') {
+        if (!$) {
             return;
         }
-        row.dataset.inlineInitialized = '1';
 
-        const $row = $(row);
+        // Initialize widgets in a newly added inline row
+        function initInlineRow(row, formsetName) {
+            if (row.dataset.inlineInitialized === '1') {
+                return;
+            }
+            row.dataset.inlineInitialized = '1';
 
-        // Autocompletes
-        $row.find('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
-            var url = $(this).data('ajax--url');
-            url += '?app_label=' + $(this).data('app-label');
-            url += '&model_name=' + $(this).data('model-name');
-            url += '&field_name=' + $(this).data('field-name');
-            url += '&term={query}';
-            $(this).dropdown({
-                apiSettings: {
-                    'url': url,
-                    'onResponse': function(response) {
-                        response.results = response.results.map(result => {
-                            return Object.assign({ value: result.id, name: result.name || result.text }, result)
-                        });
-                        return response
-                    },
-                    'cache': false
-                },
-                'clearable': true,
-                'fullTextSearch': true,
-                'forceSelection': false,
-                'saveRemoteData': false
+            const $row = $(row);
+
+            if (window.semanticAdminInitAutocompleteSelects) {
+                window.semanticAdminInitAutocompleteSelects(row);
+            }
+            if (window.semanticAdminInitDropdownSelects) {
+                window.semanticAdminInitDropdownSelects(row);
+            }
+
+            // Checkboxes
+            $row.find('.ui.checkbox').not('[name*=__prefix__]').each(function() {
+                $(this).checkbox();
             });
-        });
 
-        // Dropdowns
-        $row.find('.ui.dropdown select').not('.admin-autocomplete').not('[name*=__prefix__]').each(function() {
-            $(this).dropdown({
-                'fullTextSearch': true,
-                'forceSelection': false,  // https://github.com/Semantic-Org/Semantic-UI/issues/4506
+            // Datetime
+            $row.find('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
+                $(this).calendar(getCalendarOptions('datetime', true));
             });
-        });
 
-        // Checkboxes
-        $row.find('.ui.checkbox').not('[name*=__prefix__]').each(function() {
-            $(this).checkbox();
-        });
+            // Date
+            $row.find('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
+                $(this).calendar(getCalendarOptions('date', true));
+            });
 
-        const languageCode = '{{ LANGUAGE_CODE|default:"en-us" }}';
-
-        // Datetime
-        $row.find('.ui.calendar.datetime').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('datetime', true));
-        });
-
-        // Date
-        $row.find('.ui.calendar.date').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('date', true));
-        });
-
-        // Time
-        $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
-            $(this).calendar(getCalendarOptions('time', true));
-        });
-    }
-
-    // Django 6.0+ uses DOM CustomEvent
-    document.addEventListener('formset:added', function(event) {
-        initInlineRow(event.target, event.detail?.formsetName);
-    });
-
-    // Django 4.2-5.x uses jQuery triggers
-    django.jQuery(document).on('formset:added', function(event, $row, formsetName) {
-        // Only handle if jQuery-style args are present (not from DOM event bubbling)
-        if ($row && $row.length) {
-            initInlineRow($row[0], formsetName);
+            // Time
+            $row.find('.ui.calendar.time').not('[name*=__prefix__]').each(function() {
+                $(this).calendar(getCalendarOptions('time', true));
+            });
         }
-    });
 
-    </script>
-{% endblock %}
+        // Django 6.0+ uses DOM CustomEvent
+        document.addEventListener('formset:added', function(event) {
+            initInlineRow(event.target, event.detail?.formsetName);
+        });
 
-{# JavaScript for prepopulated fields #}
-{% prepopulated_fields_js %}
+        // Django 4.2-5.x uses jQuery triggers
+        if (window.django && window.django.jQuery) {
+            window.django.jQuery(document).on('formset:added', function(event, $row, formsetName) {
+                // Only handle if jQuery-style args are present (not from DOM event bubbling)
+                if ($row && $row.length) {
+                    initInlineRow($row[0], formsetName);
+                }
+            });
+        }
+    })(window);
 
-</div>
-</form>
-</div>
-
-</div>
+                        </script>
+                    {% endblock %}
+                    {# JavaScript for prepopulated fields #}
+                    {% prepopulated_fields_js %}
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

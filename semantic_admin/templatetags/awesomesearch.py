@@ -95,7 +95,6 @@ def search_fields(context, cl):
         filterset = cl.model_admin.filterset
         form = filterset.form
         for field in filterset.form:
-            # WTF
             label = _(field.label.lower()).capitalize()
             if isinstance(form.fields[field.name].widget, forms.HiddenInput):
                 f = f"""

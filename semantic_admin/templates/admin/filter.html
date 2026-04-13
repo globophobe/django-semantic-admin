@@ -1,21 +1,23 @@
-{% load i18n %} 
+{% load i18n %}
 <div class="field">
-  <label for="{field_id}">{% blocktrans with filter_title=title|capfirst %}{{ filter_title }}{% endblocktrans %}: </label>
-  <div class="ui fluid menu">
-    <div class="ui fluid simple scrolling dropdown item">
-      {% for choice in choices %}
-        {% if choice.selected %}
-          {{ choice.display }}
-        {% endif %}
-      {% endfor %}
-      <i class=" dropdown icon"></i>
-      <div class="ui link menu">
-        {% for choice in choices %}
-          <a href="{{ choice.query_string|iriencode }}" title="{{ choice.display }}" class="item{% if choice.selected %} selected{% endif %}">
-            {{ choice.display }}
-          </a>
-        {% endfor %}
-      </div>
+    <label for="{field_id}">
+        {% blocktrans with filter_title=title|capfirst %}{{ filter_title }}{% endblocktrans %}:
+    </label>
+    <div class="ui fluid menu">
+        <div class="ui fluid simple scrolling dropdown item">
+            {% for choice in choices %}
+                {% if choice.selected %}{{ choice.display }}{% endif %}
+            {% endfor %}
+            <i class=" dropdown icon"></i>
+            <div class="ui link menu">
+                {% for choice in choices %}
+                    <a href="{{ choice.query_string|iriencode }}"
+                       title="{{ choice.display }}"
+                       class="item{% if choice.selected %} selected{% endif %}">
+                        {{ choice.display }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-  </div>
 </div>

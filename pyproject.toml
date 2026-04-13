@@ -1,101 +1,75 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
 name = "django-semantic-admin"
-version = "0.6.7"
+version = "0.6.8"
 description = "Django Semantic UI Admin theme"
-authors = ["Alex <globophobe@gmail.com>"]
 readme = "README.md"
-license = "MIT"
-homepage = "https://github.com/globophobe/django-semantic-admin"
-repository = "https://github.com/globophobe/django-semantic-admin"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Alex", email = "globophobe@gmail.com" }]
 keywords = ["django", "admin", "theme"]
-classifiers = ["Framework :: Django", "Development Status :: 4 - Beta", "Operating System :: OS Independent"]
-packages = [{ include = "semantic_admin" }]
+classifiers = [
+    "Framework :: Django",
+    "Development Status :: 4 - Beta",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "django>=4.2",
+    "django-semantic-forms>=0.1.11",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10"
-django = ">=4.2"
-django-semantic-forms = "*"
-django-import-export = { version = "<=3.3.9", optional = true }
+[project.optional-dependencies]
+import-export = ["django-import-export<=3.3.9"]
 
-[tool.poetry.extras]
-import-export = ["django-import-export"]
+[project.urls]
+Homepage = "https://github.com/globophobe/django-semantic-admin"
+Repository = "https://github.com/globophobe/django-semantic-admin"
 
-[tool.poetry.dev-dependencies]
-black = "*"
-django-debug-toolbar = "*"
-django-import-export = "<=3.3.9"
-django-filter = "*"
-django-taggit = "*"
-factory-boy = "*"
-Faker = "*"
-gunicorn = "*"
-invoke = "*"
-mkdocs = "*"
-Pillow = "*"
-python-decouple = "*"
-ruff = "*"
-whitenoise = "*"
+[tool.hatch.build.targets.wheel]
+packages = ["semantic_admin"]
+
+[dependency-groups]
+deploy = [
+    "django-filter==25.2",
+    "django-taggit==6.1.0",
+    "gunicorn==25.3.0",
+    "pillow==12.2.0",
+    "python-dotenv==1.1.1",
+    "sentry-sdk==2.57.0",
+    "whitenoise==6.12.0",
+]
+dev = [
+    "djlint==1.36.4",
+    "django-debug-toolbar==6.3.0",
+    "django-filter==25.2",
+    "django-import-export==3.3.9",
+    "django-upgrade==1.30.0",
+    "django-taggit==6.1.0",
+    "factory-boy==3.3.3",
+    "faker==40.12.0",
+    "gunicorn==25.3.0",
+    "invoke==2.2.1",
+    "mkdocs==1.6.1",
+    "pillow==12.2.0",
+    "python-dotenv==1.1.1",
+    "ruff==0.15.9",
+    "sentry-sdk==2.57.0",
+    "whitenoise==6.12.0",
+]
+
+[tool.uv]
+exclude-newer = "P7D"
+exclude-newer-package = { django-semantic-forms = false }
 
 [tool.ruff]
 exclude = ["migrations"]
 line-length = 88
 target-version = "py310"
-lint.ignore = [
-    "ANN002", # Missing type annotation for *{name}
-    "ANN003", # Missing type annotation for **{name}
-    "ANN101", # Missing type annotation for {name} in method
-    "ANN102", # Missing type annotation for {name} in classmethod
-    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed in {name}
-    "B007", # Loop control variable not used within loop body
-    "B904", # Within an except clause, raise exceptions with...
-    "D100", # Missing docstring in public module
-    "D104", # Missing docstring in public package
-    "D106", # Missing docstring in public nested class, i.e. Meta
-    "D203", # 1 blank line required before class docstring
-    "D205", # 1 blank line required between summary line and description
-    "D212", # Multi-line docstring summary should start at the first line
-    "D213", # Multi-line docstring summary should start at the second line
-    "D400", # First line should end with a period
-    "D401", # First line should be in imperative mood
-    "D403", # First word of the first line should be properly capitalized
-    "D404", # First word of the docstring should not be This
-    "D406", # Section name should end with a newline
-    "D407", # Missing dashed underline after section
-    "D411", # Missing blank line before section
-    "D413", # Missing blank line after last section
-    "D415", # First line should end with a period, question mark, or exclamation point
-    "D417", # Missing argument description in the docstring: {name}
-    "E501", # Line too long
-    "E721", # Do not compare types, use `isinstance()`
-    "N803", # Argument name should be lowercase
-    "N806", # Variable in function should be lowercase
-    "PTH123", # open() should be replaced by Path.open()
-    "UP032", # [*] Use f-string instead of `format` call
-]
-lint.select = [
-    "ANN", # flake8-annotations
-    "B", # flake8-bugbear
-    "D", # pydocstyle
-    "E", # pycodestyle
-    "F", # Pyflakes
-    "I", # isort
-    "INT", # flake8-gettext
-    "N", # pep8-naming
-    "PTH", # flake8-use-pathlib
-    "UP", # pyupgrade
-    "RUF100", # unused-noqa
-    "RUF200", # invalid-pyproject-toml
-    "W", # pycodestyle
-]
-lint.unfixable = ["F401", "F841"]
 
-[tool.ruff.lint.per-file-ignores]
-"**/tests/*" = ["ANN", "D"]
-"**/migrations/*" = ["ANN", "D"]
-
-[tool.ruff.lint.isort]
-known-first-party = ["semantic_admin"]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.djlint]
+profile = "django"
+max_line_length = 88
+extend_exclude = "semantic_admin/templates/admin/includes/fieldset_content.html"

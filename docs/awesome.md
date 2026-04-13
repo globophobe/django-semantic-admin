@@ -1,7 +1,7 @@
 Awesome optional features
 -------------------------
 
-<ol><li>Optional integration with <a href="https://github.com/carltongibson/django-filter">django_filter</a>:</li></ol>
+<ol><li>Optional integration with <a href="https://github.com/carltongibson/django-filter">django-filter</a>:</li></ol>
 
 <img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-filter.png" width="335" alt="django-filter" />
 

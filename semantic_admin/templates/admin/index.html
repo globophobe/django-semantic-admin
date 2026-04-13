@@ -1,105 +1,99 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static semantic_app_list %}
-
 {% block content_title %}<h1></h1>{% endblock %}
-
 {% block breadcrumbsbox %}
-  <div class="ui basic compact segment noprint" style="margin-bottom: 0;">
-    <div class="ui large breadcrumb" style="padding-left: 1rem;">
-      <div class="section"></div>
+    <div class="ui basic compact segment noprint" style="margin-bottom: 0;">
+        <div class="ui large breadcrumb" style="padding-left: 1rem;">
+            <div class="section"></div>
+        </div>
     </div>
-  </div>
-  <div class="ui fitted divider"></div>
+    <div class="ui fitted divider"></div>
 {% endblock %}
-
 {% block content %}
-<div id="content-main" class="ui grid">
-  <div class="row">
-
-  <div class="ten wide column">
-  {% admin_apps as app_list %}
-  {% if app_list %}
-    {% for app in app_list %}
-      <div class="app-{{ app.app_label }} module">
-      <table class="ui large fixed celled table">
-      <thead>
-        <tr>
-          <th colspan="3">
-            <a href="{{ app.app_url }}" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name|capfirst }}</a>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for model in app.models %}
-        <tr class="model-{{ model.object_name|lower }}">
-        <td scope="row">
-        {% if model.admin_url %}
-          <a href="{{ model.admin_url }}">{{ model.name }}</a>
-        {% else %}
-          {{ model.name }}
-        {% endif %}
-        </td>
-
-        {% if model.add_url %}
-          <td><a href="{{ model.add_url }}" class="ui green button addlink">{% trans 'Add' %}</a></td>
-        {% else %}
-          <td>&nbsp;</td>
-        {% endif %}
-
-        {% if model.admin_url %}
-          <td><a href="{{ model.admin_url }}" class="ui primary button changelink">{% trans 'Change' %}</a></td>
-        {% else %}
-          <td>&nbsp;</td>
-        {% endif %}
-        </tr>
-      {% endfor %}
-      </tbody>
-      </table>
-      <br />
-      </div>
-    {% endfor %}
-  {% else %}
-    <p>{% trans "You don't have permission to edit anything." %}</p>
-  {% endif %}
-</div>
-
-{% endblock %}
-
-{% block sidebar %}
-<div class="six wide column">
-<h2 class="ui header">{% trans 'Recent Actions' %}</h2>
-<div id="content-related" class="ui feed">
-        {% load log %}
-        {% get_admin_log 10 as admin_log for_user user %}
-        {% if not admin_log %}
-        <p>{% trans 'None available' %}</p>
-        {% else %}
-        {% for entry in admin_log %}
-          <div class="event">
-             <div>
-               {% if entry.is_addition %}<i class="black plus circle icon"></i>{% endif %}
-               {% if entry.is_change %}<i class="black pencil alternate icon"></i>{% endif %}
-               {% if entry.is_deletion %}<i class="black minus circle icon"></i>{% endif %}
-             </div>
-             <div class="content {% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
-                 <div class="summary">
-                     {% if entry.is_deletion or not entry.get_admin_url %}
-                         {{ entry.object_repr }}
-                     {% else %}
-                         <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
-                     {% endif %}
-                     <div class="date">
-                       {{ entry.action_time }}
-                     </div>
-                 </div>
-             </div>
-          </div>
-        {% endfor %}
-        {% endif %}
-</div>
-
-</div>
-</div>
-</div>
+    <div id="content-main" class="ui grid">
+        <div class="row">
+            <div class="ten wide column">
+                {% admin_apps as app_list %}
+                {% if app_list %}
+                    {% for app in app_list %}
+                        <div class="app-{{ app.app_label }} module">
+                            <table class="ui large fixed celled table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3">
+                                            <a href="{{ app.app_url }}"
+                                               title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name|capfirst }}</a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for model in app.models %}
+                                        <tr class="model-{{ model.object_name|lower }}">
+                                            <td scope="row">
+                                                {% if model.admin_url %}
+                                                    <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                                                {% else %}
+                                                    {{ model.name }}
+                                                {% endif %}
+                                            </td>
+                                            {% if model.add_url %}
+                                                <td>
+                                                    <a href="{{ model.add_url }}" class="ui green button addlink">{% trans 'Add' %}</a>
+                                                </td>
+                                            {% else %}
+                                                <td>&nbsp;</td>
+                                            {% endif %}
+                                            {% if model.admin_url %}
+                                                <td>
+                                                    <a href="{{ model.admin_url }}" class="ui primary button changelink">{% trans 'Change' %}</a>
+                                                </td>
+                                            {% else %}
+                                                <td>&nbsp;</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <br />
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>{% trans "You don't have permission to edit anything." %}</p>
+                {% endif %}
+            </div>
+        {% endblock %}
+        {% block sidebar %}
+            <div class="six wide column">
+                <h2 class="ui header">{% trans 'Recent Actions' %}</h2>
+                <div id="content-related" class="ui feed">
+                    {% load log %}
+                    {% get_admin_log 10 as admin_log for_user user %}
+                    {% if not admin_log %}
+                        <p>{% trans 'None available' %}</p>
+                    {% else %}
+                        {% for entry in admin_log %}
+                            <div class="event">
+                                <div>
+                                    {% if entry.is_addition %}<i class="black plus circle icon"></i>{% endif %}
+                                    {% if entry.is_change %}<i class="black pencil alternate icon"></i>{% endif %}
+                                    {% if entry.is_deletion %}<i class="black minus circle icon"></i>{% endif %}
+                                </div>
+                                <div class="content {% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                                    <div class="summary">
+                                        {% if entry.is_deletion or not entry.get_admin_url %}
+                                            {{ entry.object_repr }}
+                                        {% else %}
+                                            <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                                        {% endif %}
+                                        <div class="date">{{ entry.action_time }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 </div>

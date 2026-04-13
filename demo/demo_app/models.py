@@ -13,7 +13,7 @@ class Person(models.Model):
     friends = models.ManyToManyField("self", help_text="Helpful text", blank=True)
     name = models.CharField(_("name"), max_length=256, help_text="Helpful text")
     slug = models.SlugField(_("slug"), help_text="Helpful text")
-    url = models.URLField(_("url"), help_text="Helpful text")
+    url = models.URLField(_("url"))
     email = models.EmailField(_("email"), help_text="Helpful text")
     birthday = models.DateField(_("birthday"), help_text="Helpful text")
 

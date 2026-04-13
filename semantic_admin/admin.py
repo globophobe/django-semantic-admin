@@ -18,6 +18,7 @@ from django.forms.models import (
 )
 from django.http import HttpRequest, HttpResponse
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from semantic_forms.widgets import (
     SemanticCheckboxInput,
     SemanticDateInput,
@@ -44,9 +45,8 @@ from semantic_admin.widgets import (
 
 from .awesomesearch import AwesomeSearchModelAdmin
 from .helpers import SemanticActionForm
+from .utils import get_javascript_catalog_media
 from .views.autocomplete import SemanticAutocompleteJsonView
-
-from django.utils.translation import gettext_lazy as _
 
 
 class SemanticAdminURLFieldWidget(AdminURLFieldWidget, SemanticURLInput):
@@ -275,6 +275,11 @@ class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):
 
     action_form = SemanticActionForm
 
+    def render_change_form(self, request, context, *args, **kwargs):
+        """Render change form with JavaScript catalog."""
+        context["media"] = get_javascript_catalog_media() + context["media"]
+        return super().render_change_form(request, context, *args, **kwargs)
+
     def action_checkbox(self, obj: models.Model) -> str:
         """A list_display column containing a checkbox widget"""
         semantic_checkbox = SemanticActionCheckboxInput(
@@ -282,22 +287,31 @@ class SemanticModelAdmin(SemanticBaseModelAdmin, AwesomeSearchModelAdmin):
         )
         return semantic_checkbox.render(helpers.ACTION_CHECKBOX_NAME, str(obj.pk))
 
-    action_checkbox.short_description = mark_safe(  # type: ignore
-        """
+    action_checkbox.short_description = mark_safe("""
         <div id="action-toggle" class="ui checkbox">
             <label></label><input id="action-toggle-input" type="checkbox">
         </div>
-        """
-    )
+        """)  # type: ignore
 
     def autocomplete_view(self, request: HttpRequest) -> HttpResponse:
         """Autocomplete view"""
         return SemanticAutocompleteJsonView.as_view(model_admin=self)(request)
 
 
-class SemanticStackedInline(SemanticBaseModelAdmin, StackedInline):
+class SemanticBaseInlineAdmin(SemanticBaseModelAdmin):
+    """Semantic base inline admin."""
+
+    def get_formset(self, request: HttpRequest, obj=None, **kwargs):
+        """Get formset with semantic checkbox input."""
+        formset = super().get_formset(request, obj, **kwargs)
+        if getattr(formset, "deletion_widget", None) is forms.CheckboxInput:
+            formset.deletion_widget = SemanticCheckboxInput
+        return formset
+
+
+class SemanticStackedInline(SemanticBaseInlineAdmin, StackedInline):
     """Semantic stacked inline"""
 
 
-class SemanticTabularInline(SemanticBaseModelAdmin, TabularInline):
+class SemanticTabularInline(SemanticBaseInlineAdmin, TabularInline):
     """Semantic tabular inline"""

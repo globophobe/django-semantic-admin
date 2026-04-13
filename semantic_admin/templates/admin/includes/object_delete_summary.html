@@ -2,6 +2,6 @@
 <h2 class="ui header">{% trans "Summary" %}</h2>
 <div class="ui bulleted list">
     {% for model_name, object_count in model_count %}
-    <div class="item">{{ model_name|capfirst }}: {{ object_count }}</div>
+        <div class="item">{{ model_name|capfirst }}: {{ object_count }}</div>
     {% endfor %}
 </div>

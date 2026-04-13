@@ -1,8 +1,15 @@
 {% extends "admin/login.html" %}
 {% load i18n static %}
-
 {% block passwordreset %}
-  <div class="password-reset-link" style="margin-bottom: 1rem;">
-    <input type="submit" style="background: none; border: none; padding: 0; color: #4183c4; text-decoration: underline; cursor: pointer; font: inherit;" value="{% trans 'Forgotten your password or username?' %}" />
-  </div>
+    <div class="password-reset-link" style="margin-bottom: 1rem;">
+        <input type="submit"
+               style="background: none;
+                      border: none;
+                      padding: 0;
+                      color: #4183c4;
+                      text-decoration: underline;
+                      cursor: pointer;
+                      font: inherit"
+               value="{% trans 'Forgotten your password or username?' %}" />
+    </div>
 {% endblock %}

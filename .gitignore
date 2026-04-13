@@ -3,7 +3,10 @@
 .env
 .coverage
 .DS_Store
+.venv/
+node_modules/
 dist/
-static/
+/static/
+/demo/static/
 media/
 site/

@@ -1,10 +1,11 @@
 import os
-import re
 from pathlib import Path
 from typing import Any
 
-from decouple import config
+from dotenv import load_dotenv
 from invoke import task
+
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 
 @task
@@ -28,6 +29,27 @@ def build(ctx: Any) -> None:
     create_database(ctx)
     create_user(ctx)
     populate_database(ctx)
+
+
+@task
+def lint(ctx: Any) -> None:
+    """Run lint checks."""
+    with ctx.cd(".."):
+        ctx.run("uv run ruff check .")
+        ctx.run("npm run check:js")
+        ctx.run("uv run djlint semantic_admin demo --check")
+        ctx.run(
+            "git ls-files '*.py' | xargs uv run django-upgrade "
+            "--target-version 4.2 --check"
+        )
+
+
+@task
+def format_code(ctx: Any) -> None:
+    """Format JavaScript and Django templates."""
+    with ctx.cd(".."):
+        ctx.run("npm run fix:js")
+        ctx.run("uv run djlint semantic_admin demo --reformat")
 
 
 @task
@@ -79,7 +101,7 @@ def populate_database(ctx: Any) -> None:
         domain = fake.safe_domain_name()
         dotted_name = slug.replace("-", ".")
         email = f"{dotted_name}@{domain}"
-        person = PersonFactory(name=name, slug=slug, url=domain, email=email)
+        person = PersonFactory(name=name, slug=slug, url=f"https://{domain}", email=email)
         people.append(person)
 
     for person in people:
@@ -160,16 +182,15 @@ def get_container_name(ctx: Any, region: str = "asia-northeast1") -> str:
 
 def docker_secrets() -> str:
     """Get docker secrets."""
-    build_args = [
-        f'{secret}="{config(secret)}"' for secret in ("SECRET_KEY", "SENTRY_DSN")
-    ]
+    build_args = [f'{secret}="{os.environ[secret]}"' for secret in ("SECRET_KEY", "SENTRY_DSN")]
     return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
 
 
 def build_semantic_admin(ctx: Any) -> str:
     """Build semantic admin."""
-    result = ctx.run("poetry build").stdout
-    return re.search(r"django_semantic_admin-.*\.whl", result).group()
+    ctx.run("uv build .. --wheel --out-dir ../dist --clear")
+    wheels = sorted((Path("..") / "dist").glob("django_semantic_admin-*.whl"))
+    return wheels[-1].name
 
 
 @task
@@ -178,27 +199,13 @@ def build_container(ctx: Any, region: str = "asia-northeast1") -> None:
     wheel = build_semantic_admin(ctx)
     ctx.run("echo yes | python manage.py collectstatic")
     name = get_container_name(ctx, region=region)
-    # Requirements
-    requirements = [
-        "django-filter",
-        "django-taggit",
-        "gunicorn",
-        "pillow",
-        "python-decouple",
-        "whitenoise",
-    ]
-    # Versions
-    reqs = " ".join(
-        [
-            req.split(";")[0]
-            for req in ctx.run("poetry export --dev --without-hashes").stdout.split(
-                "\n"
-            )
-            if req.split("==")[0] in requirements
-        ]
+    ctx.run(
+        "uv export --project .. --only-group deploy --format requirements.txt "
+        "--no-hashes --no-header --no-emit-project --no-annotate --frozen "
+        "--output-file ../dist/deploy-requirements.txt"
     )
     # Build
-    build_args = {"WHEEL": wheel, "POETRY_EXPORT": reqs}
+    build_args = {"WHEEL": wheel}
     build_args = " ".join(
         [f'--build-arg {key}="{value}"' for key, value in build_args.items()]
     )

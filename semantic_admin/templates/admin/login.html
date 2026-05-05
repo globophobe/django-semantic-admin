@@ -57,7 +57,7 @@
                                 {% endblocktrans %}
                             </p>
                         {% endif %}
-                        <form class="ui form" action="{{ app_path }}" method="post">
+                        <form class="ui form" action="{{ app_path }}" method="post" novalidate>
                             {% csrf_token %}
                             <div class="field">
                                 {{ form.username.errors }}

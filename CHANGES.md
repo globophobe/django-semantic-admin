@@ -1,6 +1,7 @@
 v0.6.9
 ------
-* Added semantic user and group admins
+* Added semantic admin for auth
+* Removed django-import-export
 
 v0.6.8
 ------

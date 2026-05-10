@@ -165,7 +165,7 @@ wheels = [
 
 [[package]]
 name = "django-semantic-admin"
-version = "0.6.8"
+version = "0.6.9"
 source = { editable = "." }
 dependencies = [
     { name = "django", version = "5.2.12", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },

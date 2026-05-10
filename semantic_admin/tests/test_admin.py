@@ -1,6 +1,7 @@
 from django.contrib import admin as django_admin
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -64,6 +65,14 @@ class AdminMediaTests(TestCase):
         self.assertIsNotNone(catalog_url)
         self.assertEqual(content.count(f'src="{catalog_url}"'), 1)
 
+    def test_login_form_disables_native_validation(self):
+        self.client.logout()
+
+        response = self.client.get(reverse("admin:login"))
+        content = response.content.decode()
+
+        self.assertRegex(content, r'<form class="ui form"[^>]* novalidate>')
+
     def test_inline_delete_field_includes_semantic_checkbox_media(self):
         request = self.request_factory.get("/")
         request.user = self.user
@@ -91,6 +100,19 @@ class AdminMediaTests(TestCase):
 
         self.assert_admin_jquery_bootstrap_once(response)
         self.assert_javascript_catalog_once(response)
+
+    def test_password_change_uses_semantic_breadcrumbs(self):
+        request = self.request_factory.get("/")
+        request.user = self.user
+
+        content = render_to_string(
+            "registration/password_change_form.html",
+            request=request,
+        )
+
+        self.assertIn('class="ui large breadcrumb"', content)
+        self.assertIn('class="right chevron icon divider"', content)
+        self.assertNotIn('class="breadcrumbs"', content)
 
     def test_change_form_keeps_non_addable_inline_with_existing_rows(self):
         response = self.client.get(

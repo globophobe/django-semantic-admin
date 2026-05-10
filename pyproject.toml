@@ -21,9 +21,6 @@ dependencies = [
     "django-semantic-forms>=0.1.11",
 ]
 
-[project.optional-dependencies]
-import-export = ["django-import-export<=3.3.9"]
-
 [project.urls]
 Homepage = "https://github.com/globophobe/django-semantic-admin"
 Repository = "https://github.com/globophobe/django-semantic-admin"
@@ -45,7 +42,6 @@ dev = [
     "djlint==1.36.4",
     "django-debug-toolbar==6.3.0",
     "django-filter==25.2",
-    "django-import-export==3.3.9",
     "django-upgrade==1.30.0",
     "django-taggit==6.1.0",
     "factory-boy==3.3.3",

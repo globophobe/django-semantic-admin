@@ -1,3 +1,7 @@
+v0.6.9
+------
+* Added semantic user and group admins
+
 v0.6.8
 ------
 * Upgrade Fomantic v2.9.4 and use Django admin jQuery

@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 class LoginForm(AdminAuthenticationForm):
     """Login form."""
 
+    use_required_attribute = False
+
     error_messages = {
         **AdminAuthenticationForm.error_messages,
         "invalid_login": mark_safe(

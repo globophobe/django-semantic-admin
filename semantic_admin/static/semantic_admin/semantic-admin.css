@@ -64,3 +64,17 @@
 .logout-button:hover {
   color: #fff !important;
 }
+
+.semantic-admin-spacer {
+  position: relative;
+}
+
+.semantic-admin-spacer::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+}
+

@@ -8,6 +8,14 @@
   }
 }
 
+/* SIDEBAR */
+
+.ui.inverted.accordion .title {
+  cursor: pointer;
+}
+
+/* END SIDEBAR */
+
 /* ACTIONS  */
 
 @media (max-width: 767px) {
@@ -68,32 +76,6 @@ div.action-select {
 }
 
 /* END ACTION CHECKBOX */
-
-/* IMPORT EXPORT ACTION */
-
-@media (min-width: 768px) {
-  div.ui.export-action.dropdown {
-    width: 35% !important;
-    margin-left: 1rem !important;
-  }
-
-  label.action-label {
-    margin: auto;
-    padding-right: 1rem;
-  }
-}
-
-@media (max-width: 767px) {
-  div.ui.export-action.dropdown {
-    margin-top: 1rem !important;
-  }
-}
-
-.hidden {
-  display: none !important;
-}
-
-/* END IMPORT EXPORT ACTION */
 
 @media print {
   .noprint {

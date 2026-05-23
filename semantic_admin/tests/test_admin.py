@@ -233,8 +233,8 @@ class AdminMediaTests(TestCase):
         content = response.content.decode()
 
         self.assertIn("semantic-admin-content-header", content)
-        self.assertIn("eight wide field semantic-admin-title-field", content)
-        self.assertEqual(content.count("four wide field noprint semantic-admin-object-tool-field"), 2)
+        self.assertIn("ten wide field semantic-admin-title-field", content)
+        self.assertEqual(content.count("three wide field noprint semantic-admin-object-tool-field"), 2)
         self.assertIn("addlink", content)
         self.assertNotIn("six wide field noprint", content)
         self.assertNotIn("semantic-admin-object-tool-spacer", content)
@@ -244,9 +244,9 @@ class AdminMediaTests(TestCase):
         )
         content = response.content.decode()
 
-        self.assertEqual(content.count("four wide field noprint semantic-admin-object-tool-field"), 2)
+        self.assertEqual(content.count("three wide field noprint semantic-admin-object-tool-field"), 2)
         self.assertIn("historylink", content)
-        self.assertNotIn('<div class="four wide field" style="margin-bottom: 0;"></div>', content)
+        self.assertNotIn('<div class="three wide field" style="margin-bottom: 0;"></div>', content)
 
     def test_change_list_keeps_filterset_media_in_combined_media(self):
         response = self.client.get(reverse("admin:semantic_admin_tests_event_changelist"))

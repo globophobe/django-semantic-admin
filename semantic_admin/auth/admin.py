@@ -39,7 +39,8 @@ def register_semantic_login_form(site: AdminSite | None = None) -> None:
 def register_semantic_password_change_form(site: AdminSite | None = None) -> None:
     """Install the semantic password change form unless the admin site defines a custom form."""
     site = site or admin.site
-    if site.password_change_form in (None, AdminPasswordChangeForm):
+    password_change_form = getattr(site, "password_change_form", AdminPasswordChangeForm)
+    if password_change_form in (None, AdminPasswordChangeForm):
         site.password_change_form = SemanticAdminSitePasswordChangeForm
 
 

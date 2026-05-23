@@ -19,8 +19,8 @@
     {% block object-tools-items %}
         {% if has_add_permission %}
             {% url cl.opts|admin_urlname:'add' as add_url %}
-            <div class="four wide field noprint semantic-admin-object-tool-field"></div>
-            <div class="four wide field noprint semantic-admin-object-tool-field">
+            <div class="three wide field noprint semantic-admin-object-tool-field"></div>
+            <div class="three wide field noprint semantic-admin-object-tool-field">
                 <a class="ui green fluid button addlink"
                    href="{% add_preserved_filters add_url is_popup to_field %}">
                     {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}

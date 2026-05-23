@@ -1,3 +1,10 @@
+/*
+ * Semantic Admin component styles.
+ *
+ * Put rules here when they style templates or classes owned by django-semantic-admin.
+ * Compatibility fixes for Django admin generated markup belong in unsemantic.css.
+ */
+
 @media only screen {
   /* Sidebar Layout */
   #app-main > .pusher > .full.height {
@@ -65,16 +72,43 @@
   color: #fff !important;
 }
 
-.semantic-admin-spacer {
-  position: relative;
+.semantic-admin-content-header {
+  align-items: center;
 }
 
-.semantic-admin-spacer::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 1px;
+.semantic-admin-content-header > .semantic-admin-title-field {
+  min-width: 0;
 }
 
+@media (max-width: 767px) {
+  .semantic-admin-content-header {
+    flex-wrap: wrap;
+  }
+
+  .semantic-admin-content-header > .semantic-admin-title-field,
+  .semantic-admin-content-header > .semantic-admin-object-tool-field {
+    flex: 1 1 100% !important;
+  }
+}
+
+.semantic-help-text {
+  margin-top: 0.25rem;
+}
+
+.semantic-help-text > .ui.bulleted.list,
+.semantic-error-list.ui.bulleted.list {
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+.semantic-error-list {
+  color: #9f3a38;
+}
+
+.ui.error.message > .semantic-error-list {
+  margin-top: 0;
+}
+
+.password-reset-link {
+  margin-bottom: 1em;
+}

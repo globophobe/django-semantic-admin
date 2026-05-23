@@ -253,6 +253,37 @@ class AdminMediaTests(TestCase):
 
         self.assertContains(response, "semantic_forms/semanticDropdown.js")
 
+    def test_awesomesearch_filterset_uses_four_wide_slots(self):
+        response = self.client.get(reverse("admin:semantic_admin_tests_event_changelist"))
+        content = response.content.decode()
+
+        self.assertIn("semantic-admin-awesome-search-row", content)
+        self.assertIn('class="four wide field"', content)
+        self.assertIn("semantic-admin-awesome-search-spacer", content)
+        self.assertNotIn("computer only field", content)
+
+    def test_awesomesearch_can_hide_changelist_text_search_without_removing_search_fields(self):
+        model_admin = django_admin.site._registry[Event]
+        original = model_admin.show_search_field
+        model_admin.show_search_field = False
+        try:
+            response = self.client.get(
+                reverse("admin:semantic_admin_tests_event_changelist"),
+                {"q": "does-not-match"},
+            )
+        finally:
+            model_admin.show_search_field = original
+
+        content = response.content.decode()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Launch Day", content)
+        self.assertIn('name="category"', content)
+        self.assertNotIn('id="searchbar"', content)
+        self.assertNotIn('name="q"', content)
+        self.assertEqual(content.count("semantic-admin-awesome-search-spacer"), 2)
+        self.assertEqual(model_admin.search_fields, ("name",))
+
     def test_change_form_uses_semantic_widgets_for_model_fields(self):
         request = self.request_factory.get("/")
         request.user = self.user

@@ -29,18 +29,21 @@
         {% if change %}
             {% if not is_popup %}
                 {% block object-tools-items %}
-                    {% if not has_absolute_url %}
-                        <div class="four wide field" style="margin-bottom: 0;"></div>
-                    {% endif %}
-                    <div class="six wide field noprint">
-                        {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
-                        <a class="ui primary basic fluid button historylink"
-                           href="{% add_preserved_filters history_url %}">{% trans "History" %}</a>
-                    </div>
+                    {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
                     {% if has_absolute_url %}
-                        <div class="four wide field noprint">
+                        <div class="four wide field noprint semantic-admin-object-tool-field">
+                            <a class="ui primary basic fluid button historylink"
+                               href="{% add_preserved_filters history_url %}">{% trans "History" %}</a>
+                        </div>
+                        <div class="four wide field noprint semantic-admin-object-tool-field">
                             <a class="ui primary basic fluid button viewsitelink"
                                href="{{ absolute_url }}">{% trans "View on site" %}</a>
+                        </div>
+                    {% else %}
+                        <div class="four wide field noprint semantic-admin-object-tool-field"></div>
+                        <div class="four wide field noprint semantic-admin-object-tool-field">
+                            <a class="ui primary basic fluid button historylink"
+                               href="{% add_preserved_filters history_url %}">{% trans "History" %}</a>
                         </div>
                     {% endif %}
                 {% endblock %}

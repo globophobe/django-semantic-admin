@@ -4,7 +4,7 @@ from django.contrib import admin, messages
 from django.contrib.admin import helpers
 from django.contrib.admin.options import IncorrectLookupParameters, csrf_protect_m
 from django.contrib.admin.utils import model_ngettext
-from django.contrib.admin.views.main import ChangeList
+from django.contrib.admin.views.main import SEARCH_VAR, ChangeList
 from django.core.exceptions import PermissionDenied
 from django.db import router, transaction
 from django.db.models import QuerySet
@@ -74,6 +74,8 @@ class AwesomeSearchChangeList(ChangeList):
 
 
 class AwesomeSearchModelAdmin(admin.ModelAdmin):
+    show_search_field = True
+
     """
     Subclass based on https://djangosnippets.org/snippets/2322/ allowing
     advanced filtering with https://github.com/alex/django-filter
@@ -85,6 +87,10 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
             return self.filter_class
         elif hasattr(self, "filterset_class"):
             return self.filterset_class
+
+    def get_show_search_field(self, request: HttpRequest) -> bool:
+        """Return whether changelist free-text search should be shown."""
+        return bool(self.show_search_field)
 
     def get_changelist(
         self, request: HttpRequest, **kwargs
@@ -106,6 +112,11 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         # To remove filterset params from request, temporarily make
         # request.GET mutable
         request.GET._mutable = True
+        self.show_search_field = self.get_show_search_field(request)
+        if not self.show_search_field and SEARCH_VAR in request.GET:
+            del request.GET[SEARCH_VAR]
+            if SEARCH_VAR in self.awesome_preserved_filters:
+                del self.awesome_preserved_filters[SEARCH_VAR]
         if self.get_filterset_class():
             # Reset filterset params every request
             self.get_filterset_params(request)

@@ -95,10 +95,18 @@
   margin-top: 0.25rem;
 }
 
-.semantic-help-text > .ui.bulleted.list,
+.semantic-help-text > .ui.bulleted.list {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .semantic-error-list.ui.bulleted.list {
   margin-top: 0.25rem;
   margin-bottom: 0;
+}
+
+.semantic-error-list.ui.bulleted.list + .semantic-help-text {
+  margin-top: calc(0.25rem + 2.5px);
 }
 
 .semantic-error-list {
@@ -107,6 +115,8 @@
 
 .ui.error.message > .semantic-error-list {
   margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .password-reset-link {

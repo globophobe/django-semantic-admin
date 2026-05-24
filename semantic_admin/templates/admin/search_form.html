@@ -1,9 +1,11 @@
 {% load i18n admin_urls static awesomesearch semantic_utils %}
-{% if cl.search_fields or cl.model_admin.filterset.form.fields %}
+{% awesomesearch_show_search_form cl as show_search_form %}
+{% show_search_field cl as show_search_field %}
+{% if show_search_form %}
     <div class="ui secondary segment">
         <div class="ui form">
             <form action="" method="get" role="search">
-                {% if cl.search_fields %}
+                {% if show_search_field %}
                     {% for pair in cl.params.items %}
                         {% if pair.0 != search_var %}
                             <input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}" />
@@ -20,7 +22,7 @@
                     {% endif %}
                 </a>)
             {% endif %}
-            {% if cl.search_help_text %}
+            {% if show_search_field and cl.search_help_text %}
                 <div class="help" id="searchbar_helptext">{{ cl.search_help_text }}</div>
             {% endif %}
         </form>

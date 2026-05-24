@@ -19,6 +19,7 @@ from django.forms.models import (
 from django.http import HttpRequest, HttpResponse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
+from semantic_forms.fields import SemanticModelMultipleChoiceField
 from semantic_forms.widgets import (
     SemanticCheckboxInput,
     SemanticDateInput,
@@ -29,7 +30,6 @@ from semantic_forms.widgets import (
     SemanticNumberInput,
     SemanticRadioSelect,
     SemanticSelect,
-    SemanticSelectMultiple,
     SemanticTextarea,
     SemanticTextInput,
     SemanticTimeInput,
@@ -196,8 +196,7 @@ class SemanticBaseModelAdmin(BaseModelAdmin):
                 kwargs["queryset"] = queryset
 
         # BEGIN CUSTOMIZATION
-        if "widget" not in kwargs:
-            kwargs["widget"] = SemanticSelectMultiple()
+        kwargs.setdefault("form_class", SemanticModelMultipleChoiceField)
         # END CUSTOMIZATION
 
         form_field = db_field.formfield(**kwargs)

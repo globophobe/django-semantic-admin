@@ -1,10 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "includes": [
-      "semantic_admin/static/import_export/*.js",
-      "semantic_admin/static/semantic_admin/**/*.js"
-    ]
+    "includes": ["semantic_admin/static/semantic_admin/**/*.js"]
   },
   "formatter": {
     "indentStyle": "space",

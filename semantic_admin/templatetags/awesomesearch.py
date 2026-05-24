@@ -4,14 +4,26 @@ from django.utils.translation import gettext_lazy as _
 
 BLANK_LABEL = "<label>&nbsp;</label>"
 FIELD = '<div class="field">{}</div>'
-COMPUTER_FIELD = '<div class="computer only field"></div>'
+FILTER_FIELD = '<div class="four wide field">{}</div>'
+SPACER_FIELD = '<div class="four wide field semantic-admin-awesome-search-spacer"></div>'
 
 register = template.Library()
 
 
+def should_show_search_field(cl):
+    return bool(cl.search_fields and getattr(cl.model_admin, "show_search_field", True))
+
+
+def should_show_search_form(cl):
+    has_filter_fields = False
+    if hasattr(cl.model_admin, "filterset"):
+        has_filter_fields = bool(cl.model_admin.filterset.form.fields)
+    return should_show_search_field(cl) or has_filter_fields
+
+
 def format_fields(cl, fields):
     html = ""
-    row = '<div class="equal width fields">{}</div>'
+    row = '<div class="fields semantic-admin-awesome-search-row">{}</div>'
     r = []
     for index, field in enumerate(fields):
         r.append(field)
@@ -20,9 +32,9 @@ def format_fields(cl, fields):
         if is_divisible_by_4:
             html += row.format("".join(r))
             r = []
-    # Remaining fields.
+    # Remaining fields. Keep the search action as the fourth slot.
     while len(r) < 3:
-        r.append(COMPUTER_FIELD)
+        r.append(SPACER_FIELD)
     search_button = format_search_button(cl)
     r.append(search_button)
     html += row.format("".join(r))
@@ -31,7 +43,7 @@ def format_fields(cl, fields):
 
 def format_search_field(context, cl):
     field = ""
-    if len(cl.search_fields):
+    if should_show_search_field(cl):
         label = _("Search")
         search_var = context["search_var"]
         search_label = f'<label for="searchbar">{label}: </label>'
@@ -58,7 +70,8 @@ def format_search_field(context, cl):
                     </button>
                 </div>
             """
-        return FIELD.format(field)
+        wrapper = FILTER_FIELD if hasattr(cl.model_admin, "filterset") else FIELD
+        return wrapper.format(field)
     else:
         return ""
 
@@ -73,7 +86,7 @@ def format_search_button(cl):
     """
     if hasattr(cl.model_admin, "filterset"):
         html = f"""
-            <div class="field">
+            <div class="four wide field">
                 {BLANK_LABEL}{search_button}
             </div>
         """
@@ -82,12 +95,24 @@ def format_search_button(cl):
     return html
 
 
+@register.simple_tag
+def show_search_field(cl):
+    return should_show_search_field(cl)
+
+
+@register.simple_tag
+def awesomesearch_show_search_form(cl):
+    return should_show_search_form(cl)
+
+
 @register.simple_tag(takes_context=True)
 def search_fields(context, cl):
     html = ""
     search_field = format_search_field(context, cl)
     if hasattr(cl.model_admin, "filterset"):
-        fields = [search_field]
+        fields = []
+        if search_field:
+            fields.append(search_field)
         filter_field = """
             <label for="{field_id}">{label}: </label>
             {field}{errors}
@@ -110,7 +135,7 @@ def search_fields(context, cl):
                     errors=field.errors,
                 )
                 f = filter_field.format(**format_dict)
-            f = FIELD.format(f)
+            f = FILTER_FIELD.format(f)
             fields.append(f)
         try:
             from semantic_admin.filters import SemanticExcludeAllFilterSet
@@ -135,7 +160,7 @@ def search_fields(context, cl):
                         <label for="exclude">{exclude_label}</label>
                     </div>
                 """
-                f = FIELD.format(exclude_checkbox)
+                f = FILTER_FIELD.format(exclude_checkbox)
                 fields.append(f)
         html += format_fields(cl, fields)
     else:

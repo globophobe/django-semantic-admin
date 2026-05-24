@@ -1,3 +1,8 @@
+v0.6.9
+------
+* Added semantic admin for auth
+* Removed django-import-export
+
 v0.6.8
 ------
 * Upgrade Fomantic v2.9.4 and use Django admin jQuery

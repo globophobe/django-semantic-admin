@@ -1,3 +1,11 @@
+/*
+ * Compatibility styles for Django admin generated markup.
+ *
+ * Put rules here when selectors target Django admin legacy classes, generated formset
+ * rows, action markup, or other non-semantic structures adapted to Fomantic UI.
+ */
+
+.hidden,
 .empty-form {
   display: none !important;
 }
@@ -8,15 +16,44 @@
   }
 }
 
+/* SIDEBAR */
+
+.ui.inverted.accordion .title {
+  cursor: pointer;
+}
+
+/* END SIDEBAR */
+
 /* ACTIONS  */
+
+div.actions .action-label {
+  align-self: center;
+  margin-right: 0.75rem !important;
+}
+
+div.actions .action-submit-field {
+  display: flex !important;
+  align-items: center;
+  padding-right: 0 !important;
+}
+
+div.actions .action-submit-field > .action-counter {
+  margin-left: 0.75rem;
+}
 
 @media (max-width: 767px) {
   div.actions {
     margin-bottom: 0 !important;
   }
 
-  div.actions > label {
+  div.actions .action-label {
+    margin-right: 0 !important;
     margin-bottom: 0.28571429rem !important; /* Same as non-inline form */
+  }
+
+  div.actions .action-select-field,
+  div.actions .action-submit-field {
+    display: block !important;
   }
 
   div.actions > div.field {
@@ -33,7 +70,7 @@
 }
 
 @media (min-width: 768px) {
-  div.actions > div.field {
+  div.actions > div.field + div.field {
     margin-left: 1rem !important;
   }
 }
@@ -68,32 +105,6 @@ div.action-select {
 }
 
 /* END ACTION CHECKBOX */
-
-/* IMPORT EXPORT ACTION */
-
-@media (min-width: 768px) {
-  div.ui.export-action.dropdown {
-    width: 35% !important;
-    margin-left: 1rem !important;
-  }
-
-  label.action-label {
-    margin: auto;
-    padding-right: 1rem;
-  }
-}
-
-@media (max-width: 767px) {
-  div.ui.export-action.dropdown {
-    margin-top: 1rem !important;
-  }
-}
-
-.hidden {
-  display: none !important;
-}
-
-/* END IMPORT EXPORT ACTION */
 
 @media print {
   .noprint {

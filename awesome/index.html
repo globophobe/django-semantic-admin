@@ -120,21 +120,6 @@ class DemoAdmin(SemanticModelAdmin):
     def semantic_autocomplete(self):
         return self.get_img()
 </code></pre>
-<ol start="3"><li>Optional integration with <a href="https://github.com/django-import-export/django-import-export">django-import-export</a>:</li></ol>
-
-<p><img src="https://raw.githubusercontent.com/globophobe/django-semantic-admin/master/docs/screenshots/django-import-export.png" width="670" alt="django-import-export" /></p>
-<p>To enable this awesome feature, instead of <code>ImportExportModelAdmin</code>, etc:</p>
-<pre><code class="language-python">from import_export.admin import ImportExportModelAdmin 
-
-class ExampleImportExportAdmin(ImportExportModelAdmin):
-    pass
-</code></pre>
-<p>Inherit from their <code>Semantic</code> equivalents:</p>
-<pre><code class="language-python">from semantic_admin.contrib.import_export.admin import SemanticImportExportModelAdmin
-
-class ExampleImportExportAdmin(SemanticImportExportModelAdmin):
-    pass
-</code></pre>
               
             </div>
           </div><footer>

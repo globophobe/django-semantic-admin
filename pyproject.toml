@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "django-semantic-admin"
-version = "0.6.9"
+version = "0.7.0"
 description = "Django Semantic UI Admin theme"
 readme = "README.md"
 requires-python = ">=3.10"

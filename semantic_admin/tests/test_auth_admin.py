@@ -176,6 +176,7 @@ class AuthAdminTests(TestCase):
         self.assertIn('class="ui form"', content)
         self.assertIn('type="text"', content)
         self.assertIn('autocomplete="email"', content)
+        self.assertIn('<label for="id_email" class="required">Email address:</label>', content)
         self.assertNotIn('type="email"', content)
         self.assertNotRegex(content, r"<(?:input|select|textarea)[^>]*\srequired(?:[=>\s]|$)")
         self.assertTrue(SemanticPasswordResetForm.base_fields["email"].required)

@@ -1,10 +1,12 @@
 {% extends "semantic_forms/base.html" %}
-{% load i18n semantic_filters %}
+{% load i18n static semantic_filters %}
 {% block title %}
     {% trans "Login" %} | {{ site_title|default:_("Django site admin") }}
 {% endblock %}
 {% block extrastyle %}
     {{ form.media }}
+    <link rel="stylesheet"
+          href="{% static "semantic_admin/semantic-admin.css" %}" />
     <style>
   html, body {
       margin: 0;
@@ -24,16 +26,6 @@
   #login {
     min-width: 25rem;
     margin: auto;
-  }
-
-  .semantic-error-list.ui.bulleted.list {
-    margin-top: 0.25rem;
-    margin-bottom: 0;
-    color: #9f3a38;
-  }
-
-  .ui.error.message > .semantic-error-list {
-    margin-top: 0;
   }
 
   .password-reset-link {

@@ -1,7 +1,9 @@
 {% extends "semantic_forms/base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{{ title }}{% endblock %}
 {% block extrastyle %}
+    <link rel="stylesheet"
+          href="{% static "semantic_admin/semantic-admin.css" %}" />
     <style>
   html, body {
       margin: 0;

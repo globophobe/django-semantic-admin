@@ -31,7 +31,7 @@ Semantic opinions about fieldset and legend tags https://github.com/Semantic-Org
                     {% endif %}
                     {% if field.is_checkbox %}</div>{% endif %}
                 {% if field.field.help_text %}
-                    <div class="help">{{ field.field.help_text|safe }}</div>
+                    <div class="help">{{ field.field.help_text|semantic_help_text }}</div>
                 {% endif %}
             </div>
         {% endfor %}

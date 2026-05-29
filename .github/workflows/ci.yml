@@ -15,16 +15,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: npm
 
       - uses: astral-sh/setup-uv@v6
         with:
-          cache-dependency-glob: pyproject.toml
+          cache-dependency-glob: uv.lock
 
       - name: Install dependencies
         run: |
-          uv sync --group dev
+          uv sync --group dev --locked
           npm ci
 
       - name: Ruff
@@ -38,6 +38,9 @@ jobs:
 
       - name: Django Upgrade
         run: git ls-files '*.py' | xargs uv run django-upgrade --target-version 4.2 --check
+
+      - name: Build
+        run: uv build
 
   test:
     runs-on: ubuntu-latest
@@ -61,11 +64,11 @@ jobs:
 
       - uses: astral-sh/setup-uv@v6
         with:
-          cache-dependency-glob: pyproject.toml
+          cache-dependency-glob: uv.lock
 
       - name: Install dependencies
         run: |
-          uv sync --group dev
+          uv sync --group dev --locked
           uv pip install "django==${{ matrix.django-version }}"
 
       - name: Run tests

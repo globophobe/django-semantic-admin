@@ -37,7 +37,7 @@ jobs:
         run: uv run djlint semantic_admin demo --check
 
       - name: Django Upgrade
-        run: git ls-files '*.py' | xargs uv run django-upgrade --target-version 4.2 --check
+        run: git ls-files '*.py' | xargs uv run django-upgrade --target-version 5.2 --check
 
       - name: Build
         run: uv build
@@ -49,7 +49,7 @@ jobs:
       matrix:
         include:
           - python-version: "3.10"
-            django-version: "4.2.*"
+            django-version: "5.2.*"
           - python-version: "3.11"
             django-version: "5.2.*"
           - python-version: "3.12"

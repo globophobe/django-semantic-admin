@@ -30,7 +30,7 @@ uv run djlint semantic_admin demo --check
 Run Django upgrade compatibility check against the minimum supported version:
 
 ```bash
-git ls-files '*.py' | xargs uv run django-upgrade --target-version 4.2 --check
+git ls-files '*.py' | xargs uv run django-upgrade --target-version 5.2 --check
 ```
 
 Run the package test suite:

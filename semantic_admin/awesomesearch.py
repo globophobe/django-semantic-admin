@@ -320,7 +320,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
 
         request.current_app = self.admin_site.name
 
-        # BEGIN CUSTOMIZATION - semantic header extension.
+        # BEGIN CUSTOMIZATION
         if hasattr(self, "semantic_header"):
             context["semantic_header"] = self.semantic_header(cl.result_list)
         # END CUSTOMIZATION
@@ -364,7 +364,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         return ""
 
     def get_filterset_params(self, request: HttpRequest) -> None:
-        """Move FilterSet params from request.GET into request-local state."""
+        """Copy FilterSet params from request.GET"""
         filterset_class = self.get_filterset_class()
         if filterset_class:
             filterset = filterset_class(request=request)

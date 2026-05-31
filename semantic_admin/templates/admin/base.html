@@ -11,7 +11,10 @@
         <!-- Style -->
         <link rel="stylesheet"
               type="text/css"
-              href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.css">
+              href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.css"
+              integrity="sha384-b5SW2bA5CBv/WeySOaDac2n4fnB+yd1vfmnWhES5vUjF4ZGsxsNt6sUsq75J1gOa"
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer">
         <link rel="stylesheet"
               href="{% static "semantic_admin/semantic-admin.css" %}" />
         <link rel="stylesheet" href="{% static "semantic_admin/unsemantic.css" %}" />
@@ -19,11 +22,6 @@
         {% block responsive %}
             <meta name="viewport"
                   content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
-            {% if LANGUAGE_BIDI %}
-                <link rel="stylesheet"
-                      type="text/css"
-                      href="{% static "semantic_admin/rtl.css" %}" />
-            {% endif %}
         {% endblock %}
         <!-- END Style -->
         <!-- Script -->
@@ -42,7 +40,10 @@
   }
 })(window);
         </script>
-        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js"
+                integrity="sha384-7q6zpNgldX13QoAOADSjVDfLYLoyGIFtXsqNEH+GbudZMHYj4WkexEnJsuNh/0Ph"
+                crossorigin="anonymous"
+                referrerpolicy="no-referrer"></script>
         <script src="{% static 'semantic_admin/semanticWidgets.js' %}"></script>
         <!-- END Script -->
         {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}

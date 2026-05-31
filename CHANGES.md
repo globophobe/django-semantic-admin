@@ -1,3 +1,7 @@
+v0.7.0
+------
+* Require Django >= 5.2
+
 v0.6.9
 ------
 * Added semantic admin for auth

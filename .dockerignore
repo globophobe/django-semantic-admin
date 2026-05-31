@@ -1,0 +1,14 @@
+.env
+.env.*
+.git
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+node_modules
+build
+*.egg-info

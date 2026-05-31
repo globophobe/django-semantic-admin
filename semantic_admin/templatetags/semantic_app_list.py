@@ -73,7 +73,10 @@ def get_app_list(context):
 def get_admin_site(current_app):
     try:
         resolver_match = resolve(reverse("%s:index" % current_app))
-        for func_closure in resolver_match.func.func_closure:
+        admin_site = getattr(resolver_match.func, "admin_site", None)
+        if isinstance(admin_site, AdminSite):
+            return admin_site
+        for func_closure in getattr(resolver_match.func, "__closure__", ()) or ():
             if isinstance(func_closure.cell_contents, AdminSite):
                 return func_closure.cell_contents
     except Exception:

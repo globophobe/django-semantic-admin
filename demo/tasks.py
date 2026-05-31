@@ -32,27 +32,6 @@ def build(ctx: Any) -> None:
 
 
 @task
-def lint(ctx: Any) -> None:
-    """Run lint checks."""
-    with ctx.cd(".."):
-        ctx.run("uv run ruff check .")
-        ctx.run("npm run check:js")
-        ctx.run("uv run djlint semantic_admin demo --check")
-        ctx.run(
-            "git ls-files '*.py' | xargs uv run django-upgrade "
-            "--target-version 4.2 --check"
-        )
-
-
-@task
-def format_code(ctx: Any) -> None:
-    """Format JavaScript and Django templates."""
-    with ctx.cd(".."):
-        ctx.run("npm run fix:js")
-        ctx.run("uv run djlint semantic_admin demo --reformat")
-
-
-@task
 def create_database(ctx: Any) -> None:
     """Create the database."""
     ctx.run("python manage.py makemigrations")
@@ -180,12 +159,6 @@ def get_container_name(ctx: Any, region: str = "asia-northeast1") -> str:
     return f"{region}-docker.pkg.dev/{project_id}/{name}/{name}"
 
 
-def docker_secrets() -> str:
-    """Get docker secrets."""
-    build_args = [f'{secret}="{os.environ[secret]}"' for secret in ("SECRET_KEY", "SENTRY_DSN")]
-    return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
-
-
 def build_semantic_admin(ctx: Any) -> str:
     """Build semantic admin."""
     ctx.run("uv build .. --wheel --out-dir ../dist --clear")
@@ -214,7 +187,6 @@ def build_container(ctx: Any, region: str = "asia-northeast1") -> None:
             [
                 "docker build",
                 build_args,
-                docker_secrets(),
                 f"--no-cache --file=Dockerfile --tag={name} .",
             ]
         )

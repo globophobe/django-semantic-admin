@@ -100,15 +100,6 @@
   margin-bottom: 0;
 }
 
-.semantic-error-list.ui.bulleted.list {
-  margin-top: 0.25rem;
-  margin-bottom: 0;
-}
-
-.semantic-error-list.ui.bulleted.list + .semantic-help-text {
-  margin-top: calc(0.25rem + 2.5px);
-}
-
 .semantic-error-list {
   color: #9f3a38;
 }

@@ -24,20 +24,36 @@ if TYPE_CHECKING:
     except ImportError:
         pass
 
+FILTERSET = "semantic_filterset"
+FILTERSET_PARAMS = "semantic_filterset_params"
+PRESERVED_FILTERS = "semantic_preserved_filters"
+SHOW_SEARCH_FIELD = "semantic_show_search_field"
+
 
 class AwesomeSearchChangeList(ChangeList):
     """Awesome search change list"""
 
     def __init__(self, *args, **kwargs) -> None:
         """Initialize"""
+        request = args[0] if args else None
+        if request is not None:
+            # Available to methods Django may call during ChangeList setup.
+            self.set_request_state(request)
         super().__init__(*args, **kwargs)
-        try:
-            request = args[0]
-        except IndexError:
-            pass
-        else:
-            # WTF? Wasn't this already set.
+        if request is not None:
+            # get_search_results() attaches the bound FilterSet during setup.
+            self.set_request_state(request)
+            # Preserve Django's unfiltered changelist count after AwesomeSearch
+            # applies request-scoped filtering.
             self.full_result_count = self.model_admin.get_queryset(request).count()
+
+    def set_request_state(self, request: HttpRequest) -> None:
+        """Copy request state onto the ChangeList."""
+        self.semantic_filterset = getattr(request, FILTERSET, None)
+        self.semantic_filterset_params = getattr(request, FILTERSET_PARAMS, {})
+        self.semantic_show_search_field = getattr(
+            request, SHOW_SEARCH_FIELD, True
+        )
 
     def get_query_string(
         self, new_params: dict | None = None, remove: str | None = None
@@ -53,7 +69,7 @@ class AwesomeSearchChangeList(ChangeList):
 
     def get_filterset_params(self) -> str:
         """Get filterset params"""
-        filterset_params = getattr(self.model_admin, "filterset_params", None)
+        filterset_params = self.semantic_filterset_params
         params = ""
         if filterset_params:
             for key in filterset_params:
@@ -103,25 +119,32 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         self, request: HttpRequest, extra_context: dict | None = None, **kwargs
     ) -> HttpResponse:
         """
-        FilterSet params must be removed from request within this function, or
-        IncorrectLookupParameters exception will be raised.
+        Django ModelAdmin.changelist_view with AwesomeSearch hooks.
+
+        FilterSet params are removed before Django builds the ChangeList, or
+        IncorrectLookupParameters is raised for non-model lookup names.
         """
-        # BEGIN CUSTOMIZATION
-        # Copy request.GET for preserved filters.
-        self.awesome_preserved_filters = request.GET.copy()
-        # To remove filterset params from request, temporarily make
-        # request.GET mutable
+        # Keep the unmarked body aligned with supported Django versions
+        # from the CI matrix.
+        # BEGIN CUSTOMIZATION - AwesomeSearch request state.
+        setattr(request, PRESERVED_FILTERS, request.GET.copy())
+
+        # Temporarily make request.GET mutable so FilterSet params and hidden
+        # search params can be stripped before Django validates lookups.
+        mutable = request.GET._mutable
         request.GET._mutable = True
-        self.show_search_field = self.get_show_search_field(request)
-        if not self.show_search_field and SEARCH_VAR in request.GET:
-            del request.GET[SEARCH_VAR]
-            if SEARCH_VAR in self.awesome_preserved_filters:
-                del self.awesome_preserved_filters[SEARCH_VAR]
-        if self.get_filterset_class():
-            # Reset filterset params every request
-            self.get_filterset_params(request)
-        # Restore immutability of request.GET
-        request.GET._mutable = False
+        try:
+            show_search_field = self.get_show_search_field(request)
+            setattr(request, SHOW_SEARCH_FIELD, show_search_field)
+            preserved_filters = getattr(request, PRESERVED_FILTERS)
+            if not show_search_field and SEARCH_VAR in request.GET:
+                del request.GET[SEARCH_VAR]
+                if SEARCH_VAR in preserved_filters:
+                    del preserved_filters[SEARCH_VAR]
+            if self.get_filterset_class():
+                self.get_filterset_params(request)
+        finally:
+            request.GET._mutable = mutable
         # END CUSTOMIZATION
 
         from django.contrib.admin.views.main import ERROR_FLAG
@@ -263,10 +286,12 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         else:
             action_form = None
 
-        if filterset := getattr(self, "filterset", None):
+        # BEGIN CUSTOMIZATION - include AwesomeSearch and i18n widget media.
+        if filterset := getattr(request, FILTERSET, None):
             media += filterset.form.media
 
         media = get_javascript_catalog_media() + media
+        # END CUSTOMIZATION
 
         selection_note_all = ngettext(
             "%(total_count)s selected", "All %(total_count)s selected", cl.result_count
@@ -318,14 +343,19 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         if self.preserve_filters and match:
             opts = self.model._meta
             current_url = "%s:%s" % (match.app_name, match.url_name)  # noqa: UP031
-            changelist_url = "admin:%s_%s_changelist" % (  # noqa: UP031
+            # BEGIN CUSTOMIZATION - support custom AdminSite names.
+            changelist_url = "%s:%s_%s_changelist" % (  # noqa: UP031
+                self.admin_site.name,
                 opts.app_label,
                 opts.model_name,
             )
+            # END CUSTOMIZATION
             if current_url == changelist_url:
-                # BEGIN CUSTOMIZATION #
-                preserved_filters = self.awesome_preserved_filters.urlencode()
-                # END CUSTOMIZATION #
+                # BEGIN CUSTOMIZATION - preserve the pre-stripped querystring.
+                preserved_filters = getattr(
+                    request, PRESERVED_FILTERS, request.GET
+                ).urlencode()
+                # END CUSTOMIZATION
             else:
                 preserved_filters = request.GET.get("_changelist_filters")
 
@@ -334,29 +364,39 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         return ""
 
     def get_filterset_params(self, request: HttpRequest) -> None:
-        """Get filterset params"""
+        """Copy FilterSet params from request.GET"""
         filterset_class = self.get_filterset_class()
         if filterset_class:
             filterset = filterset_class(request=request)
             if hasattr(filterset, "get_initial"):
-                self.filterset_params = filterset.get_initial()
+                filterset_params = filterset.get_initial()
             else:
-                self.filterset_params = {}
+                filterset_params = {}
             form = filterset.form
             for field in form.fields:
                 # Is it a RangeField, etc?
                 if hasattr(form.fields[field], "fields"):
                     for index, _ in enumerate(form.fields[field].fields):
                         param = "{}_{}".format(field, index)
-                        self.set_filterset_param(request, form, field, param)
+                        self.set_filterset_param(
+                            request, form, field, param, filterset_params
+                        )
                 else:
                     param = field
-                    self.set_filterset_param(request, form, field, param)
+                    self.set_filterset_param(
+                        request, form, field, param, filterset_params
+                    )
+            setattr(request, FILTERSET_PARAMS, filterset_params)
 
     def set_filterset_param(
-        self, request: HttpRequest, form: Form, field: str, param: str
+        self,
+        request: HttpRequest,
+        form: Form,
+        field: str,
+        param: str,
+        filterset_params: dict,
     ) -> None:
-        """Set filterset param"""
+        """Move one FilterSet param from request.GET to filterset_params."""
         is_multiple = isinstance(form.fields[field], MultipleChoiceField) or isinstance(
             form.fields[field], ModelMultipleChoiceField
         )
@@ -368,7 +408,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
             value = request.GET.get(param, None)
         # Set value
         if value:
-            self.filterset_params[param] = value
+            filterset_params[param] = value
         # Delete param every request
         if param in request.GET:
             del request.GET[param]
@@ -384,12 +424,14 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
             request, queryset, search_term
         )
         filterset_class = self.get_filterset_class()
-        if filterset_class and hasattr(self, "filterset_params"):
+        filterset_params = getattr(request, FILTERSET_PARAMS, None)
+        if filterset_class and filterset_params is not None:
             kwargs = {
                 "request": request,
                 "queryset": queryset,
                 "passed_validation": True,
             }
-            self.filterset = filterset_class(self.filterset_params, **kwargs)
-            queryset = self.filterset.qs
+            filterset = filterset_class(filterset_params, **kwargs)
+            setattr(request, FILTERSET, filterset)
+            queryset = filterset.qs
         return queryset, may_have_duplicates

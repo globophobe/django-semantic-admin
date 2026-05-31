@@ -43,7 +43,7 @@ The logo may be changed by overriding `menu.html`
 <a class="item" href="{% url 'admin:index' %}">
   <img 
     title="Magic! Ponies! Django! Whee!" 
-    src="http://media.djangopony.com/img/small/badge.png" 
+    src="https://media.djangopony.com/img/small/badge.png" 
     alt="{{ site_header|default:_('Django administration') }}" />
 </a>
 {% endblock %}

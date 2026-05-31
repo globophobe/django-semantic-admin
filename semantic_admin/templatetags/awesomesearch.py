@@ -1,4 +1,5 @@
 from django import forms, template
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
@@ -10,15 +11,31 @@ SPACER_FIELD = '<div class="four wide field semantic-admin-awesome-search-spacer
 register = template.Library()
 
 
+def get_filterset(cl):
+    return getattr(cl, "semantic_filterset", getattr(cl.model_admin, "filterset", None))
+
+
+def has_filterset(cl):
+    return get_filterset(cl) is not None
+
+
 def should_show_search_field(cl):
-    return bool(cl.search_fields and getattr(cl.model_admin, "show_search_field", True))
+    show_search_field = getattr(
+        cl,
+        "semantic_show_search_field",
+        getattr(cl.model_admin, "show_search_field", True),
+    )
+    return bool(cl.search_fields and show_search_field)
 
 
 def should_show_search_form(cl):
-    has_filter_fields = False
-    if hasattr(cl.model_admin, "filterset"):
-        has_filter_fields = bool(cl.model_admin.filterset.form.fields)
+    filterset = get_filterset(cl)
+    has_filter_fields = bool(filterset and filterset.form.fields)
     return should_show_search_field(cl) or has_filter_fields
+
+
+def join_html(items):
+    return mark_safe("".join(str(item) for item in items))
 
 
 def format_fields(cl, fields):
@@ -30,69 +47,93 @@ def format_fields(cl, fields):
         i = index + 1
         is_divisible_by_4 = not i % 4
         if is_divisible_by_4:
-            html += row.format("".join(r))
+            html += format_html(row, join_html(r))
             r = []
     # Remaining fields. Keep the search action as the fourth slot.
     while len(r) < 3:
         r.append(SPACER_FIELD)
     search_button = format_search_button(cl)
     r.append(search_button)
-    html += row.format("".join(r))
+    html += format_html(row, join_html(r))
     return html
 
 
-def format_search_field(context, cl):
-    field = ""
-    if should_show_search_field(cl):
-        label = _("Search")
-        search_var = context["search_var"]
-        search_label = f'<label for="searchbar">{label}: </label>'
-        # Add aria-describedby for search help text
-        aria_describedby = ""
-        if getattr(cl, "search_help_text", None):
-            aria_describedby = ' aria-describedby="searchbar_helptext"'
-        search_input = f"""
+def format_search_input(context, cl):
+    search_var = context["search_var"]
+    if getattr(cl, "search_help_text", None):
+        return format_html(
+            '''
             <input
                 id="searchbar"
                 type="text"
-                name="{search_var}"
-                value="{cl.query}"{aria_describedby}
+                name="{}"
+                value="{}"
+                aria-describedby="searchbar_helptext"
             />
-        """
-        if hasattr(cl.model_admin, "filterset"):
-            field = f"{search_label}{search_input}"
-        else:
-            field = f"""
+        ''',
+            search_var,
+            cl.query,
+        )
+    return format_html(
+        '''
+            <input
+                id="searchbar"
+                type="text"
+                name="{}"
+                value="{}"
+            />
+        ''',
+        search_var,
+        cl.query,
+    )
+
+
+def format_search_field(context, cl):
+    if not should_show_search_field(cl):
+        return ""
+
+    label = _("Search")
+    search_label = format_html('<label for="searchbar">{}: </label>', label)
+    search_input = format_search_input(context, cl)
+    if has_filterset(cl):
+        field = format_html("{}{}", search_label, search_input)
+    else:
+        field = format_html(
+            '''
                 <div class="ui action input">
-                    {search_input}
+                    {}
                     <button class="ui blue button" type="submit">
-                        <i class="search icon"></i>{label}
+                        <i class="search icon"></i>{}
                     </button>
                 </div>
-            """
-        wrapper = FILTER_FIELD if hasattr(cl.model_admin, "filterset") else FIELD
-        return wrapper.format(field)
-    else:
-        return ""
+            ''',
+            search_input,
+            label,
+        )
+    wrapper = FILTER_FIELD if has_filterset(cl) else FIELD
+    return format_html(wrapper, field)
 
 
 def format_search_button(cl):
-    html = ""
     search_label = _("Search")
-    search_button = f"""
+    search_button = format_html(
+        '''
         <button class="ui fluid blue button" type="submit">
-            <i class="search icon"></i> {search_label}
+            <i class="search icon"></i> {}
         </button>
-    """
-    if hasattr(cl.model_admin, "filterset"):
-        html = f"""
+    ''',
+        search_label,
+    )
+    if has_filterset(cl):
+        return format_html(
+            '''
             <div class="four wide field">
-                {BLANK_LABEL}{search_button}
+                <label>&nbsp;</label>{}
             </div>
-        """
-    else:
-        html = FIELD.format(search_button)
-    return html
+        ''',
+            search_button,
+        )
+    return format_html(FIELD, search_button)
 
 
 @register.simple_tag
@@ -109,44 +150,51 @@ def awesomesearch_show_search_form(cl):
 def search_fields(context, cl):
     html = ""
     search_field = format_search_field(context, cl)
-    if hasattr(cl.model_admin, "filterset"):
+    filterset = get_filterset(cl)
+    if filterset:
         fields = []
         if search_field:
             fields.append(search_field)
-        filter_field = """
-            <label for="{field_id}">{label}: </label>
-            {field}{errors}
-        """
-        filterset = cl.model_admin.filterset
         form = filterset.form
         for field in filterset.form:
             label = _(field.label.lower()).capitalize()
             if isinstance(form.fields[field.name].widget, forms.HiddenInput):
-                f = f"""
-                    <label for="{field.id_for_label}">{label}: </label>
-                    <strong>{filterset.email}</strong>
-                    {field}{field.errors}
-                """
-            else:
-                format_dict = dict(
-                    field_id=field.id_for_label,
-                    label=label,
-                    field=field,
-                    errors=field.errors,
+                f = format_html(
+                    '''
+                    <label for="{}">{}: </label>
+                    <strong>{}</strong>
+                    {}{}
+                ''',
+                    field.id_for_label,
+                    label,
+                    getattr(filterset, "email", ""),
+                    field,
+                    field.errors,
                 )
-                f = filter_field.format(**format_dict)
-            f = FILTER_FIELD.format(f)
+            else:
+                f = format_html(
+                    '''
+                    <label for="{}">{}: </label>
+                    {}{}
+                ''',
+                    field.id_for_label,
+                    label,
+                    field,
+                    field.errors,
+                )
+            f = format_html(FILTER_FIELD, f)
             fields.append(f)
         try:
             from semantic_admin.filters import SemanticExcludeAllFilterSet
         except ImportError:
             pass
         else:
-            if isinstance(cl.model_admin.filterset, SemanticExcludeAllFilterSet):
+            if isinstance(filterset, SemanticExcludeAllFilterSet):
                 exclude_label = _("Exclude")
-                checked = cl.model_admin.filterset_exclude
-                exclude_checkbox = f"""
-                    {BLANK_LABEL}
+                checked = "checked" if getattr(cl.model_admin, "filterset_exclude", False) else ""
+                exclude_checkbox = format_html(
+                    '''
+                    {}
                     <div class="ui checkbox">
                         <input
                             id="exclude"
@@ -155,12 +203,16 @@ def search_fields(context, cl):
                             class="hidden"
                             name="_exclude"
                             value="true"
-                            {checked}
+                            {}
                         >
-                        <label for="exclude">{exclude_label}</label>
+                        <label for="exclude">{}</label>
                     </div>
-                """
-                f = FILTER_FIELD.format(exclude_checkbox)
+                ''',
+                    mark_safe(BLANK_LABEL),
+                    checked,
+                    exclude_label,
+                )
+                f = format_html(FILTER_FIELD, exclude_checkbox)
                 fields.append(f)
         html += format_fields(cl, fields)
     else:

@@ -3,39 +3,24 @@ import types
 from django.template.library import Library
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from semantic_forms.templatetags.semantic_forms import (
+    semantic_error_list,
+    semantic_help_text,
+)
 
 register = Library()
-
-
-def _add_tag_classes(tag, classes):
-    class_attr = 'class="'
-    if class_attr in tag:
-        return tag.replace(class_attr, f"{class_attr}{classes} ", 1)
-    return tag.replace(">", f" class=\"{classes}\">", 1)
-
-
-@register.filter(is_safe=True, needs_autoescape=True)
-def semantic_help_text(value, autoescape=True):
-    """Render generated help text with Semantic UI list classes."""
-    if not value:
-        return ""
-
-    escaper = conditional_escape if autoescape else lambda x: x
-    html = str(escaper(value))
-    html = html.replace("<ul>", _add_tag_classes("<ul>", "ui bulleted list"))
-    html = html.replace("<li>", _add_tag_classes("<li>", "item"))
-    return mark_safe(html)
-
-
-@register.filter(is_safe=True, needs_autoescape=True)
-def semantic_error_list(value, autoescape=True):
-    """Render Django form errors as a compact Semantic Admin error list."""
-    if not value:
-        return ""
-
-    escaper = conditional_escape if autoescape else lambda x: x
-    items = "".join(f'<li class="item">{escaper(error)}</li>' for error in value)
-    return mark_safe(f'<ul class="ui bulleted list semantic-error-list">{items}</ul>')
+register.filter(
+    "semantic_help_text",
+    semantic_help_text,
+    is_safe=True,
+    needs_autoescape=True,
+)
+register.filter(
+    "semantic_error_list",
+    semantic_error_list,
+    is_safe=True,
+    needs_autoescape=True,
+)
 
 
 @register.filter(is_safe=True, needs_autoescape=True)

@@ -159,12 +159,6 @@ def get_container_name(ctx: Any, region: str = "asia-northeast1") -> str:
     return f"{region}-docker.pkg.dev/{project_id}/{name}/{name}"
 
 
-def docker_secrets() -> str:
-    """Get docker secrets."""
-    build_args = [f'{secret}="{os.environ[secret]}"' for secret in ("SECRET_KEY", "SENTRY_DSN")]
-    return " ".join([f"--build-arg {build_arg}" for build_arg in build_args])
-
-
 def build_semantic_admin(ctx: Any) -> str:
     """Build semantic admin."""
     ctx.run("uv build .. --wheel --out-dir ../dist --clear")
@@ -193,7 +187,6 @@ def build_container(ctx: Any, region: str = "asia-northeast1") -> None:
             [
                 "docker build",
                 build_args,
-                docker_secrets(),
                 f"--no-cache --file=Dockerfile --tag={name} .",
             ]
         )

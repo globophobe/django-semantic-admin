@@ -170,7 +170,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "django", specifier = ">=4.2" },
+    { name = "django", specifier = ">=5.2" },
     { name = "django-semantic-forms", specifier = ">=0.1.11" },
 ]
 

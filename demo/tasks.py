@@ -203,11 +203,20 @@ def push_container(ctx: Any, region: str = "asia-northeast1") -> None:
 
 
 @task
-def deploy_container(
-    ctx: Any, service: str = "django-semantic-admin", region: str = "asia-northeast1"
-) -> None:
-    """Deploy container."""
+def update_container(ctx: Any, region: str = "asia-northeast1") -> None:
+    """Build, push, and deploy a traffic-serving Cloud Run revision."""
     build_container(ctx, region=region)
     push_container(ctx, region=region)
     image = get_container_name(ctx, region=region)
-    ctx.run(f"gcloud run deploy {service} --image={image} --region={region}")
+    ctx.run(
+        " ".join(
+            [
+                "gcloud run deploy",
+                "django-semantic-admin",
+                f"--image={image}",
+                f"--region={region}",
+                "--platform=managed",
+                "--quiet",
+            ]
+        )
+    )

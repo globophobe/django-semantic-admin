@@ -7,7 +7,7 @@ Ordering of sidebar, and index page, apps and models can be customized with the 
 With the following in settings.py, `app_2` will be displayed before `app_1`
 
 ```python
-SEMANTIC_APP_LIST = [{ "app_label": "app_2" }, { "app_label": "app_1" }]
+SEMANTIC_APP_LIST = [{"app_label": "app_2"}, {"app_label": "app_1"}]
 ```
 
 

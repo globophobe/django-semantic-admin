@@ -2,11 +2,14 @@ from unittest.mock import patch
 
 from django.contrib.admin import ModelAdmin
 from django.contrib.admin.sites import AdminSite
-from django.contrib.auth import get_user_model, views as auth_views
+from django.contrib.auth import get_user_model
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import path, reverse
+from semantic_forms import SemanticModelMultipleChoiceField
+from semantic_forms.widgets import SemanticSelectMultiple
 
 from semantic_admin.auth.admin import (
     SemanticGroupAdmin,
@@ -19,8 +22,6 @@ from semantic_admin.auth.forms import (
     SemanticAdminSitePasswordChangeForm,
     SemanticPasswordResetForm,
 )
-from semantic_forms import SemanticModelMultipleChoiceField
-from semantic_forms.widgets import SemanticSelectMultiple
 
 user_admin_site = AdminSite(name="admin")
 user_admin_site.register(get_user_model(), SemanticUserAdmin)
@@ -176,9 +177,13 @@ class AuthAdminTests(TestCase):
         self.assertIn('class="ui form"', content)
         self.assertIn('type="text"', content)
         self.assertIn('autocomplete="email"', content)
-        self.assertIn('<label for="id_email" class="required">Email address:</label>', content)
+        self.assertIn(
+            '<label for="id_email" class="required">Email address:</label>', content
+        )
         self.assertNotIn('type="email"', content)
-        self.assertNotRegex(content, r"<(?:input|select|textarea)[^>]*\srequired(?:[=>\s]|$)")
+        self.assertNotRegex(
+            content, r"<(?:input|select|textarea)[^>]*\srequired(?:[=>\s]|$)"
+        )
         self.assertTrue(SemanticPasswordResetForm.base_fields["email"].required)
         self.assertNotIn('id="offscreen-menu"', content)
         self.assertNotIn('class="breadcrumbs"', content)

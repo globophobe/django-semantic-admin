@@ -40,7 +40,7 @@ def semantic_items_for_result(cl: ChangeList, result, form):
     pk = cl.lookup_opts.pk.attname
     for field_index, field_name in enumerate(cl.list_display):
         empty_value_display = cl.model_admin.get_empty_value_display()
-        row_classes = ["field-%s" % _coerce_field_name(field_name, field_index)]
+        row_classes = [f"field-{_coerce_field_name(field_name, field_index)}"]
         try:
             f, attr, value = lookup_field(field_name, result, cl.model_admin)
         except ObjectDoesNotExist:
@@ -77,7 +77,7 @@ def semantic_items_for_result(cl: ChangeList, result, form):
                     f, (models.DateField, models.TimeField, models.ForeignKey)
                 ):
                     row_classes.append("nowrap")
-        row_class = mark_safe(' class="%s"' % " ".join(row_classes))
+        row_class = mark_safe(f' class="{" ".join(row_classes)}"')
         # If list_display_links not defined, add the link tag to the first field
         if link_in_col(first, field_name, cl):
             # BEGIN CUSTOMIZATION

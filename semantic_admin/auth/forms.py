@@ -1,10 +1,14 @@
 from django import forms
 from django.contrib.admin.forms import (
     AdminAuthenticationForm,
+)
+from django.contrib.admin.forms import (
     AdminPasswordChangeForm as AdminSitePasswordChangeForm,
 )
 from django.contrib.auth.forms import (
     AdminPasswordChangeForm as AuthAdminPasswordChangeForm,
+)
+from django.contrib.auth.forms import (
     PasswordResetForm,
 )
 from django.utils.translation import gettext_lazy as _

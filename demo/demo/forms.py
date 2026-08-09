@@ -10,7 +10,7 @@ class LoginForm(AdminAuthenticationForm):
 
     use_required_attribute = False
 
-    error_messages = {
+    error_messages = {  # noqa: RUF012
         **AdminAuthenticationForm.error_messages,
         "invalid_login": mark_safe(
             _("Please enter username <i>admin</i> and password <i>semantic</i>.")

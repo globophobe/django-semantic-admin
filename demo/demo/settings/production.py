@@ -3,7 +3,7 @@ import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from .base import *  # noqa
+from .base import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False

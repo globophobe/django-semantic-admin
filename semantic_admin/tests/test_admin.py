@@ -6,13 +6,13 @@ from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
+from semantic_forms.widgets import SemanticCheckboxInput, SemanticDateTimeInput
 
 from semantic_admin import SemanticStackedInline, SemanticTabularInline
 from semantic_admin.auth.forms import SemanticAdminSitePasswordChangeForm
 from semantic_admin.tests.app.models import Category, Event, EventNote
 from semantic_admin.utils import get_javascript_catalog_url
 from semantic_admin.widgets import SemanticChangelistCheckboxInput
-from semantic_forms.widgets import SemanticCheckboxInput, SemanticDateTimeInput
 
 
 class EventNoteInline(SemanticTabularInline):
@@ -75,7 +75,9 @@ class AdminMediaTests(TestCase):
 
         self.assertRegex(content, r'<form class="ui form"[^>]*>')
         self.assertNotIn("novalidate", content)
-        self.assertNotRegex(content, r"<(?:input|select|textarea)[^>]*\srequired(?:[=>\s]|$)")
+        self.assertNotRegex(
+            content, r"<(?:input|select|textarea)[^>]*\srequired(?:[=>\s]|$)"
+        )
 
     def test_login_field_errors_use_semantic_markup(self):
         self.client.logout()
@@ -213,13 +215,17 @@ class AdminMediaTests(TestCase):
         self.assert_admin_jquery_bootstrap_once(response)
 
     def test_change_list_uses_django_admin_jquery_once(self):
-        response = self.client.get(reverse("admin:semantic_admin_tests_event_changelist"))
+        response = self.client.get(
+            reverse("admin:semantic_admin_tests_event_changelist")
+        )
 
         self.assert_admin_jquery_bootstrap_once(response)
         self.assert_javascript_catalog_once(response)
 
     def test_changelist_actions_keep_equal_width_select_group(self):
-        response = self.client.get(reverse("admin:semantic_admin_tests_event_changelist"))
+        response = self.client.get(
+            reverse("admin:semantic_admin_tests_event_changelist")
+        )
         content = response.content.decode()
 
         self.assertIn('class="actions inline equal width fields"', content)
@@ -229,12 +235,17 @@ class AdminMediaTests(TestCase):
         self.assertIn('class="action-label"', content)
 
     def test_header_object_tools_use_fixed_slots(self):
-        response = self.client.get(reverse("admin:semantic_admin_tests_event_changelist"))
+        response = self.client.get(
+            reverse("admin:semantic_admin_tests_event_changelist")
+        )
         content = response.content.decode()
 
         self.assertIn("semantic-admin-content-header", content)
         self.assertIn("ten wide field semantic-admin-title-field", content)
-        self.assertEqual(content.count("three wide field noprint semantic-admin-object-tool-field"), 2)
+        self.assertEqual(
+            content.count("three wide field noprint semantic-admin-object-tool-field"),
+            2,
+        )
         self.assertIn("addlink", content)
         self.assertNotIn("six wide field noprint", content)
         self.assertNotIn("semantic-admin-object-tool-spacer", content)
@@ -244,17 +255,26 @@ class AdminMediaTests(TestCase):
         )
         content = response.content.decode()
 
-        self.assertEqual(content.count("three wide field noprint semantic-admin-object-tool-field"), 2)
+        self.assertEqual(
+            content.count("three wide field noprint semantic-admin-object-tool-field"),
+            2,
+        )
         self.assertIn("historylink", content)
-        self.assertNotIn('<div class="three wide field" style="margin-bottom: 0;"></div>', content)
+        self.assertNotIn(
+            '<div class="three wide field" style="margin-bottom: 0;"></div>', content
+        )
 
     def test_change_list_keeps_filterset_media_in_combined_media(self):
-        response = self.client.get(reverse("admin:semantic_admin_tests_event_changelist"))
+        response = self.client.get(
+            reverse("admin:semantic_admin_tests_event_changelist")
+        )
 
         self.assertContains(response, "semantic_forms/semanticDropdown.js")
 
     def test_awesomesearch_filterset_uses_four_wide_slots(self):
-        response = self.client.get(reverse("admin:semantic_admin_tests_event_changelist"))
+        response = self.client.get(
+            reverse("admin:semantic_admin_tests_event_changelist")
+        )
         content = response.content.decode()
 
         self.assertIn("semantic-admin-awesome-search-row", content)
@@ -262,7 +282,9 @@ class AdminMediaTests(TestCase):
         self.assertIn("semantic-admin-awesome-search-spacer", content)
         self.assertNotIn("computer only field", content)
 
-    def test_awesomesearch_can_hide_changelist_text_search_without_removing_search_fields(self):
+    def test_awesomesearch_can_hide_changelist_text_search_without_removing_search_fields(
+        self,
+    ):
         model_admin = django_admin.site._registry[Event]
         original = model_admin.show_search_field
         model_admin.show_search_field = False
@@ -291,7 +313,9 @@ class AdminMediaTests(TestCase):
 
         form_class = model_admin.get_form(request, self.event)
 
-        self.assertIsInstance(form_class.base_fields["when"].widget, SemanticDateTimeInput)
+        self.assertIsInstance(
+            form_class.base_fields["when"].widget, SemanticDateTimeInput
+        )
         self.assertIsInstance(
             form_class.base_fields["is_active"].widget,
             SemanticCheckboxInput,

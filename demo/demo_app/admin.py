@@ -84,7 +84,7 @@ class PersonAdmin(ModelAdmin):
         (_("extra").capitalize(), {"fields": (("slug", "url", "email"),)}),
         (None, {"fields": ("friends",)}),
     )
-    prepopulated_fields = {"slug": ("name",)}
+    prepopulated_fields = {"slug": ("name",)}  # noqa: RUF012
     autocomplete_fields = ("friends",)
     list_per_page = 10
     actions = ("send_friend_request",)

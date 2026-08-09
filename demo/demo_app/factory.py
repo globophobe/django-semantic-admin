@@ -1,7 +1,6 @@
-from faker import Faker
-
 from factory import LazyAttribute
 from factory.django import DjangoModelFactory
+from faker import Faker
 
 from .models import Person
 

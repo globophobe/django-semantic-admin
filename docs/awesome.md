@@ -10,10 +10,12 @@ To enable this awesome feature, add `filterset_class` to your Django admin:
 ```python
 from semantic_forms.filters import SemanticFilterSet
 
+
 class DemoFilter(SemanticFilterSet):
     class Meta:
         model = Demo
         fields = ("demo_field",)
+
 
 class DemoAdmin(SemanticModelAdmin):
     filterset_class = DemoFilter

@@ -73,7 +73,7 @@ class Picture(models.Model):
         )
 
     def __str__(self):
-        return ", ".join((tag.name for tag in self.tags.all())) if self.pk else ""
+        return ", ".join(tag.name for tag in self.tags.all()) if self.pk else ""
 
     class Meta:
         ordering = ("-date_and_time",)

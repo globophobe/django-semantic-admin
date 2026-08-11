@@ -72,24 +72,24 @@ def get_app_list(context):
 
 def get_admin_site(current_app):
     try:
-        resolver_match = resolve(reverse("%s:index" % current_app))
+        resolver_match = resolve(reverse(f"{current_app}:index"))
         admin_site = getattr(resolver_match.func, "admin_site", None)
         if isinstance(admin_site, AdminSite):
             return admin_site
         for func_closure in getattr(resolver_match.func, "__closure__", ()) or ():
             if isinstance(func_closure.cell_contents, AdminSite):
                 return func_closure.cell_contents
-    except Exception:
-        pass
+    except Exception:  # noqa: BLE001
+        return admin.site
     return admin.site
 
 
 def get_admin_url(request, admin_site):
     try:
-        url = "{}:index".format(admin_site)
+        url = f"{admin_site}:index"
         url = reverse(url)
-    except Exception:
-        pass
+    except Exception:  # noqa: BLE001
+        return None
     else:
         return url
 

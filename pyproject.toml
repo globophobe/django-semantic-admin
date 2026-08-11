@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "django-semantic-admin"
-version = "0.7.0"
+version = "0.7.1"
 description = "Django Semantic UI Admin theme"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -30,30 +30,30 @@ packages = ["semantic_admin"]
 
 [dependency-groups]
 deploy = [
-    "django-filter==25.2",
-    "django-taggit==6.1.0",
-    "gunicorn==25.3.0",
-    "pillow==12.3.0",
-    "python-dotenv==1.2.2",
-    "sentry-sdk==2.57.0",
-    "whitenoise==6.12.0",
+    "django-filter>=25.2",
+    "django-taggit>=6.1.0",
+    "gunicorn>=25.3.0",
+    "pillow>=12.3.0",
+    "python-dotenv>=1.2.2",
+    "sentry-sdk>=2.57.0",
+    "whitenoise>=6.12.0",
 ]
 dev = [
-    "djlint==1.36.4",
-    "django-debug-toolbar==6.3.0",
-    "django-filter==25.2",
-    "django-upgrade==1.30.0",
-    "django-taggit==6.1.0",
-    "factory-boy==3.3.3",
-    "faker==40.12.0",
-    "gunicorn==25.3.0",
-    "invoke==2.2.1",
-    "mkdocs==1.6.1",
-    "pillow==12.3.0",
-    "python-dotenv==1.2.2",
-    "ruff==0.15.9",
-    "sentry-sdk==2.57.0",
-    "whitenoise==6.12.0",
+    "djlint>=1.36.4",
+    "django-debug-toolbar>=6.3.0",
+    "django-filter>=25.2",
+    "django-upgrade>=1.30.0",
+    "django-taggit>=6.1.0",
+    "factory-boy>=3.3.3",
+    "faker>=40.12.0",
+    "gunicorn>=25.3.0",
+    "invoke>=2.2.1",
+    "mkdocs>=1.6.1",
+    "pillow>=12.3.0",
+    "python-dotenv>=1.2.2",
+    "ruff>=0.16.1",
+    "sentry-sdk>=2.57.0",
+    "whitenoise>=6.12.0",
 ]
 
 [tool.uv]

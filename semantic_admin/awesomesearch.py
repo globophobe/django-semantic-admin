@@ -51,9 +51,7 @@ class AwesomeSearchChangeList(ChangeList):
         """Copy request state onto the ChangeList."""
         self.semantic_filterset = getattr(request, FILTERSET, None)
         self.semantic_filterset_params = getattr(request, FILTERSET_PARAMS, {})
-        self.semantic_show_search_field = getattr(
-            request, SHOW_SEARCH_FIELD, True
-        )
+        self.semantic_show_search_field = getattr(request, SHOW_SEARCH_FIELD, True)
 
     def get_query_string(
         self, new_params: dict | None = None, remove: str | None = None
@@ -209,15 +207,13 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
             and helpers.ACTION_CHECKBOX_NAME in request.POST
             and "index" not in request.POST
             and "_save" not in request.POST
+            and selected
         ):
-            if selected:
-                response = self.response_action(
-                    request, queryset=cl.get_queryset(request)
-                )
-                if response:
-                    return response
-                else:
-                    action_failed = True
+            response = self.response_action(request, queryset=cl.get_queryset(request))
+            if response:
+                return response
+            else:
+                action_failed = True
 
         if action_failed:
             # Redirect back to the changelist page to avoid resubmitting the
@@ -377,7 +373,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
                 # Is it a RangeField, etc?
                 if hasattr(form.fields[field], "fields"):
                     for index, _ in enumerate(form.fields[field].fields):
-                        param = "{}_{}".format(field, index)
+                        param = f"{field}_{index}"
                         self.set_filterset_param(
                             request, form, field, param, filterset_params
                         )
@@ -397,8 +393,8 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         filterset_params: dict,
     ) -> None:
         """Move one FilterSet param from request.GET to filterset_params."""
-        is_multiple = isinstance(form.fields[field], MultipleChoiceField) or isinstance(
-            form.fields[field], ModelMultipleChoiceField
+        is_multiple = isinstance(
+            form.fields[field], (MultipleChoiceField, ModelMultipleChoiceField)
         )
         # Get list for multiple, or single value
         if is_multiple:

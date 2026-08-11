@@ -6,7 +6,9 @@ from django.utils.translation import gettext_lazy as _
 BLANK_LABEL = "<label>&nbsp;</label>"
 FIELD = '<div class="field">{}</div>'
 FILTER_FIELD = '<div class="four wide field">{}</div>'
-SPACER_FIELD = '<div class="four wide field semantic-admin-awesome-search-spacer"></div>'
+SPACER_FIELD = (
+    '<div class="four wide field semantic-admin-awesome-search-spacer"></div>'
+)
 
 register = template.Library()
 
@@ -62,7 +64,7 @@ def format_search_input(context, cl):
     search_var = context["search_var"]
     if getattr(cl, "search_help_text", None):
         return format_html(
-            '''
+            """
             <input
                 id="searchbar"
                 type="text"
@@ -70,19 +72,19 @@ def format_search_input(context, cl):
                 value="{}"
                 aria-describedby="searchbar_helptext"
             />
-        ''',
+        """,
             search_var,
             cl.query,
         )
     return format_html(
-        '''
+        """
             <input
                 id="searchbar"
                 type="text"
                 name="{}"
                 value="{}"
             />
-        ''',
+        """,
         search_var,
         cl.query,
     )
@@ -99,14 +101,14 @@ def format_search_field(context, cl):
         field = format_html("{}{}", search_label, search_input)
     else:
         field = format_html(
-            '''
+            """
                 <div class="ui action input">
                     {}
                     <button class="ui blue button" type="submit">
                         <i class="search icon"></i>{}
                     </button>
                 </div>
-            ''',
+            """,
             search_input,
             label,
         )
@@ -117,20 +119,20 @@ def format_search_field(context, cl):
 def format_search_button(cl):
     search_label = _("Search")
     search_button = format_html(
-        '''
+        """
         <button class="ui fluid blue button" type="submit">
             <i class="search icon"></i> {}
         </button>
-    ''',
+    """,
         search_label,
     )
     if has_filterset(cl):
         return format_html(
-            '''
+            """
             <div class="four wide field">
                 <label>&nbsp;</label>{}
             </div>
-        ''',
+        """,
             search_button,
         )
     return format_html(FIELD, search_button)
@@ -160,11 +162,11 @@ def search_fields(context, cl):
             label = _(field.label.lower()).capitalize()
             if isinstance(form.fields[field.name].widget, forms.HiddenInput):
                 f = format_html(
-                    '''
+                    """
                     <label for="{}">{}: </label>
                     <strong>{}</strong>
                     {}{}
-                ''',
+                """,
                     field.id_for_label,
                     label,
                     getattr(filterset, "email", ""),
@@ -173,10 +175,10 @@ def search_fields(context, cl):
                 )
             else:
                 f = format_html(
-                    '''
+                    """
                     <label for="{}">{}: </label>
                     {}{}
-                ''',
+                """,
                     field.id_for_label,
                     label,
                     field,
@@ -191,9 +193,13 @@ def search_fields(context, cl):
         else:
             if isinstance(filterset, SemanticExcludeAllFilterSet):
                 exclude_label = _("Exclude")
-                checked = "checked" if getattr(cl.model_admin, "filterset_exclude", False) else ""
+                checked = (
+                    "checked"
+                    if getattr(cl.model_admin, "filterset_exclude", False)
+                    else ""
+                )
                 exclude_checkbox = format_html(
-                    '''
+                    """
                     {}
                     <div class="ui checkbox">
                         <input
@@ -207,7 +213,7 @@ def search_fields(context, cl):
                         >
                         <label for="exclude">{}</label>
                     </div>
-                ''',
+                """,
                     mark_safe(BLANK_LABEL),
                     checked,
                     exclude_label,

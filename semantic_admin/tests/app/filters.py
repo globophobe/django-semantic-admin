@@ -9,4 +9,3 @@ class EventFilter(SemanticFilterSet):
     class Meta:
         model = Event
         fields = ("category",)
-

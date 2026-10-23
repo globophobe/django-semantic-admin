@@ -1,6 +1,7 @@
 import os
 
 import sentry_sdk
+from django.core.exceptions import DisallowedHost
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *
@@ -22,6 +23,7 @@ SECURE_HSTS_PRELOAD = True
 sentry_sdk.init(
     dsn=os.environ["SENTRY_DSN"],
     integrations=[DjangoIntegration()],
+    ignore_errors=[DisallowedHost],
     include_local_variables=False,
     send_default_pii=False,
     # Less transactions

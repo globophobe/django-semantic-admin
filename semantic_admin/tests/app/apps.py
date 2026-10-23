@@ -6,4 +6,3 @@ class SemanticAdminTestsAppConfig(AppConfig):
     name = "semantic_admin.tests.app"
     label = "semantic_admin_tests"
     verbose_name = "semantic_admin tests"
-

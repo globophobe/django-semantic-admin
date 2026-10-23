@@ -82,9 +82,10 @@ class SemanticBaseModelAdmin(BaseModelAdmin):
         original_formfield_overrides = copy.deepcopy(self.formfield_overrides)
         super().__init__(*args, **kwargs)
         # Don't use default SplitDateTimeField form_class
-        if date_time := self.formfield_overrides.get(models.DateTimeField):
-            if "form_class" in date_time:
-                del date_time["form_class"]
+        if (
+            date_time := self.formfield_overrides.get(models.DateTimeField)
+        ) and "form_class" in date_time:
+            del date_time["form_class"]
         # Simply overwrite
         overrides = copy.deepcopy(SEMANTIC_FORMFIELD_FOR_DBFIELD_DEFAULTS)
         for k, v in overrides.items():

@@ -80,15 +80,12 @@ def semantic_unordered_list(value, autoescape=True):
         for item, children in walk_items(item_list):
             sublist = ""
             if children:
-                sublist = '\n%s<div class="ui bulleted list">\n%s\n%s</div>\n%s' % (
-                    indent,
-                    list_formatter(children, tabs + 1),
-                    indent,
-                    indent,
+                sublist = (
+                    f'\n{indent}<div class="ui bulleted list">\n'
+                    f"{list_formatter(children, tabs + 1)}\n"
+                    f"{indent}</div>\n{indent}"
                 )
-            output.append(
-                '%s<div class="item">%s%s</div>' % (indent, escaper(item), sublist)
-            )
+            output.append(f'{indent}<div class="item">{escaper(item)}{sublist}</div>')
         return "\n".join(output)
 
     return mark_safe(list_formatter(value))

@@ -60,8 +60,7 @@ dev = [
 
 [tool.uv]
 exclude-newer = "P7D"
-# Apply CA trust-store revocations without the dependency cooldown.
-exclude-newer-package = { certifi = false, django-semantic-forms = false }
+exclude-newer-package = { django-semantic-forms = false }
 
 [tool.uv.dependency-groups]
 deploy = { requires-python = ">=3.11" }

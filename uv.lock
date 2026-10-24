@@ -12,7 +12,6 @@ exclude-newer = "2026-10-16T23:18:29.518964849Z"
 exclude-newer-span = "P7D"
 
 [options.exclude-newer-package]
-certifi = false
 django-semantic-forms = false
 
 [[package]]

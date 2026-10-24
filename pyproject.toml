@@ -30,15 +30,17 @@ packages = ["semantic_admin"]
 
 [dependency-groups]
 deploy = [
+    "certifi>=2026.10.19",
     "django-filter>=25.2",
     "django-taggit>=6.1.0",
     "gunicorn>=25.3.0",
-    "pillow>=12.3.0",
+    "pillow>=13.0.0",
     "python-dotenv>=1.2.2",
     "sentry-sdk>=2.57.0",
     "whitenoise>=6.12.0",
 ]
 dev = [
+    "certifi>=2026.10.19",
     "djlint>=1.36.4",
     "django-debug-toolbar>=6.3.0",
     "django-filter>=25.2",
@@ -49,7 +51,7 @@ dev = [
     "gunicorn>=25.3.0",
     "invoke>=2.2.1",
     "mkdocs>=1.6.1",
-    "pillow>=12.3.0",
+    "pillow>=13.0.0",
     "python-dotenv>=1.2.2",
     "ruff>=0.16.1",
     "sentry-sdk>=2.57.0",
@@ -59,6 +61,10 @@ dev = [
 [tool.uv]
 exclude-newer = "P7D"
 exclude-newer-package = { django-semantic-forms = false }
+
+[tool.uv.dependency-groups]
+deploy = { requires-python = ">=3.11" }
+dev = { requires-python = ">=3.11" }
 
 [tool.ruff]
 exclude = ["migrations"]

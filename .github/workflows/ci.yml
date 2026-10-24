@@ -48,8 +48,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - python-version: "3.10"
-            django-version: "5.2.*"
           - python-version: "3.11"
             django-version: "5.2.*"
           - python-version: "3.12"
@@ -75,3 +73,19 @@ jobs:
         env:
           SECRET_KEY: test-secret
         run: uv run python demo/manage.py test --verbosity 1
+
+  install-python310:
+    name: Python 3.10 library installation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install library without demo dependencies
+        run: |
+          python -m pip install .
+          python -m pip check

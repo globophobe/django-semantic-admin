@@ -1,8 +1,5 @@
 ## Setup
 
-Use Python 3.11+ for the demo and development tools. The library itself remains
-installable on Python 3.10+.
-
 Install development dependencies:
 
 ```bash

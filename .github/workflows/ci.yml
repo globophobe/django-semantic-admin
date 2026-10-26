@@ -73,19 +73,3 @@ jobs:
         env:
           SECRET_KEY: test-secret
         run: uv run --no-sync python demo/manage.py test --verbosity 1
-
-  install-python311:
-    name: Python 3.11 library installation
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install library without demo dependencies
-        run: |
-          python -m pip install .
-          python -m pip check

@@ -47,10 +47,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        django-version: ["5.2.*", "6.0.*"]
+        exclude:
           - python-version: "3.11"
-            django-version: "5.2.*"
-          - python-version: "3.12"
             django-version: "6.0.*"
 
     steps:
@@ -72,10 +72,10 @@ jobs:
       - name: Run tests
         env:
           SECRET_KEY: test-secret
-        run: uv run python demo/manage.py test --verbosity 1
+        run: uv run --no-sync python demo/manage.py test --verbosity 1
 
-  install-python310:
-    name: Python 3.10 library installation
+  install-python311:
+    name: Python 3.11 library installation
     runs-on: ubuntu-latest
 
     steps:
@@ -83,7 +83,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Install library without demo dependencies
         run: |

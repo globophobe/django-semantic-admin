@@ -1,6 +1,8 @@
 v0.7.1
 ----------
 * Require Python >= 3.11
+* Support Django 6.1 change-form actions and CSP nonces
+* Enforce object permissions and reject new objects in changelist bulk edits
 
 v0.7.0
 ------

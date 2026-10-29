@@ -1,13 +1,14 @@
-{% extends "semantic_forms/base.html" %}
-{% load i18n static semantic_filters %}
+{% extends "semantic_admin/auth_base.html" %}
+{% load i18n static semantic_filters semantic_utils %}
 {% block title %}
     {% trans "Login" %} | {{ site_title|default:_("Django site admin") }}
 {% endblock %}
 {% block extrastyle %}
-    {{ form.media }}
-    <link rel="stylesheet"
+    {% semantic_csp_nonce_attr form.media %}
+    <link {% semantic_csp_nonce_attr %}
+          rel="stylesheet"
           href="{% static "semantic_admin/semantic-admin.css" %}" />
-    <style>
+    <style {% semantic_csp_nonce_attr %}>
   html, body {
       margin: 0;
       overflow-x: hidden;

@@ -1,3 +1,7 @@
+v0.7.1
+----------
+* Require Python >= 3.11
+
 v0.7.0
 ------
 * Require Django >= 5.2

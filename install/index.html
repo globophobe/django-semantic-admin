@@ -98,11 +98,7 @@
               
                 <h2 id="django-semantic-forms">Django Semantic Forms</h2>
 <p>🎉 As of <code>v0.5.0</code>, forms were moved to <a href="https://github.com/globophobe/django-semantic-forms">django-semantic-forms</a>. <code>semantic_forms</code> must be added to <code>INSTALLED_APPS</code>.</p>
-<pre><code class="language-python">INSTALLED_APPS = [
-    &quot;semantic_admin&quot;,
-    &quot;semantic_forms&quot;,
-    ...
-]
+<pre><code class="language-python">INSTALLED_APPS = [&quot;semantic_admin&quot;, &quot;semantic_forms&quot;, ...]
 </code></pre>
 <p>You may use <code>semantic_forms</code> outside of the admin.</p>
 <h2 id="install">Install</h2>
@@ -110,12 +106,7 @@
 <pre><code>pip install django-semantic-admin
 </code></pre>
 <p>Add to <code>settings.py</code> before <code>django.contrib.admin</code>:</p>
-<pre><code class="language-python">INSTALLED_APPS = [
-    &quot;semantic_admin&quot;,
-    &quot;semantic_forms&quot;,
-    &quot;django.contrib.admin&quot;,
-    ...
-]
+<pre><code class="language-python">INSTALLED_APPS = [&quot;semantic_admin&quot;, &quot;semantic_forms&quot;, &quot;django.contrib.admin&quot;, ...]
 </code></pre>
 <p>Please remember to run <code>python manage.py collectstatic</code> for production deployments.</p>
 <h2 id="usage">Usage</h2>
@@ -123,20 +114,29 @@
 <pre><code class="language-python">class ExampleStackedInline(admin.StackedInline):
     pass
 
+
 class ExampleTabularInline(admin.TabularInline):
     pass
+
 
 class ExampleAdmin(admin.ModelAdmin):
     inlines = (ExampleStackedInline, ExampleTabularInline)
 </code></pre>
 <p>Inherit from their <code>Semantic</code> equivalents:</p>
-<pre><code class="language-python">from semantic_admin import SemanticModelAdmin, SemanticStackedInline, SemanticTabularInline
+<pre><code class="language-python">from semantic_admin import (
+    SemanticModelAdmin,
+    SemanticStackedInline,
+    SemanticTabularInline,
+)
+
 
 class ExampleStackedInline(SemanticStackedInline):
     pass
 
+
 class ExampleTabularInline(SemanticTabularInline):
     pass
+
 
 class ExampleAdmin(SemanticModelAdmin):
     inlines = (ExampleStackedInline, ExampleTabularInline)

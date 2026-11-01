@@ -16,6 +16,7 @@ from django.contrib.admin.utils import (
 from django.contrib.admin.views.main import ORDER_VAR, PAGE_VAR, ChangeList
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.template import defaulttags
 from django.urls import NoReverseMatch
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -23,6 +24,14 @@ from django.utils.safestring import mark_safe
 from .semantic_admin_list import semantic_results
 
 register = template.Library()
+
+
+@register.simple_tag(takes_context=True)
+def semantic_csp_nonce_attr(context, media=None):
+    """Use Django 6.1's nonce rendering while keeping older templates loadable."""
+    if nonce_attr := getattr(defaulttags, "csp_nonce_attr", None):
+        return nonce_attr(context, media)
+    return media.render() if media else ""
 
 
 def items_for_result(cl: ChangeList, result, form):

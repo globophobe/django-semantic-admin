@@ -7,7 +7,7 @@ name = "django-semantic-admin"
 version = "0.7.1"
 description = "Django Semantic UI Admin theme"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Alex", email = "globophobe@gmail.com" }]
 keywords = ["django", "admin", "theme"]
@@ -15,6 +15,12 @@ classifiers = [
     "Framework :: Django",
     "Development Status :: 4 - Beta",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
     "django>=5.2.18",
@@ -62,14 +68,10 @@ dev = [
 exclude-newer = "P7D"
 exclude-newer-package = { django-semantic-forms = false }
 
-[tool.uv.dependency-groups]
-deploy = { requires-python = ">=3.11" }
-dev = { requires-python = ">=3.11" }
-
 [tool.ruff]
 exclude = ["migrations"]
 line-length = 88
-target-version = "py310"
+target-version = "py311"
 
 [tool.djlint]
 profile = "django"

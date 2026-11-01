@@ -5,7 +5,7 @@ from django.contrib.admin import helpers
 from django.contrib.admin.options import IncorrectLookupParameters, csrf_protect_m
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.admin.views.main import SEARCH_VAR, ChangeList
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import BadRequest, PermissionDenied
 from django.db import router, transaction
 from django.db.models import QuerySet
 from django.forms import Form, ModelMultipleChoiceField
@@ -111,6 +111,13 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
     ) -> type[AwesomeSearchChangeList]:
         """Returns the ChangeList class for use on the changelist page."""
         return AwesomeSearchChangeList
+
+    def _restrict_changelist_formset(self, request, formset):
+        """Apply object permissions before validating or rendering bulk edits."""
+        for form in formset.forms:
+            if not self.has_change_permission(request, form.instance):
+                for field_name in self.list_editable:
+                    form.fields.pop(field_name, None)
 
     @csrf_protect_m
     def changelist_view(
@@ -237,12 +244,17 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
             formset = cl.formset = FormSet(
                 request.POST, request.FILES, queryset=modified_objects
             )
+            self._restrict_changelist_formset(request, formset)
             if formset.is_valid():
                 changecount = 0
                 with transaction.atomic(using=router.db_for_write(self.model)):
                     for form in formset.forms:
+                        if not self.has_change_permission(request, form.instance):
+                            continue
                         if form.has_changed():
                             obj = self.save_form(request, form, change=True)
+                            if obj._state.adding:
+                                raise BadRequest("list_editable does not allow adding.")
                             self.save_model(request, obj, form, change=True)
                             self.save_related(request, form, formsets=[], change=True)
                             change_msg = self.construct_change_message(
@@ -267,6 +279,7 @@ class AwesomeSearchModelAdmin(admin.ModelAdmin):
         elif cl.list_editable and self.has_change_permission(request):
             FormSet = self.get_changelist_formset(request)
             formset = cl.formset = FormSet(queryset=cl.result_list)
+            self._restrict_changelist_formset(request, formset)
 
         # Build the list of media to be used by the formset.
         if formset:
